@@ -1,20 +1,35 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  Index,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import { Elementos } from "../../elementos/entities/elemento.entity";
 
-@Entity({name:'unidades_medida'})
+@Entity("unidades_medida", { schema: "public" })
+export class UnidadesMedida {
+  @PrimaryGeneratedColumn({ type: "integer", name: "id_unidad" })
+  idUnidad: number;
 
-export class UnidadMedida {
-    @PrimaryGeneratedColumn()
-    id_unidad:number
+  @Column("character varying", { name: "nombre", nullable: true, length: 70 })
+  nombre: string | null;
 
-    @Column({type:'varchar', length:100})
-    nombre:string
+  @Column("boolean", { name: "estado", nullable: true })
+  estado: boolean | null;
 
-    @Column({type:'boolean', default:true})
-    estado:boolean
+  @Column("timestamp without time zone", {
+    name: "created_at",
+    default: () => "now()",
+  })
+  createdAt: Date;
 
-    @CreateDateColumn({type:'timestamp'})
-    created_at:Date
+  @Column("timestamp without time zone", {
+    name: "updated_at",
+    default: () => "now()",
+  })
+  updatedAt: Date;
 
-    @UpdateDateColumn({type:'timestamp'})
-    updated_at:Date
+  @OneToMany(() => Elementos, (elementos) => elementos.fkUnidadMedida)
+  elementos: Elementos[];
 }
