@@ -1,20 +1,35 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  Index,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import { Movimientos } from "../../movimientos/entities/movimiento.entity";
 
-@Entity({name:'tipos_movimiento'})
+@Entity("tipo_movimientos", { schema: "public" })
+export class TipoMovimientos {
+  @PrimaryGeneratedColumn({ type: "integer", name: "id_tipo" })
+  idTipo: number;
 
-export class TipoMovimiento {
-    @PrimaryGeneratedColumn()
-    id_tipo:number
+  @Column("character varying", { name: "nombre", nullable: true, length: 70 })
+  nombre: string | null;
 
-    @Column({type:'varchar', length:100})
-    nombre:string
+  @Column("boolean", { name: "estado", nullable: true })
+  estado: boolean | null;
 
-    @Column({type:'boolean', default:true})
-    estado:boolean
+  @Column("timestamp without time zone", {
+    name: "created_at",
+    default: () => "now()",
+  })
+  createdAt: Date;
 
-    @CreateDateColumn({type:'timestamp'})
-    created_at:Date
+  @Column("timestamp without time zone", {
+    name: "updated_at",
+    default: () => "now()",
+  })
+  updatedAt: Date;
 
-    @UpdateDateColumn({type:'timestamp'})
-    updated_at:Date
+  @OneToMany(() => Movimientos, (movimientos) => movimientos.fkTipoMovimiento)
+  movimientos: Movimientos[];
 }

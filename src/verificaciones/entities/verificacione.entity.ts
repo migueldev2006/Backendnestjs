@@ -1,29 +1,56 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import { Sitios } from "../../sitios/entities/sitio.entity";
+import { Usuarios } from "../../usuarios/entities/usuario.entity";
 
-@Entity({name:'verificaciones'})
+@Entity("verificaciones", { schema: "public" })
+export class Verificaciones {
+  @PrimaryGeneratedColumn({ type: "integer", name: "id_verificacion" })
+  idVerificacion: number;
 
-export class Verificacion {
-    @PrimaryGeneratedColumn()
-    id_verificacion:number
+  @Column("character varying", {
+    name: "persona_encargada",
+    nullable: true,
+    length: 70,
+  })
+  personaEncargada: string | null;
 
-    @Column({type:'varchar', length:100})
-    persona_encargadad:string
+  @Column("time without time zone", { name: "hora_ingreso", nullable: true })
+  horaIngreso: string | null;
 
-    @Column({type:'varchar', default:true})
-    persona_asignada:string
+  @Column("time without time zone", { name: "hora_fin", nullable: true })
+  horaFin: string | null;
 
-    @Column({type:'time', nullable:false})
-    hora_ingreso:string
+  @Column("character varying", {
+    name: "observaciones",
+    nullable: true,
+    length: 255,
+  })
+  observaciones: string | null;
 
-    @Column({type:'time', nullable:false})
-    hora_fin:string
+  @Column("timestamp without time zone", {
+    name: "created_at",
+    default: () => "now()",
+  })
+  createdAt: Date;
 
-    @Column({type:'varchar', length:255})
-    observaciones:string
+  @Column("timestamp without time zone", {
+    name: "updated_at",
+    default: () => "now()",
+  })
+  updatedAt: Date;
 
-    @CreateDateColumn({type:'timestamp'})
-    created_at:Date
+  @ManyToOne(() => Sitios, (sitios) => sitios.verificaciones)
+  @JoinColumn([{ name: "fk_sitio", referencedColumnName: "idSitio" }])
+  fkSitio: Sitios;
 
-    @UpdateDateColumn({type:'timestamp'})
-    updated_at:Date
+  @ManyToOne(() => Usuarios, (usuarios) => usuarios.verificaciones)
+  @JoinColumn([{ name: "fk_usuario", referencedColumnName: "idUsuario" }])
+  fkUsuario: Usuarios;
 }

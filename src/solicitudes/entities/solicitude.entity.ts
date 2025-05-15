@@ -1,29 +1,63 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import { Notificaciones } from "../../notificaciones/entities/notificacione.entity";
+import { Inventarios } from "../../inventarios/entities/inventario.entity";
+import { Usuarios } from "../../usuarios/entities/usuario.entity";
 
-@Entity({name:'solicitudes'})
+@Entity("solicitudes", { schema: "public" })
+export class Solicitudes {
+  @PrimaryGeneratedColumn({ type: "integer", name: "id_solicitud" })
+  idSolicitud: number;
 
-export class Solicitud {
-    @PrimaryGeneratedColumn()
-    id_solicitud:number
+  @Column("character varying", {
+    name: "descripcion",
+    nullable: true,
+    length: 205,
+  })
+  descripcion: string | null;
 
-    @Column({type:'varchar', length:255})
-    descripcion:string
+  @Column("integer", { name: "cantidad", nullable: true })
+  cantidad: number | null;
 
-    @Column({type:'int'})
-    cantidad:number
+  @Column("boolean", { name: "aceptada", nullable: true })
+  aceptada: boolean | null;
 
-    @Column({type:'boolean'})
-    aceptada:boolean
+  @Column("boolean", { name: "pendiente", nullable: true })
+  pendiente: boolean | null;
 
-    @Column({type:'boolean'})
-    pendiente:boolean
+  @Column("boolean", { name: "rechazada", nullable: true })
+  rechazada: boolean | null;
 
-    @Column({type:'boolean'})
-    rechazada:boolean
+  @Column("timestamp without time zone", {
+    name: "created_at",
+    default: () => "now()",
+  })
+  createdAt: Date;
 
-    @CreateDateColumn({type:'timestamp'})
-    created_at:Date
+  @Column("timestamp without time zone", {
+    name: "updated_at",
+    default: () => "now()",
+  })
+  updatedAt: Date;
 
-    @UpdateDateColumn({type:'timestamp'})
-    updated_at:Date
+  @OneToMany(
+    () => Notificaciones,
+    (notificaciones) => notificaciones.fkSolicitud
+  )
+  notificaciones: Notificaciones[];
+
+  @ManyToOne(() => Inventarios, (inventarios) => inventarios.solicitudes)
+  @JoinColumn([{ name: "fk_inventario", referencedColumnName: "idInventario" }])
+  fkInventario: Inventarios;
+
+  @ManyToOne(() => Usuarios, (usuarios) => usuarios.solicitudes)
+  @JoinColumn([{ name: "fk_usuario", referencedColumnName: "idUsuario" }])
+  fkUsuario: Usuarios;
 }

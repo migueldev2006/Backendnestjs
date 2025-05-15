@@ -1,20 +1,51 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import { Elementos } from "../../elementos/entities/elemento.entity";
+import { Sitios } from "../../sitios/entities/sitio.entity";
+import { Movimientos } from "../../movimientos/entities/movimiento.entity";
+import { Solicitudes } from "../../solicitudes/entities/solicitude.entity";
 
-@Entity({name:'inventarios'})
+@Entity("inventarios", { schema: "public" })
+export class Inventarios {
+  @PrimaryGeneratedColumn({ type: "integer", name: "id_inventario" })
+  idInventario: number;
 
-export class Inventario {
-    @PrimaryGeneratedColumn()
-    id_inventario:number
+  @Column("integer", { name: "stock", nullable: true })
+  stock: number | null;
 
-    @Column({type:'int', default:0})
-    stock:number
+  @Column("boolean", { name: "estado", nullable: true })
+  estado: boolean | null;
 
-    @Column({type:'boolean', default:true})
-    estado:boolean
+  @Column("timestamp without time zone", {
+    name: "created_at",
+    default: () => "now()",
+  })
+  createdAt: Date;
 
-    @CreateDateColumn({type:'timestamp'})
-    created_at:Date
+  @Column("timestamp without time zone", {
+    name: "updated_at",
+    default: () => "now()",
+  })
+  updatedAt: Date;
 
-    @UpdateDateColumn({type:'timestamp'})
-    updated_at:Date
+  @ManyToOne(() => Elementos, (elementos) => elementos.inventarios)
+  @JoinColumn([{ name: "fk_elemento", referencedColumnName: "idElemento" }])
+  fkElemento: Elementos;
+
+  @ManyToOne(() => Sitios, (sitios) => sitios.inventarios)
+  @JoinColumn([{ name: "fk_sitio", referencedColumnName: "idSitio" }])
+  fkSitio: Sitios;
+
+  @OneToMany(() => Movimientos, (movimientos) => movimientos.fkInventario)
+  movimientos: Movimientos[];
+
+  @OneToMany(() => Solicitudes, (solicitudes) => solicitudes.fkInventario)
+  solicitudes: Solicitudes[];
 }

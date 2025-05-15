@@ -29,6 +29,7 @@ import { HttpExceptionFilter } from './common/filter/http-exception.filter';
 import { RolPermisoModule } from './rol-permiso/rol-permiso.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { NotificacionesModule } from './notificaciones/notificaciones.module';
 
 
 
@@ -42,6 +43,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       database: process.env.DB_NAME,
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
+      entities: [__dirname + '//*.entity{.ts,.js}'],
       autoLoadEntities: true,
       synchronize: true
     }),
@@ -70,6 +72,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     SolicitudesModule,
     ElementosModule,
     RolPermisoModule,
+    NotificacionesModule,
   ],
   controllers: [AppController],
   providers: [

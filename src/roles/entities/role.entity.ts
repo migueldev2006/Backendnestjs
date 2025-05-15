@@ -1,20 +1,39 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  Index,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import { RolPermiso } from "../../rol-permiso/entities/rol-permiso.entity";
+import { Usuarios } from "../../usuarios/entities/usuario.entity";
 
-@Entity({name:'roles'})
+@Entity("roles", { schema: "public" })
+export class Roles {
+  @PrimaryGeneratedColumn({ type: "integer", name: "id_rol" })
+  idRol: number;
 
-export class Rol {
-    @PrimaryGeneratedColumn()
-    id_rol:number
+  @Column("character varying", { name: "nombre", nullable: true, length: 70 })
+  nombre: string | null;
 
-    @Column({type:'varchar', length:100})
-    nombre:string
+  @Column("boolean", { name: "estado", nullable: true })
+  estado: boolean | null;
 
-    @Column({type:'boolean', default:true})
-    estado:boolean
+  @Column("timestamp without time zone", {
+    name: "created_at",
+    default: () => "now()",
+  })
+  createdAt: Date;
 
-    @CreateDateColumn({type:'timestamp'})
-    created_at:Date
+  @Column("timestamp without time zone", {
+    name: "updated_at",
+    default: () => "now()",
+  })
+  updatedAt: Date;
 
-    @UpdateDateColumn({type:'timestamp'})
-    updated_at:Date
+  @OneToMany(() => RolPermiso, (rolPermiso) => rolPermiso.fkRol)
+  rolPermisos: RolPermiso[];
+
+  @OneToMany(() => Usuarios, (usuarios) => usuarios.fkRol)
+  usuarios: Usuarios[];
 }
