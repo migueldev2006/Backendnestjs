@@ -14,7 +14,6 @@ import { UsuarioFicha } from "../../usuario-ficha/entities/usuario-ficha.entity"
 import { Roles } from "../../roles/entities/role.entity";
 import { Verificaciones } from "../../verificaciones/entities/verificacione.entity";
 
-@Index("usuarios_pkey", ["idUsuario"], { unique: true })
 @Entity("usuarios", { schema: "public" })
 export class Usuarios {
   @PrimaryGeneratedColumn({ type: "integer", name: "id_usuario" })

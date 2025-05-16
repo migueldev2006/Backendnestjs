@@ -9,7 +9,7 @@ import {
 import { Movimientos } from "../../movimientos/entities/movimiento.entity";
 import { Solicitudes } from "../../solicitudes/entities/solicitude.entity";
 
-@Index("notificaciones_pkey", ["idNotificacion"], { unique: true })
+
 @Entity("notificaciones", { schema: "public" })
 export class Notificaciones {
   @PrimaryGeneratedColumn({ type: "integer", name: "id_notificacion" })
