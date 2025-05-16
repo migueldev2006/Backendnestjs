@@ -20,31 +20,31 @@ export class Usuarios {
   idUsuario: number;
 
   @Column("integer", { name: "documento", nullable: true, unique: true })
-  documento: number | null;
+  documento: number ;
 
   @Column("character varying", { name: "nombre", nullable: true, length: 70 })
-  nombre: string | null;
+  nombre: string ;
 
   @Column("character varying", { name: "apellido", nullable: true, length: 70 })
-  apellido: string | null;
+  apellido: string ;
 
   @Column("integer", { name: "edad", nullable: true })
-  edad: number | null;
+  edad: number ;
 
   @Column("character varying", { name: "telefono", nullable: true, length: 15 })
-  telefono: string | null;
+  telefono: string ;
 
   @Column("character varying", { name: "correo", nullable: true, length: 70 })
-  correo: string | null;
+  correo: string ;
 
   @Column("boolean", { name: "estado", nullable: true })
-  estado: boolean | null;
+  estado: boolean ;
 
   @Column("character varying", { name: "cargo", nullable: true, length: 70 })
-  cargo: string | null;
+  cargo: string ;
 
   @Column("character varying", { name: "password", nullable: true, length: 60 })
-  password: string | null;
+  password: string ;
 
   @Column("timestamp without time zone", {
     name: "created_at",
@@ -59,7 +59,7 @@ export class Usuarios {
   updatedAt: Date;
 
   @Column("character varying", { name: "perfil", nullable: true, length: 255 })
-  perfil: string | null;
+  perfil: string ;
 
   @OneToMany(() => Areas, (areas) => areas.fkUsuario)
   areas: Areas[];
