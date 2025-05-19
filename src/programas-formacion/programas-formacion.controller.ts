@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { ProgramasFormacionService } from './programas-formacion.service';
-import { CreateProgramasFormacionDto } from './dto/create-programas-formacion.dto';
-import { UpdateProgramasFormacionDto } from './dto/update-programas-formacion.dto';
+import { CreateProgramasFormacionDto, UpdateProgramasFormacionDto } from './dto';
 
 @Controller('programas-formacion')
 export class ProgramasFormacionController {
@@ -17,18 +16,18 @@ export class ProgramasFormacionController {
     return this.programasFormacionService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.programasFormacionService.findOne(+id);
+  @Get(':idPrograma')
+  findOne(@Param('idPrograma') idPrograma: number) {
+    return this.programasFormacionService.findOne(+idPrograma);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProgramasFormacionDto: UpdateProgramasFormacionDto) {
-    return this.programasFormacionService.update(+id, updateProgramasFormacionDto);
+  @Patch(':idPrograma')
+  update(@Param('idPrograma') idPrograma: number, @Body() updateProgramasFormacionDto: UpdateProgramasFormacionDto) {
+    return this.programasFormacionService.update(+idPrograma, updateProgramasFormacionDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.programasFormacionService.remove(+id);
+  @Patch('state/:idPrograma')
+  status(@Param('idPrograma') idPrograma: number) {
+    return this.programasFormacionService.changeStatus(+idPrograma);
   }
 }

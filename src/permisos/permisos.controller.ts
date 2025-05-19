@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { PermisosService } from './permisos.service';
-import { CreatePermisoDto } from './dto/create-permiso.dto';
-import { UpdatePermisoDto } from './dto/update-permiso.dto';
+import { CreatePermisoDto, UpdatePermisoDto } from './dto';
 
 @Controller('permisos')
 export class PermisosController {
@@ -17,18 +16,13 @@ export class PermisosController {
     return this.permisosService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.permisosService.findOne(+id);
+  @Get(':idPermiso')
+  findOne(@Param('idPermiso') idPermiso: number) {
+    return this.permisosService.findOne(+idPermiso);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePermisoDto: UpdatePermisoDto) {
-    return this.permisosService.update(+id, updatePermisoDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.permisosService.remove(+id);
+  @Patch(':idPermiso')
+  update(@Param('idPermiso') idPermiso: number, @Body() updatePermisoDto: UpdatePermisoDto) {
+    return this.permisosService.update(+idPermiso, updatePermisoDto);
   }
 }

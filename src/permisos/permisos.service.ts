@@ -1,26 +1,44 @@
 import { Injectable } from '@nestjs/common';
-import { CreatePermisoDto } from './dto/create-permiso.dto';
-import { UpdatePermisoDto } from './dto/update-permiso.dto';
+import { CreatePermisoDto, UpdatePermisoDto } from './dto'; 
+import { Repository } from 'typeorm';
+import { Permisos } from './entities/permiso.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class PermisosService {
-  create(createPermisoDto: CreatePermisoDto) {
-    return 'This action adds a new permiso';
+  constructor(
+    @InjectRepository(Permisos)
+    private readonly permisoRepository: Repository<Permisos>
+  ){}
+  
+  async create(createPermisoDto: CreatePermisoDto):Promise<Permisos> {
+    const permiso = this.permisoRepository.create(createPermisoDto)
+    return await this.permisoRepository.save(permiso);
   }
 
-  findAll() {
-    return `This action returns all permisos`;
+  async findAll():Promise<Permisos[]> {
+    return await this.permisoRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} permiso`;
+  async findOne(idPermiso: number):Promise<Permisos | null> {
+    const getPermisoById = await this.permisoRepository.findOneBy({idPermiso})
+
+    if (!getPermisoById) {
+      throw new Error(`No se encontro el permiso con el id especificado`)
+    }
+    return getPermisoById;
   }
 
-  update(id: number, updatePermisoDto: UpdatePermisoDto) {
-    return `This action updates a #${id} permiso`;
-  }
+  async update(idPermiso: number, updatePermisoDto: UpdatePermisoDto):Promise<Permisos> {
+    const getPermisoById = await this.permisoRepository.preload({
+      idPermiso,
+      ...updatePermisoDto
+    })
 
-  remove(id: number) {
-    return `This action removes a #${id} permiso`;
+    if (!getPermisoById) {
+      throw new Error(`No se encontro el permiso con el id especificado, no se puede actualuzar`)
+    }
+
+    return getPermisoById;
   }
 }

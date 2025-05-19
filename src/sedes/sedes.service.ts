@@ -1,26 +1,62 @@
 import { Injectable } from '@nestjs/common';
-import { CreateSedeDto } from './dto/create-sede.dto';
-import { UpdateSedeDto } from './dto/update-sede.dto';
+import { CreateSedeDto, UpdateSedeDto } from './dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Sedes } from './entities/sede.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class SedesService {
-  create(createSedeDto: CreateSedeDto) {
-    return 'This action adds a new sede';
+  constructor(
+    @InjectRepository(Sedes)
+    private readonly sedeRepository:Repository<Sedes>
+  ){}
+
+  async create(createSedeDto: CreateSedeDto):Promise<Sedes> {
+    const sede = this.sedeRepository.create({
+      ...createSedeDto,
+      fkCentro:{idCentro:createSedeDto.fkCentro}
+    });
+    return await this.sedeRepository.save(sede);
   }
 
-  findAll() {
-    return `This action returns all sedes`;
+  async findAll():Promise<Sedes[]> {
+    return await this.sedeRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} sede`;
+  async findOne(idSede: number) :Promise<Sedes | null> {
+   const getSedeById = await this.sedeRepository.findOneBy({idSede});
+
+    if (!getSedeById) {
+      throw new Error(`El id ${idSede} no se encuentra registrado`)
+    }
+
+    return getSedeById;
   }
 
-  update(id: number, updateSedeDto: UpdateSedeDto) {
-    return `This action updates a #${id} sede`;
+  async update(idSede: number, updateSedeDto: UpdateSedeDto):Promise<Sedes> {
+       const getSedeById = await this.sedeRepository.preload({
+      idSede,
+      ...updateSedeDto,
+      fkCentro:{idCentro:updateSedeDto.fkCentro},
+    
+    });
+
+    if (!getSedeById) {
+      throw new Error(`El id ${idSede} no se encuentra registrado`)
+    }
+
+    return this.sedeRepository.save(getSedeById);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} sede`;
+  async changeStatus(idSede: number):Promise<Sedes> {
+      const getSedeById = await this.sedeRepository.findOneBy({idSede});
+  
+      if (!getSedeById) {
+        throw new Error(`El id ${idSede} no se encuentra registrado`)
+      }
+  
+      getSedeById.estado = !getSedeById.estado
+  
+      return getSedeById
   }
 }

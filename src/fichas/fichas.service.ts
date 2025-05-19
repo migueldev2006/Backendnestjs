@@ -1,26 +1,63 @@
 import { Injectable } from '@nestjs/common';
-import { CreateFichaDto } from './dto/create-ficha.dto';
-import { UpdateFichaDto } from './dto/update-ficha.dto';
+import { CreateFichaDto, UpdateFichaDto } from './dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Fichas } from './entities/ficha.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class FichasService {
-  create(createFichaDto: CreateFichaDto) {
-    return 'This action adds a new ficha';
+  constructor(
+    @InjectRepository(Fichas)
+    private readonly fichaRepository: Repository<Fichas>,
+  ) {}
+  async create(createFichaDto: CreateFichaDto): Promise<Fichas> {
+    const ficha = this.fichaRepository.create({
+      ...createFichaDto,
+      fkPrograma: { idPrograma: createFichaDto.fkPrograma },
+    });
+    return await this.fichaRepository.save(ficha);
   }
 
-  findAll() {
-    return `This action returns all fichas`;
+  async findAll(): Promise<Fichas[]> {
+    return await this.fichaRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} ficha`;
+  async findOne(idFicha: number): Promise<Fichas | null> {
+    const getFichaById = await this.fichaRepository.findOneBy({ idFicha });
+
+    if (!getFichaById) {
+      throw new Error(`No existe una ficha con este id`);
+    }
+
+    return getFichaById;
   }
 
-  update(id: number, updateFichaDto: UpdateFichaDto) {
-    return `This action updates a #${id} ficha`;
+  async update(
+    idFicha: number,
+    updateFichaDto: UpdateFichaDto,
+  ): Promise<Fichas> {
+    const getFichaById = await this.fichaRepository.preload({
+      idFicha,
+      ...updateFichaDto,
+      fkPrograma: { idPrograma: updateFichaDto.fkPrograma },
+    });
+
+    if (!getFichaById) {
+      throw new Error(`No existe una ficha con este id`);
+    }
+
+    return this.fichaRepository.save(getFichaById);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} ficha`;
+  async changeStatus(idFicha: number) {
+    const getFichaById = await this.fichaRepository.findOneBy({ idFicha });
+
+    if (!getFichaById) {
+      throw new Error(`No existe una ficha con este id`);
+    }
+
+    getFichaById.estado = !getFichaById.estado;
+
+    return getFichaById;
   }
 }

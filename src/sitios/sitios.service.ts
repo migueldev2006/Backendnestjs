@@ -1,26 +1,57 @@
 import { Injectable } from '@nestjs/common';
-import { CreateSitioDto } from './dto/create-sitio.dto';
-import { UpdateSitioDto } from './dto/update-sitio.dto';
+import { CreateSitioDto, UpdateSitioDto } from './dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Sitios } from './entities/sitio.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class SitiosService {
-  create(createSitioDto: CreateSitioDto) {
-    return 'This action adds a new sitio';
+  constructor(
+    @InjectRepository(Sitios)
+    private readonly sitioRepository: Repository<Sitios>
+  ){}
+  async create(createSitioDto: CreateSitioDto):Promise<Sitios> {
+    const sitio = this.sitioRepository.create({
+      ...createSitioDto,
+      fkArea:{idArea:createSitioDto.fkArea},
+      fkTipoSitio:{idTipo:createSitioDto.fkTipoSitio}
+    })
+    return await this.sitioRepository.save(sitio);
   }
 
-  findAll() {
-    return `This action returns all sitios`;
+  async findAll():Promise<Sitios[]> {
+    return await this.sitioRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} sitio`;
+  async findOne(idSitio: number):Promise<Sitios> {
+    const getSitio = await this.sitioRepository.findOneBy({idSitio})
+
+    if (!getSitio) {
+      throw new Error(`No se encuentra el sitio con el id ${idSitio}`)
+    }
+
+    return getSitio;
   }
 
-  update(id: number, updateSitioDto: UpdateSitioDto) {
-    return `This action updates a #${id} sitio`;
+  async update(idSitio: number, updateSitioDto: UpdateSitioDto) {
+    const getSitioById = await this.sitioRepository.preload({
+      idSitio,
+      ...updateSitioDto,
+      fkArea:{idArea:updateSitioDto.fkArea},
+      fkTipoSitio:{idTipo:updateSitioDto.fkTipoSitio}
+    })
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} sitio`;
+  async changeStatus(idSitio: number) {
+    const getSitio = await this.sitioRepository.findOneBy({idSitio})
+
+    if (!getSitio) {
+      throw new Error(`No se encuentra el sitio con el id ${idSitio}`)
+    }
+
+    getSitio.estado = !getSitio.estado
+
+    return getSitio;
+
   }
 }

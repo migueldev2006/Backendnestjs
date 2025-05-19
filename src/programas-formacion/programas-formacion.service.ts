@@ -1,26 +1,62 @@
 import { Injectable } from '@nestjs/common';
-import { CreateProgramasFormacionDto } from './dto/create-programas-formacion.dto';
-import { UpdateProgramasFormacionDto } from './dto/update-programas-formacion.dto';
+import { CreateProgramasFormacionDto, UpdateProgramasFormacionDto } from './dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { ProgramasFormacion } from './entities/programas-formacion.entity';
+import { Repository } from 'typeorm';
+
 
 @Injectable()
 export class ProgramasFormacionService {
-  create(createProgramasFormacionDto: CreateProgramasFormacionDto) {
-    return 'This action adds a new programasFormacion';
+  constructor(
+    @InjectRepository(ProgramasFormacion)
+    private readonly programaRepository:Repository<ProgramasFormacion>
+  ){}
+  async create(createProgramasFormacionDto: CreateProgramasFormacionDto):Promise<ProgramasFormacion> {
+    const programa = this.programaRepository.create({
+      ...createProgramasFormacionDto,
+      fkArea:{idArea:createProgramasFormacionDto.fkArea}
+    })
+    return await this.programaRepository.save(programa);
   }
 
-  findAll() {
-    return `This action returns all programasFormacion`;
+  async findAll():Promise<ProgramasFormacion[]> {
+    return await this.programaRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} programasFormacion`;
+  async findOne(idPrograma: number) {
+    const getProgramaById = await this.programaRepository.findOneBy({idPrograma})
+
+    if (!getProgramaById) {
+      throw new Error(`El programa con el id ${idPrograma} no se encuenttra registrado`)
+    }
+
+    return getProgramaById;
   }
 
-  update(id: number, updateProgramasFormacionDto: UpdateProgramasFormacionDto) {
-    return `This action updates a #${id} programasFormacion`;
+  async update(idPrograma: number, updateProgramasFormacionDto: UpdateProgramasFormacionDto) {
+    const getProgramaById = await this.programaRepository.preload({
+      idPrograma,
+      ...updateProgramasFormacionDto,
+      fkArea:{idArea:updateProgramasFormacionDto.fkArea}
+    });
+
+    if (!getProgramaById) {
+      throw new Error(`El programa con el id ${idPrograma} no se encuentra registrado`)
+    }
+
+    return this.programaRepository.save(getProgramaById)
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} programasFormacion`;
+  async changeStatus(idPrograma: number) {
+    const getProgramaById = await this.programaRepository.findOneBy({idPrograma})
+
+    if (!getProgramaById) {
+      throw new Error(`El id ${idPrograma} no se encuenttra registrado`)
+    }
+
+    getProgramaById.estado = !getProgramaById.estado
+
+    return getProgramaById
+  
   }
 }
