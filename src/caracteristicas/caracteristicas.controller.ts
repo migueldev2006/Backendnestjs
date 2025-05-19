@@ -17,18 +17,14 @@ export class CaracteristicasController {
     return this.caracteristicasService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.caracteristicasService.findOne(+id);
+  @Get(':name')
+  findOne(@Param('name') name: string) {
+    return this.caracteristicasService.findOne(name);
   }
 
-  @Patch(':id')
+  @Patch('update/:id')
   update(@Param('id') id: string, @Body() updateCaracteristicaDto: UpdateCaracteristicaDto) {
     return this.caracteristicasService.update(+id, updateCaracteristicaDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.caracteristicasService.remove(+id);
-  }
 }

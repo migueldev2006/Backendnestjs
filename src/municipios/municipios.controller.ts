@@ -22,13 +22,13 @@ export class MunicipiosController {
     return this.municipiosService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Patch('update/:id')
   update(@Param('id') id: string, @Body() updateMunicipioDto: UpdateMunicipioDto) {
     return this.municipiosService.update(+id, updateMunicipioDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.municipiosService.remove(+id);
+  @Patch('estado/:id')
+  updateStatus(@Param('id') id: string) {
+    return this.municipiosService.updateStatus(+id);
   }
 }

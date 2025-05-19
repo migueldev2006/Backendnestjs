@@ -1,26 +1,64 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateRutaDto } from './dto/create-ruta.dto';
 import { UpdateRutaDto } from './dto/update-ruta.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Rutas } from './entities/ruta.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class RutasService {
-  create(createRutaDto: CreateRutaDto) {
-    return 'This action adds a new ruta';
+
+  constructor(
+    @InjectRepository(Rutas)
+    private rutasRepository: Repository<Rutas>,
+  ) { }
+
+
+  async create(newRut: CreateRutaDto) {
+    const Rutas = this.rutasRepository.create({
+      ...newRut,
+      fkModulo: {
+        idModulo: newRut.fkModulo
+      }
+    });
+    return await this.rutasRepository.save(Rutas);
   }
 
   findAll() {
-    return `This action returns all rutas`;
+    return this.rutasRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} ruta`;
+  async findOne(nombre: string) {
+  const ruta = await this.rutasRepository.findOneBy({nombre});
+  if(!ruta) throw new HttpException("Ruta no encontrada", HttpStatus.NOT_FOUND);
+  return ruta
   }
 
-  update(id: number, updateRutaDto: UpdateRutaDto) {
-    return `This action updates a #${id} ruta`;
+  async update(id: number, updateRuta: UpdateRutaDto) {
+
+    const existingRuta = await this.rutasRepository.findOne({
+      where: {
+        idRuta: id
+      },
+      relations: ["fkModulo"]
+    })
+    if(!existingRuta) throw new HttpException("Ruta no encontrada",HttpStatus.NOT_FOUND);
+
+    return await this.rutasRepository.update(id,{
+      ...updateRuta,
+      fkModulo : {
+        idModulo: updateRuta.fkModulo ?? existingRuta.fkModulo.idModulo
+      }
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} ruta`;
+ async updatestate(id: number){
+    const ruta = await this.rutasRepository.findOne({
+      where: {
+        idRuta: id
+      }
+    });
+    if(!ruta) throw new HttpException("Ruta no encontrada", HttpStatus.NOT_FOUND)
+    return this.rutasRepository.update(id,{estado : !(ruta.estado)})
   }
 }

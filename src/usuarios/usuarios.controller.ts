@@ -8,8 +8,9 @@ export class UsuariosController {
   constructor(private readonly usuariosService: UsuariosService) {}
 
   @Post()
-  create(@Body() createUsuarioDto: CreateUsuarioDto) {
-    return this.usuariosService.create(createUsuarioDto);
+  async create(@Body() newUser: CreateUsuarioDto) {
+    console.log(newUser);
+    return this.usuariosService.create(newUser);
   }
 
   @Get()
@@ -17,18 +18,18 @@ export class UsuariosController {
     return this.usuariosService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usuariosService.findOne(+id);
+  @Get(':nombre')
+  findOne(@Param('nombre') nombre: string) {
+    return this.usuariosService.findOne(nombre);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUsuarioDto: UpdateUsuarioDto) {
-    return this.usuariosService.update(+id, updateUsuarioDto);
+  @Patch('update/:id')
+  update(@Param('id') id: string, @Body() updateUsuario: UpdateUsuarioDto) {
+    return this.usuariosService.update(+id, updateUsuario);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usuariosService.remove(+id);
+ @Patch('estado/:id')
+ updatestate(@Param('id') id: string) {
+    return this.usuariosService.updatestate(+id);
   }
 }

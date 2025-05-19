@@ -22,13 +22,14 @@ export class CentrosController {
     return this.centrosService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Patch('update/:id')
   update(@Param('id') id: string, @Body() updateCentroDto: UpdateCentroDto) {
     return this.centrosService.update(+id, updateCentroDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.centrosService.remove(+id);
+  @Patch('estado/:id')
+  updateStatus(@Param('id') id: string) {
+    return this.centrosService.updateStatus(+id);
   }
+
 }

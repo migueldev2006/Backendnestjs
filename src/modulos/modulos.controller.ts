@@ -22,13 +22,13 @@ export class ModulosController {
     return this.modulosService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Patch('update/:id')
   update(@Param('id') id: string, @Body() updateModuloDto: UpdateModuloDto) {
     return this.modulosService.update(+id, updateModuloDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.modulosService.remove(+id);
+  @Patch('estado/:id')
+  updateStatus(@Param('id') id: string) {
+    return this.modulosService.updateStatus(+id);
   }
 }

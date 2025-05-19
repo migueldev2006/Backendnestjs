@@ -1,26 +1,44 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateCategoriaDto } from './dto/create-categoria.dto';
 import { UpdateCategoriaDto } from './dto/update-categoria.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Categorias } from './entities/categoria.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class CategoriasService {
-  create(createCategoriaDto: CreateCategoriaDto) {
-    return 'This action adds a new categoria';
+
+  constructor ( 
+    @InjectRepository(Categorias)
+    private categoriasRepository : Repository<Categorias>
+  ){}
+
+  async create(newCategoria: CreateCategoriaDto) {
+    const categoria = this.categoriasRepository.create(newCategoria);
+    return await this.categoriasRepository.save(categoria)
   }
 
   findAll() {
-    return `This action returns all categorias`;
+    return this.categoriasRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} categoria`;
+  async findOne(nombre: string) {
+    const categoria = await this.categoriasRepository.findOneBy({nombre});
+    if(!categoria) throw new HttpException("Categoria no encontrada", HttpStatus.NOT_FOUND);
+    return categoria;
   }
 
-  update(id: number, updateCategoriaDto: UpdateCategoriaDto) {
-    return `This action updates a #${id} categoria`;
+  update(id: number, updateCategoria: UpdateCategoriaDto) {
+    return this.categoriasRepository.update(id,updateCategoria);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} categoria`;
+  async updatestate(id: number){
+    const categoria = await this.categoriasRepository.findOne({
+      where: {
+        idCategoria: id
+      }
+    });
+    if(!categoria) throw new HttpException("Categoria no encontrada", HttpStatus.NOT_FOUND)
+    return this.categoriasRepository.update(id,{estado : !(categoria.estado)})
   }
 }

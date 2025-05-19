@@ -8,8 +8,8 @@ export class RutasController {
   constructor(private readonly rutasService: RutasService) {}
 
   @Post()
-  create(@Body() createRutaDto: CreateRutaDto) {
-    return this.rutasService.create(createRutaDto);
+  create(@Body() newRuta: CreateRutaDto) {
+    return this.rutasService.create(newRuta);
   }
 
   @Get()
@@ -17,18 +17,18 @@ export class RutasController {
     return this.rutasService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.rutasService.findOne(+id);
+  @Get(':nombre')
+  findOne(@Param('nombre') nombre: string) {
+    return this.rutasService.findOne(nombre);
   }
 
-  @Patch(':id')
+  @Patch('update/:id')
   update(@Param('id') id: string, @Body() updateRutaDto: UpdateRutaDto) {
     return this.rutasService.update(+id, updateRutaDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.rutasService.remove(+id);
+  @Patch('estado/:id')
+  updatestate(@Param('id') id: string) {
+    return this.rutasService.updatestate(+id);
   }
 }

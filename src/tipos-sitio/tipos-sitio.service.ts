@@ -1,26 +1,44 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateTiposSitioDto } from './dto/create-tipos-sitio.dto';
 import { UpdateTiposSitioDto } from './dto/update-tipos-sitio.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { TipoSitios } from './entities/tipos-sitio.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class TiposSitioService {
-  create(createTiposSitioDto: CreateTiposSitioDto) {
-    return 'This action adds a new tiposSitio';
-  }
+
+  constructor ( 
+    @InjectRepository(TipoSitios)
+    private tipoSitioRepository : Repository<TipoSitios>
+  ){}
+
+   async create(newTipoSitio: CreateTiposSitioDto) {
+      const TipoSitio = this.tipoSitioRepository.create(newTipoSitio);
+      return await this.tipoSitioRepository.save(TipoSitio);
+    }
 
   findAll() {
-    return `This action returns all tiposSitio`;
+    return this.tipoSitioRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} tiposSitio`;
+  async findOne(nombre: string) {
+    const tipoSitio = await this.tipoSitioRepository.findOneBy({nombre});
+    if(!tipoSitio) throw new HttpException("Tipo de sitio no encontrado", HttpStatus.NOT_FOUND);
+    return tipoSitio;
   }
 
-  update(id: number, updateTiposSitioDto: UpdateTiposSitioDto) {
-    return `This action updates a #${id} tiposSitio`;
+  update(id: number, updateTiposSitio: UpdateTiposSitioDto) {
+    return this.tipoSitioRepository.update(id,updateTiposSitio);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} tiposSitio`;
-  }
+  async updatestate(id: number){
+      const tipoSitio = await this.tipoSitioRepository.findOne({
+        where: {
+          idTipo: id
+        }
+      });
+      if(!tipoSitio) throw new HttpException("Tipo de sitio no encontrado", HttpStatus.NOT_FOUND)
+      return this.tipoSitioRepository.update(id,{estado : !(tipoSitio.estado)})
+    }
 }

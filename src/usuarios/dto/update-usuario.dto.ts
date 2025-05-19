@@ -13,7 +13,6 @@ export class UpdateUsuarioDto extends PartialType(CreateUsuarioDto) {
     apellido: string;
 
     @IsNumber()
-    @MinLength(1)
     edad: number;
 
     @IsString()

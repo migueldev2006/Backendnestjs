@@ -1,26 +1,53 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
-
+import { Usuarios } from './entities/usuario.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 @Injectable()
 export class UsuariosService {
-  create(createUsuarioDto: CreateUsuarioDto) {
-    return 'This action adds a new usuario';
+
+  constructor(
+    @InjectRepository(Usuarios)
+    private usuariosRepository: Repository<Usuarios>,
+  ){}
+
+  async create(newUser: CreateUsuarioDto) {
+    const Usuario = this.usuariosRepository.create(newUser);
+    return await this.usuariosRepository.save(Usuario);
   }
 
   findAll() {
-    return `This action returns all usuarios`;
+    return this.usuariosRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} usuario`;
+  async findOne(nombre: string) {
+    const usuario = await this.usuariosRepository.findOneBy({nombre});
+    if(!usuario) throw new HttpException("Usuario no encontrado", HttpStatus.NOT_FOUND);
+    return usuario;
   }
 
-  update(id: number, updateUsuarioDto: UpdateUsuarioDto) {
-    return `This action updates a #${id} usuario`;
+  async update(id: number, updateUsuario: UpdateUsuarioDto) {
+    const update =  await this.usuariosRepository.update(id,updateUsuario);
+    const user = this.usuariosRepository.findOne({
+      where :{
+        idUsuario : id
+      }
+    })
+    console.log(user)
+    return user;
+
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} usuario`;
+  async updatestate(id: number){
+    const usuario = await this.usuariosRepository.findOne({
+      where: {
+        idUsuario: id
+      }
+    });
+    if(!usuario) throw new HttpException("Usuario no encontrado", HttpStatus.NOT_FOUND)
+    await this.usuariosRepository.update(id,{estado : !(usuario.estado)})
+
+    return usuario
   }
 }
