@@ -1,19 +1,24 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
+import { JwtGuard } from 'src/auth/guards/jwt.guard';
+import { PermisoGuard } from 'src/auth/guards/permiso.guard';
+import { Permiso } from 'src/auth/decorators/permiso.decorator';
 
+@UseGuards(JwtGuard)
 @Controller('usuarios')
 export class UsuariosController {
   constructor(private readonly usuariosService: UsuariosService) {}
 
   @Post()
   async create(@Body() newUser: CreateUsuarioDto) {
-    console.log(newUser);
     return this.usuariosService.create(newUser);
   }
 
   @Get()
+  @Permiso(1)
+  @UseGuards(PermisoGuard)
   findAll() {
     return this.usuariosService.findAll();
   }

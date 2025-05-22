@@ -30,12 +30,15 @@ import { RolPermisoModule } from './rol-permiso/rol-permiso.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { NotificacionesModule } from './notificaciones/notificaciones.module';
+import { AuthModule } from './auth/auth.module';
 
 
 
 
 @Module({
-  imports: [ConfigModule.forRoot(),
+  imports: [ConfigModule.forRoot({
+    isGlobal: true
+  }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,
@@ -73,6 +76,7 @@ import { NotificacionesModule } from './notificaciones/notificaciones.module';
     ElementosModule,
     RolPermisoModule,
     NotificacionesModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [

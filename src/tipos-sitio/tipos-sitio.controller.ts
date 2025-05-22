@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { TiposSitioService } from './tipos-sitio.service';
 import { CreateTiposSitioDto } from './dto/create-tipos-sitio.dto';
 import { UpdateTiposSitioDto } from './dto/update-tipos-sitio.dto';
-
+import { JwtGuard } from 'src/auth/guards/jwt.guard';
+@UseGuards(JwtGuard)
 @Controller('tipos_sitio')
 export class TiposSitioController {
   constructor(private readonly tiposSitioService: TiposSitioService) {}

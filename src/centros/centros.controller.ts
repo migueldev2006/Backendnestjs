@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { CentrosService } from './centros.service';
 import { CreateCentroDto } from './dto/create-centro.dto';
 import { UpdateCentroDto } from './dto/update-centro.dto';
-
+import { JwtGuard } from 'src/auth/guards/jwt.guard';
+@UseGuards(JwtGuard)
 @Controller('centros')
 export class CentrosController {
   constructor(private readonly centrosService: CentrosService) {}
