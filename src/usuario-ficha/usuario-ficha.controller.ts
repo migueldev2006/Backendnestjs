@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { UsuarioFichaService } from './usuario-ficha.service';
-import { CreateUsuarioFichaDto } from './dto/create-usuario-ficha.dto';
-import { UpdateUsuarioFichaDto } from './dto/update-usuario-ficha.dto';
+import { CreateUsuarioFichaDto, UpdateUsuarioFichaDto } from './dto';
 
 @Controller('usuario-ficha')
 export class UsuarioFichaController {
@@ -17,18 +16,14 @@ export class UsuarioFichaController {
     return this.usuarioFichaService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usuarioFichaService.findOne(+id);
+  @Get(':idUsuarioFicha')
+  findOne(@Param('idUsuarioFicha') idUsuarioFicha: string) {
+    return this.usuarioFichaService.findOne(+idUsuarioFicha);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUsuarioFichaDto: UpdateUsuarioFichaDto) {
-    return this.usuarioFichaService.update(+id, updateUsuarioFichaDto);
+  @Patch(':idUsuarioFicha')
+  update(@Param('idUsuarioFicha') idUsuarioFicha: string, @Body() updateUsuarioFichaDto: UpdateUsuarioFichaDto) {
+    return this.usuarioFichaService.update(+idUsuarioFicha, updateUsuarioFichaDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usuarioFichaService.remove(+id);
-  }
 }

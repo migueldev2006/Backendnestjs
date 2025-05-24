@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { RolPermisoService } from './rol-permiso.service';
-import { CreateRolPermisoDto } from './dto/create-rol-permiso.dto';
-import { UpdateRolPermisoDto } from './dto/update-rol-permiso.dto';
+import { CreateRolPermisoDto, UpdateRolPermisoDto } from './dto';
 
 @Controller('rol-permiso')
 export class RolPermisoController {
@@ -17,18 +16,18 @@ export class RolPermisoController {
     return this.rolPermisoService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.rolPermisoService.findOne(+id);
+  @Get(':idRolPermiso')
+  findOne(@Param('idRolPermiso') idRolPermiso: number) {
+    return this.rolPermisoService.findOne(+idRolPermiso);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRolPermisoDto: UpdateRolPermisoDto) {
-    return this.rolPermisoService.update(+id, updateRolPermisoDto);
+  @Patch(':idRolPermiso')
+  update(@Param('idRolPermiso') idRolPermiso: number, @Body() updateRolPermisoDto: UpdateRolPermisoDto) {
+    return this.rolPermisoService.update(+idRolPermiso, updateRolPermisoDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.rolPermisoService.remove(+id);
+  @Patch('state/:idRolPermiso')
+  status(@Param('idRolPermiso') idRolPermiso: number) {
+    return this.rolPermisoService.changeStatus(+idRolPermiso);
   }
 }

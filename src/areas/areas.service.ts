@@ -1,26 +1,63 @@
 import { Injectable } from '@nestjs/common';
-import { CreateAreaDto } from './dto/create-area.dto';
-import { UpdateAreaDto } from './dto/update-area.dto';
+import { CreateAreaDto, UpdateAreaDto } from './dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Areas } from './entities/area.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class AreasService {
-  create(createAreaDto: CreateAreaDto) {
-    return 'This action adds a new area';
+  constructor(
+    @InjectRepository(Areas)
+    private readonly areaReposiory:Repository<Areas>
+  ){}
+
+  async create(createAreaDto: CreateAreaDto):Promise<Areas> {
+    const area = this.areaReposiory.create({
+      ...createAreaDto,
+      fkSede:{idSede:createAreaDto.fkSede},
+      fkUsuario:{idUsuario:createAreaDto.fkSede}
+    });
+    return await this.areaReposiory.save(area);
   }
 
-  findAll() {
-    return `This action returns all areas`;
+  async findAll():Promise<Areas[]> {
+    return await this.areaReposiory.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} area`;
+  async findOne(idArea: number):Promise<Areas | null> {
+    const getAreaById = await this.areaReposiory.findOneBy({idArea});
+
+    if (!getAreaById) {
+      throw new Error(`El id ${idArea} no se encuentra registrado`)
+    }
+
+    return getAreaById;
   }
 
-  update(id: number, updateAreaDto: UpdateAreaDto) {
-    return `This action updates a #${id} area`;
+  async update(idArea: number, updateAreaDto: UpdateAreaDto):Promise<Areas> {
+    const getAreaById = await this.areaReposiory.preload({
+      idArea,
+      ...updateAreaDto,
+      fkSede:{idSede:updateAreaDto.fkSede},
+      fkUsuario:{idUsuario:updateAreaDto.fkSede}
+    });
+
+    if (!getAreaById) {
+      throw new Error(`El id ${idArea} no se encuentra registrado`)
+    }
+
+    return this.areaReposiory.save(getAreaById);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} area`;
+  async changeStatus(idArea: number):Promise<Areas> {
+    const getAreaById = await this.areaReposiory.findOneBy({idArea});
+
+    if (!getAreaById) {
+      throw new Error(`El id ${idArea} no se encuentra registrado`)
+    }
+
+    getAreaById.estado = !getAreaById.estado
+
+    return getAreaById
   }
 }

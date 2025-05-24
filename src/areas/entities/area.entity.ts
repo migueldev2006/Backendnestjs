@@ -18,11 +18,11 @@ export class Areas {
   @PrimaryGeneratedColumn({ type: "integer", name: "id_area" })
   idArea: number;
 
-  @Column("character varying", { name: "nombre", nullable: true, length: 70 })
-  nombre: string | null;
+  @Column("character varying", { name: "nombre", length: 70 })
+  nombre: string;
 
-  @Column("boolean", { name: "estado", nullable: true })
-  estado: boolean | null;
+  @Column("boolean", { name: "estado" })
+  estado: boolean;
 
   @Column("timestamp without time zone", {
     name: "created_at",
