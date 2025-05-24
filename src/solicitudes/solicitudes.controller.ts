@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { SolicitudesService } from './solicitudes.service';
-import { CreateSolicitudeDto } from './dto/create-solicitude.dto';
-import { UpdateSolicitudeDto } from './dto/update-solicitude.dto';
+import { CreateSolicitudeDto, UpdateSolicitudeDto } from './dto';
 
 @Controller('solicitudes')
 export class SolicitudesController {
@@ -17,18 +16,14 @@ export class SolicitudesController {
     return this.solicitudesService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.solicitudesService.findOne(+id);
+  @Get(':idSolicitud')
+  findOne(@Param('idSolicitud') idSolicitud: string) {
+    return this.solicitudesService.findOne(+idSolicitud);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSolicitudeDto: UpdateSolicitudeDto) {
-    return this.solicitudesService.update(+id, updateSolicitudeDto);
+  @Patch(':idSolicitud')
+  update(@Param('idSolicitud') idSolicitud: string, @Body() updateSolicitudeDto: UpdateSolicitudeDto) {
+    return this.solicitudesService.update(+idSolicitud, updateSolicitudeDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.solicitudesService.remove(+id);
-  }
 }

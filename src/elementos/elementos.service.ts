@@ -1,26 +1,65 @@
 import { Injectable } from '@nestjs/common';
-import { CreateElementoDto } from './dto/create-elemento.dto';
-import { UpdateElementoDto } from './dto/update-elemento.dto';
+import { CreateElementoDto, UpdateElementoDto } from './dto';
+import { Repository } from 'typeorm';
+import { Elementos } from './entities';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class ElementosService {
-  create(createElementoDto: CreateElementoDto) {
-    return 'This action adds a new elemento';
+  constructor(
+    @InjectRepository(Elementos)
+    private readonly elementoRepository:Repository<Elementos>
+  ){}
+
+  async create(createElementoDto: CreateElementoDto):Promise<Elementos> {
+    const elemento = this.elementoRepository.create({
+      ...createElementoDto,
+      fkCategoria:{idCategoria:createElementoDto.fkCategoria},
+      fkUnidadMedida:{idUnidad:createElementoDto.fkUnidadMedida},
+      images:createElementoDto.images.map((url) => ({url}))
+    })
+    return await this.elementoRepository.save(elemento);
   }
 
-  findAll() {
-    return `This action returns all elementos`;
+  async findAll():Promise<Elementos[]> {
+    return await this.elementoRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} elemento`;
+  async findOne(idElemento: number):Promise<Elementos | null> {
+    const getElementoById = await this.elementoRepository.findOneBy({idElemento});
+
+    if (!getElementoById) {
+      throw new Error(`No se encontro el elemento, el id ${idElemento} no existe`)
+    }
+    
+    return getElementoById;
   }
 
-  update(id: number, updateElementoDto: UpdateElementoDto) {
-    return `This action updates a #${id} elemento`;
+  async update(idElemento: number, updateElementoDto: UpdateElementoDto):Promise<Elementos> {
+    const getElementoById = await this.elementoRepository.preload({
+      idElemento,
+      ...updateElementoDto,
+      fkCategoria:{idCategoria:updateElementoDto.fkCategoria},
+      fkUnidadMedida:{idUnidad:updateElementoDto.fkUnidadMedida},
+      images:updateElementoDto.images?.map((url) => ({url}))
+    });
+
+    if (!getElementoById) {
+      throw new Error(`No se encontro el elemento, el id ${idElemento} no existe`)
+    }
+
+    return this.elementoRepository.save(getElementoById);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} elemento`;
+  async changeStatus(idElemento: number) {
+    const getElementoById = await this.elementoRepository.findOneBy({idElemento});
+
+    if (!getElementoById) {
+      throw new Error(`No se encontro el elemento, el id ${idElemento} no existe`)
+    }
+
+    getElementoById.estado = !getElementoById.estado
+
+    return getElementoById;
   }
 }

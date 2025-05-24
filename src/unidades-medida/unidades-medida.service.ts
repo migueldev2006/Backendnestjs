@@ -1,26 +1,61 @@
-import { Injectable } from '@nestjs/common';
-import { CreateUnidadesMedidaDto } from './dto/create-unidades-medida.dto';
-import { UpdateUnidadesMedidaDto } from './dto/update-unidades-medida.dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { UnidadesMedida } from './entities/unidades-medida.entity';
+import { CreateUnidadesMedidaDto, UpdateUnidadesMedidaDto } from './dto';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class UnidadesMedidaService {
-  create(createUnidadesMedidaDto: CreateUnidadesMedidaDto) {
-    return 'This action adds a new unidadesMedida';
+  constructor(
+    @InjectRepository(UnidadesMedida)
+    private readonly unidadRepository:Repository<UnidadesMedida>
+  ){}
+
+  async create(createUnidadesMedidaDto: CreateUnidadesMedidaDto):Promise<UnidadesMedida> {
+    const unidad = this.unidadRepository.create(createUnidadesMedidaDto)
+    return await this.unidadRepository.save(unidad)
   }
 
-  findAll() {
-    return `This action returns all unidadesMedida`;
+  async findAll():Promise<UnidadesMedida[]> {
+    return await this.unidadRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} unidadesMedida`;
+  async findOne(idUnidad: number):Promise<UnidadesMedida | null> {
+    const buscarUnidad = await this.unidadRepository.findOneBy({idUnidad})
+
+    if (!idUnidad) {
+      throw new Error(`No se encuentra el usuario con el id ${idUnidad}`)
+    }
+    return buscarUnidad;
   }
 
-  update(id: number, updateUnidadesMedidaDto: UpdateUnidadesMedidaDto) {
-    return `This action updates a #${id} unidadesMedida`;
+  async update(idUnidad: number, updateUnidadesMedidaDto: UpdateUnidadesMedidaDto):Promise<UnidadesMedida> {
+    const getUnidadById = await this.unidadRepository.findOneBy({idUnidad});
+
+    if (!getUnidadById) {
+      throw new Error(`No exxiste el elemento con el id ${idUnidad}`)
+    }
+
+    await this.unidadRepository.update(idUnidad, updateUnidadesMedidaDto);
+
+    const updateUnidad = await this.unidadRepository.findOneBy({idUnidad})
+
+    if(!updateUnidad){
+      throw new NotFoundException(`Error al recuperar la unidad actualizada`)
+    }
+
+    return updateUnidad;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} unidadesMedida`;
+  async changeStatus(idUnidad: number):Promise<UnidadesMedida> {
+    const getUnidadById = await this.unidadRepository.findOneBy({idUnidad})
+
+    if (!getUnidadById) {
+      throw new Error(`No se encontro la unidad con ese id`)
+    }
+
+    getUnidadById.estado = !getUnidadById.estado
+    
+    return this.unidadRepository.save(getUnidadById);
   }
 }

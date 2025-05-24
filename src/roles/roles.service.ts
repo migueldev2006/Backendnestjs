@@ -1,26 +1,54 @@
 import { Injectable } from '@nestjs/common';
-import { CreateRoleDto } from './dto/create-role.dto';
-import { UpdateRoleDto } from './dto/update-role.dto';
+import { CreateRoleDto, UpdateRoleDto } from './dto'; 
+import { Roles } from './entities/role.entity';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class RolesService {
-  create(createRoleDto: CreateRoleDto) {
-    return 'This action adds a new role';
+  constructor(
+    @InjectRepository(Roles)
+    private readonly rolRepository: Repository<Roles>
+  ){}
+
+  async create(createRoleDto: CreateRoleDto):Promise<Roles> {
+    const rol = this.rolRepository.create(createRoleDto);
+    return await this.rolRepository.save(rol)
   }
 
-  findAll() {
-    return `This action returns all roles`;
+  async findAll():Promise<Roles[]> {
+    return await this.rolRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} role`;
+  async findOne(idRol: number):Promise<Roles | null> {
+    const getRolById = await this.rolRepository.findOneBy({idRol})
+    if (!getRolById) {
+      throw new Error(`El rol con el id ${idRol} no existe`)
+    }
+    return getRolById;
   }
 
-  update(id: number, updateRoleDto: UpdateRoleDto) {
-    return `This action updates a #${id} role`;
+  async update(idRol: number, updateRoleDto: UpdateRoleDto):Promise<Roles> {
+    const getRolById = await this.rolRepository.preload({
+      idRol,
+      ...updateRoleDto
+    })
+
+    if (!getRolById) {
+      throw new Error(`El rol con el id ${idRol} no existe`)
+    }
+
+    return this.rolRepository.save(getRolById)
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} role`;
+  async changeStatus(idRol: number):Promise<Roles> {
+    const getRolById = await this.rolRepository.findOneBy({idRol})
+        if (!getRolById) {
+      throw new Error(`El rol con el id ${idRol} no existe`)
+    }
+
+    getRolById.estado = !getRolById.estado
+
+    return getRolById;
   }
 }

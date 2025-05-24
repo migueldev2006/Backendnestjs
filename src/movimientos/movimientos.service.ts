@@ -1,26 +1,67 @@
 import { Injectable } from '@nestjs/common';
-import { CreateMovimientoDto } from './dto/create-movimiento.dto';
-import { UpdateMovimientoDto } from './dto/update-movimiento.dto';
+import { CreateMovimientoDto, UpdateMovimientoDto } from './dto';
+import { Movimientos } from './entities/movimiento.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class MovimientosService {
-  create(createMovimientoDto: CreateMovimientoDto) {
-    return 'This action adds a new movimiento';
+  constructor(
+    @InjectRepository(Movimientos)
+    private readonly movimientoRepository: Repository<Movimientos>,
+  ) {}
+
+  async create(createMovimientoDto: CreateMovimientoDto): Promise<Movimientos> {
+    const movimiento = this.movimientoRepository.create({
+      ...createMovimientoDto,
+      fkInventario: { idInventario: createMovimientoDto.fkInventario },
+      fkSitio: { idSitio: createMovimientoDto.fkSitio },
+      fkTipoMovimiento: { idTipo: createMovimientoDto.fkTipoMovimiento },
+      fkUsuario: { idUsuario: createMovimientoDto.fkUsuario },
+    });
+    return await this.movimientoRepository.save(movimiento);
   }
 
-  findAll() {
-    return `This action returns all movimientos`;
+  async findAll(): Promise<Movimientos[]> {
+    return await this.movimientoRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} movimiento`;
+  async findOne(idMovimiento: number): Promise<Movimientos | null> {
+    const getMovimientoById = await this.movimientoRepository.findOneBy({
+      idMovimiento,
+    });
+
+    if (!getMovimientoById) {
+      throw new Error(`No existe el movimiento con ese id`);
+    }
+
+    return getMovimientoById;
   }
 
-  update(id: number, updateMovimientoDto: UpdateMovimientoDto) {
-    return `This action updates a #${id} movimiento`;
+  async update(
+    idMovimiento: number,
+    updateMovimientoDto: UpdateMovimientoDto,
+  ): Promise<Movimientos> {
+    const getMovimientoById = await this.movimientoRepository.preload({
+      idMovimiento,
+      ...updateMovimientoDto,
+      fkInventario: { idInventario: updateMovimientoDto.fkInventario },
+      fkSitio: { idSitio: updateMovimientoDto.fkSitio },
+      fkTipoMovimiento: { idTipo: updateMovimientoDto.fkTipoMovimiento },
+      fkUsuario: { idUsuario: updateMovimientoDto.fkUsuario },
+    });
+
+    if (!getMovimientoById) {
+      throw new Error(`No existe el movimiento con ese id`);
+    }
+
+    return this.movimientoRepository.save(getMovimientoById);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} movimiento`;
-  }
+  // async accept(idMovimiento: number): Promise<Movimientos> {
+  //   return `This action removes a #${id} movimiento`;
+  // }
+  // async cancel(idMovimiento: number): Promise<Movimientos> {
+  //   return `This action removes a #${id} movimiento`;
+  // }
 }

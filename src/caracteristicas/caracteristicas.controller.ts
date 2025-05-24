@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { CaracteristicasService } from './caracteristicas.service';
-import { CreateCaracteristicaDto } from './dto/create-caracteristica.dto';
-import { UpdateCaracteristicaDto } from './dto/update-caracteristica.dto';
+import { CreateCaracteristicaDto, UpdateCaracteristicaDto } from './dto';
 
 @Controller('caracteristicas')
 export class CaracteristicasController {

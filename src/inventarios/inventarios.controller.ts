@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { InventariosService } from './inventarios.service';
-import { CreateInventarioDto } from './dto/create-inventario.dto';
-import { UpdateInventarioDto } from './dto/update-inventario.dto';
+import { CreateInventarioDto, UpdateInventarioDto } from './dto';
 
 @Controller('inventarios')
 export class InventariosController {
@@ -17,18 +16,18 @@ export class InventariosController {
     return this.inventariosService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.inventariosService.findOne(+id);
+  @Get(':idInventario')
+  findOne(@Param('idInventario') idInventario: number) {
+    return this.inventariosService.findOne(+idInventario);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateInventarioDto: UpdateInventarioDto) {
-    return this.inventariosService.update(+id, updateInventarioDto);
+  @Patch(':idInventario')
+  update(@Param('idInventario') idInventario: number, @Body() updateInventarioDto: UpdateInventarioDto) {
+    return this.inventariosService.update(+idInventario, updateInventarioDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.inventariosService.remove(+id);
+  @Patch('state/:idInventario')
+  stastus(@Param('idInventario') idInventario: number) {
+    return this.inventariosService.changeStatus(+idInventario);
   }
 }

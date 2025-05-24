@@ -16,7 +16,6 @@ import { MunicipiosModule } from './municipios/municipios.module';
 import { TiposSitioModule } from './tipos-sitio/tipos-sitio.module';
 import { SitiosModule } from './sitios/sitios.module';
 import { InventariosModule } from './inventarios/inventarios.module';
-import { VerificacionesModule } from './verificaciones/verificaciones.module';
 import { MovimientosModule } from './movimientos/movimientos.module';
 import { TiposMovimientoModule } from './tipos-movimiento/tipos-movimiento.module';
 import { CaracteristicasModule } from './caracteristicas/caracteristicas.module';
@@ -62,7 +61,6 @@ import { NotificacionesModule } from './notificaciones/notificaciones.module';
     TiposSitioModule,
     SitiosModule,
     InventariosModule,
-    VerificacionesModule,
     MovimientosModule,
     TiposMovimientoModule,
     CaracteristicasModule,

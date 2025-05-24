@@ -1,63 +1,89 @@
 import {
+  BeforeInsert,
+  BeforeUpdate,
   Column,
   Entity,
-  Index,
   JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
-} from "typeorm";
-import { Notificaciones } from "../../notificaciones/entities/notificacione.entity";
-import { Inventarios } from "../../inventarios/entities/inventario.entity";
-import { Usuarios } from "../../usuarios/entities/usuario.entity";
+} from 'typeorm';
+import { Notificaciones } from '../../notificaciones/entities/notificacione.entity';
+import { Inventarios } from '../../inventarios/entities/inventario.entity';
+import { Usuarios } from '../../usuarios/entities/usuario.entity';
 
-@Entity("solicitudes", { schema: "public" })
+@Entity('solicitudes', { schema: 'public' })
 export class Solicitudes {
-  @PrimaryGeneratedColumn({ type: "integer", name: "id_solicitud" })
+  @PrimaryGeneratedColumn({ type: 'integer', name: 'id_solicitud' })
   idSolicitud: number;
 
-  @Column("character varying", {
-    name: "descripcion",
+  @Column('character varying', {
+    name: 'descripcion',
     nullable: true,
     length: 205,
   })
   descripcion: string | null;
 
-  @Column("integer", { name: "cantidad", nullable: true })
+  @Column('integer', { name: 'cantidad', nullable: true })
   cantidad: number | null;
 
-  @Column("boolean", { name: "aceptada", nullable: true })
+  @Column('boolean', { name: 'aceptada', nullable: true })
   aceptada: boolean | null;
 
-  @Column("boolean", { name: "pendiente", nullable: true })
+  @Column('boolean', { name: 'pendiente', nullable: true })
   pendiente: boolean | null;
 
-  @Column("boolean", { name: "rechazada", nullable: true })
+  @Column('boolean', { name: 'rechazada', nullable: true })
   rechazada: boolean | null;
 
-  @Column("timestamp without time zone", {
-    name: "created_at",
-    default: () => "now()",
+  @Column('timestamp without time zone', {
+    name: 'created_at',
+    default: () => 'now()',
   })
   createdAt: Date;
 
-  @Column("timestamp without time zone", {
-    name: "updated_at",
-    default: () => "now()",
+  @Column('timestamp without time zone', {
+    name: 'updated_at',
+    default: () => 'now()',
   })
   updatedAt: Date;
 
+  @Column('text', {
+    unique: true,
+  })
+  slug: string;
+
   @OneToMany(
     () => Notificaciones,
-    (notificaciones) => notificaciones.fkSolicitud
+    (notificaciones) => notificaciones.fkSolicitud,
   )
   notificaciones: Notificaciones[];
 
   @ManyToOne(() => Inventarios, (inventarios) => inventarios.solicitudes)
-  @JoinColumn([{ name: "fk_inventario", referencedColumnName: "idInventario" }])
+  @JoinColumn([{ name: 'fk_inventario', referencedColumnName: 'idInventario' }])
   fkInventario: Inventarios;
 
   @ManyToOne(() => Usuarios, (usuarios) => usuarios.solicitudes)
-  @JoinColumn([{ name: "fk_usuario", referencedColumnName: "idUsuario" }])
+  @JoinColumn([{ name: 'fk_usuario', referencedColumnName: 'idUsuario' }])
   fkUsuario: Usuarios;
+
+  @BeforeInsert()
+  checkSlugInsert() {
+    if (!this.slug) {
+      this.slug = this.slug;
+    }
+
+    this.slug = this.slug
+      .toLowerCase()
+      .replaceAll(' ', '_')
+      .replaceAll("'", '');
+  }
+
+  @BeforeUpdate()
+  checkSlugUpdate() {
+    this.slug = this.slug
+      .toLowerCase()
+      .replaceAll(' ', '_')
+      .replaceAll("'", '');
+  }
 }

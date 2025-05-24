@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { TiposMovimientoService } from './tipos-movimiento.service';
-import { CreateTiposMovimientoDto } from './dto/create-tipos-movimiento.dto';
-import { UpdateTiposMovimientoDto } from './dto/update-tipos-movimiento.dto';
+import { CreateTiposMovimientoDto, UpdateTiposMovimientoDto } from './dto';
 
 @Controller('tipos-movimiento')
 export class TiposMovimientoController {
@@ -17,18 +16,18 @@ export class TiposMovimientoController {
     return this.tiposMovimientoService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.tiposMovimientoService.findOne(+id);
+  @Get(':idTipo')
+  findOne(@Param('idTipo') idTipo: number) {
+    return this.tiposMovimientoService.findOne(+idTipo);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTiposMovimientoDto: UpdateTiposMovimientoDto) {
-    return this.tiposMovimientoService.update(+id, updateTiposMovimientoDto);
+  @Patch(':idTipo')
+  update(@Param('idTipo') idTipo: number, @Body() updateTiposMovimientoDto: UpdateTiposMovimientoDto) {
+    return this.tiposMovimientoService.update(+idTipo, updateTiposMovimientoDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.tiposMovimientoService.remove(+id);
+  @Patch('state/:idTipo')
+  status(@Param('idTipo') idTipo: number) {
+    return this.tiposMovimientoService.changeStatus(+idTipo);
   }
 }

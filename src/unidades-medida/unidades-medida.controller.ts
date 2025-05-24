@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { UnidadesMedidaService } from './unidades-medida.service';
-import { CreateUnidadesMedidaDto } from './dto/create-unidades-medida.dto';
-import { UpdateUnidadesMedidaDto } from './dto/update-unidades-medida.dto';
+import { CreateUnidadesMedidaDto, UpdateUnidadesMedidaDto } from './dto'; 
 
 @Controller('unidades-medida')
 export class UnidadesMedidaController {
@@ -17,18 +16,18 @@ export class UnidadesMedidaController {
     return this.unidadesMedidaService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.unidadesMedidaService.findOne(+id);
+  @Get(':idUnidad')
+  findOne(@Param('idUnidad') idUnidad: number) {
+    return this.unidadesMedidaService.findOne(+idUnidad);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUnidadesMedidaDto: UpdateUnidadesMedidaDto) {
-    return this.unidadesMedidaService.update(+id, updateUnidadesMedidaDto);
+  @Patch(':idUnidad')
+  update(@Param('idUnidad') idUnidad: number, @Body() updateUnidadesMedidaDto: UpdateUnidadesMedidaDto) {
+    return this.unidadesMedidaService.update(+idUnidad, updateUnidadesMedidaDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.unidadesMedidaService.remove(+id);
+  @Patch('state/:idUnidad')
+  status(@Param('idUnidad') idUnidad: number) {
+    return this.unidadesMedidaService.changeStatus(+idUnidad);
   }
 }

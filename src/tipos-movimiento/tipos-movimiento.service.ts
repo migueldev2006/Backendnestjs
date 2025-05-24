@@ -1,26 +1,56 @@
 import { Injectable } from '@nestjs/common';
-import { CreateTiposMovimientoDto } from './dto/create-tipos-movimiento.dto';
-import { UpdateTiposMovimientoDto } from './dto/update-tipos-movimiento.dto';
+import { CreateTiposMovimientoDto, UpdateTiposMovimientoDto } from './dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { TipoMovimientos } from './entities/tipos-movimiento.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class TiposMovimientoService {
-  create(createTiposMovimientoDto: CreateTiposMovimientoDto) {
-    return 'This action adds a new tiposMovimiento';
+  constructor(
+    @InjectRepository(TipoMovimientos)
+    private readonly tipoRepository:Repository<TipoMovimientos>
+  ){}
+  
+  async create(createTiposMovimientoDto: CreateTiposMovimientoDto):Promise<TipoMovimientos> {
+    const tipo = this.tipoRepository.create(createTiposMovimientoDto)
+    return await this.tipoRepository.save(tipo)
   }
 
-  findAll() {
-    return `This action returns all tiposMovimiento`;
+  async findAll():Promise<TipoMovimientos[]> {
+    return await this.tipoRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} tiposMovimiento`;
+  async findOne(idTipo: number):Promise<TipoMovimientos | null> {
+    const getTipoById = await this.tipoRepository.findOneBy({idTipo})
+
+    if (!getTipoById) {
+      throw new Error(`El tipo de movimeinto con el id ${idTipo} no existe`)
+    }
+
+    return getTipoById;
   }
 
-  update(id: number, updateTiposMovimientoDto: UpdateTiposMovimientoDto) {
-    return `This action updates a #${id} tiposMovimiento`;
+  async update(idTipo: number, updateTiposMovimientoDto: UpdateTiposMovimientoDto):Promise<TipoMovimientos> {
+    const getTipo = await this.tipoRepository.preload({
+      idTipo,
+      ...updateTiposMovimientoDto
+    });
+
+    if (!getTipo) {
+      throw new Error(`No se encuentra el tipo de movimiento`)
+    }
+    return this.tipoRepository.save(getTipo);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} tiposMovimiento`;
+  async changeStatus(idTipo: number):Promise<TipoMovimientos> {
+    const getTipo = await this.tipoRepository.findOneBy({idTipo})
+    
+    if (!getTipo) {
+      throw new Error(`No se encuentra el tipo de movimento`)
+    }
+
+    getTipo.estado = !getTipo.estado
+
+    return this.tipoRepository.save(getTipo);
   }
 }

@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { MovimientosService } from './movimientos.service';
-import { CreateMovimientoDto } from './dto/create-movimiento.dto';
-import { UpdateMovimientoDto } from './dto/update-movimiento.dto';
+import { CreateMovimientoDto, UpdateMovimientoDto } from './dto';
 
 @Controller('movimientos')
 export class MovimientosController {
@@ -17,18 +16,23 @@ export class MovimientosController {
     return this.movimientosService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.movimientosService.findOne(+id);
+  @Get(':idMovimiento')
+  findOne(@Param('idMovimiento') idMovimiento: number) {
+    return this.movimientosService.findOne(+idMovimiento);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMovimientoDto: UpdateMovimientoDto) {
-    return this.movimientosService.update(+id, updateMovimientoDto);
+  @Patch(':idMovimiento')
+  update(@Param('idMovimiento') idMovimiento: number, @Body() updateMovimientoDto: UpdateMovimientoDto) {
+    return this.movimientosService.update(+idMovimiento, updateMovimientoDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.movimientosService.remove(+id);
-  }
+  // @Patch('accept/:idMovimiento')
+  // accept(@Param('idMovimiento') idMovimiento: number) {
+  //   return this.movimientosService.accept(+idMovimiento);
+  // }
+
+  // @Patch('cancel/:idMovimiento')
+  // cancel(@Param('idMovimiento') idMovimiento: number) {
+  //   return this.movimientosService.cancel(+idMovimiento);
+  
 }
