@@ -42,20 +42,21 @@ export class MovimientosService {
     idMovimiento: number,
     updateMovimientoDto: UpdateMovimientoDto,
   ): Promise<Movimientos> {
-    const getMovimientoById = await this.movimientoRepository.preload({
-      idMovimiento,
-      ...updateMovimientoDto,
-      fkInventario: { idInventario: updateMovimientoDto.fkInventario },
-      fkSitio: { idSitio: updateMovimientoDto.fkSitio },
-      fkTipoMovimiento: { idTipo: updateMovimientoDto.fkTipoMovimiento },
-      fkUsuario: { idUsuario: updateMovimientoDto.fkUsuario },
-    });
+    const getMovimientoById = await this.movimientoRepository.findOneBy({idMovimiento})
 
     if (!getMovimientoById) {
       throw new Error(`No existe el movimiento con ese id`);
     }
 
-    return this.movimientoRepository.save(getMovimientoById);
+    await this.movimientoRepository.update(idMovimiento, {
+      horaIngreso:updateMovimientoDto.horaIngreso,
+      horaSalida:updateMovimientoDto.horaSalida,
+      descripcion:updateMovimientoDto.descripcion,
+      cantidad:updateMovimientoDto.cantidad,
+      fechaDevolucion:updateMovimientoDto.fechaDevolucion
+    })
+
+    return getMovimientoById;
   }
 
   // async accept(idMovimiento: number): Promise<Movimientos> {

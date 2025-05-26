@@ -35,18 +35,17 @@ export class AreasService {
   }
 
   async update(idArea: number, updateAreaDto: UpdateAreaDto):Promise<Areas> {
-    const getAreaById = await this.areaReposiory.preload({
-      idArea,
-      ...updateAreaDto,
-      fkSede:{idSede:updateAreaDto.fkSede},
-      fkUsuario:{idUsuario:updateAreaDto.fkSede}
-    });
+    const getAreaById = await this.areaReposiory.findOneBy({idArea});
 
     if (!getAreaById) {
-      throw new Error(`El id ${idArea} no se encuentra registrado`)
+      throw new Error(`No existe el area con el id ${idArea}`)
     }
 
-    return this.areaReposiory.save(getAreaById);
+    await this.areaReposiory.update(idArea, {
+      nombre:updateAreaDto.nombre
+    });
+
+    return getAreaById;
   }
 
   async changeStatus(idArea: number):Promise<Areas> {
