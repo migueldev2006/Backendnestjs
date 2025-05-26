@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { FichasService } from './fichas.service';
 import { CreateFichaDto, UpdateFichaDto } from './dto';
@@ -25,17 +26,17 @@ export class FichasController {
   }
 
   @Get(':idFicha')
-  findOne(@Param('idFicha') idFicha: number) {
+  findOne(@Param('idFicha') idFicha: string) {
     return this.fichasService.findOne(+idFicha);
   }
 
   @Patch(':idFicha')
-  update(@Param('idFicha') idFicha: number, @Body() updateFichaDto: UpdateFichaDto) {
+  update(@Param('idFicha') idFicha: string, @Body() updateFichaDto: UpdateFichaDto) {
     return this.fichasService.update(+idFicha, updateFichaDto);
   }
 
   @Patch('state/:idFicha')
-  status(@Param('idFicha') idFicha: number) {
+  status(@Param('idFicha') idFicha: string) {
     return this.fichasService.changeStatus(+idFicha);
   }
 }

@@ -33,18 +33,12 @@ export class UnidadesMedidaService {
     const getUnidadById = await this.unidadRepository.findOneBy({idUnidad});
 
     if (!getUnidadById) {
-      throw new Error(`No exxiste el elemento con el id ${idUnidad}`)
+      throw new Error(`No existe el elemento con el id ${idUnidad}`)
     }
 
     await this.unidadRepository.update(idUnidad, updateUnidadesMedidaDto);
 
-    const updateUnidad = await this.unidadRepository.findOneBy({idUnidad})
-
-    if(!updateUnidad){
-      throw new NotFoundException(`Error al recuperar la unidad actualizada`)
-    }
-
-    return updateUnidad;
+    return getUnidadById;
   }
 
   async changeStatus(idUnidad: number):Promise<UnidadesMedida> {

@@ -5,6 +5,7 @@ import {
   Entity,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Elementos } from '../../elementos/entities/elemento.entity';
 
@@ -25,9 +26,10 @@ export class UnidadesMedida {
   })
   createdAt: Date;
 
-  @Column('timestamp without time zone', {
-    name: 'updated_at',
-    default: () => 'now()',
+  @UpdateDateColumn({
+    name: "updated_at",
+    type:'timestamp',
+    default: () => "now()",
   })
   updatedAt: Date;
 

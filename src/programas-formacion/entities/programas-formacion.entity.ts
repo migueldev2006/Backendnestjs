@@ -6,6 +6,7 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from "typeorm";
 import { Fichas } from "../../fichas/entities/ficha.entity";
 import { Areas } from "../../areas/entities/area.entity";
@@ -15,11 +16,11 @@ export class ProgramasFormacion {
   @PrimaryGeneratedColumn({ type: "integer", name: "id_programa" })
   idPrograma: number;
 
-  @Column("character varying", { name: "nombre", nullable: true, length: 70 })
-  nombre: string | null;
+  @Column("character varying", { name: "nombre", length: 70 })
+  nombre: string;
 
-  @Column("boolean", { name: "estado", nullable: true })
-  estado: boolean | null;
+  @Column("boolean", { name: "estado", default: true })
+  estado: boolean;
 
   @Column("timestamp without time zone", {
     name: "created_at",
@@ -27,8 +28,9 @@ export class ProgramasFormacion {
   })
   createdAt: Date;
 
-  @Column("timestamp without time zone", {
+  @UpdateDateColumn({
     name: "updated_at",
+    type:'timestamp',
     default: () => "now()",
   })
   updatedAt: Date;

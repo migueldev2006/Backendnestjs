@@ -15,11 +15,11 @@ export class Fichas {
   @PrimaryGeneratedColumn({ type: "integer", name: "id_ficha" })
   idFicha: number;
 
-  @Column("integer", { name: "codigo_ficha", nullable: true })
-  codigoFicha: number | null;
+  @Column("integer", { name: "codigo_ficha" })
+  codigoFicha: number;
 
-  @Column("boolean", { name: "estado", nullable: true })
-  estado: boolean | null;
+  @Column("boolean", { name: "estado", default: true })
+  estado: boolean;
 
   @Column("timestamp without time zone", {
     name: "created_at",

@@ -1,4 +1,4 @@
-import { IsBoolean, IsNumber } from "class-validator";
+import { IsBoolean, IsInt, IsNotEmpty, IsNumber } from "class-validator";
 
 export class CreateFichaDto {
     @IsNumber()
@@ -7,6 +7,6 @@ export class CreateFichaDto {
     @IsBoolean()
     estado:boolean
 
-    @IsNumber()
-    fkPrograma:number
+    @IsInt()
+    fkPrograma:number   
 }

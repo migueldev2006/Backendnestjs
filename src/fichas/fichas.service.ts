@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateFichaDto, UpdateFichaDto } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Fichas } from './entities/ficha.entity';
@@ -36,17 +36,18 @@ export class FichasService {
     idFicha: number,
     updateFichaDto: UpdateFichaDto,
   ): Promise<Fichas> {
-    const getFichaById = await this.fichaRepository.preload({
-      idFicha,
-      ...updateFichaDto,
-      fkPrograma: { idPrograma: updateFichaDto.fkPrograma },
-    });
+    const getFichaById = await this.fichaRepository.findOneBy({ idFicha });
 
     if (!getFichaById) {
-      throw new Error(`No existe una ficha con este id`);
+      throw new Error(`No existe el elemento con el id ${idFicha}`);
     }
 
-    return this.fichaRepository.save(getFichaById);
+    await this.fichaRepository.update(idFicha, {
+      codigoFicha: updateFichaDto.codigoFicha,
+    });
+
+
+    return getFichaById;
   }
 
   async changeStatus(idFicha: number) {
