@@ -34,17 +34,15 @@ export class ProgramasFormacionService {
   }
 
   async update(idPrograma: number, updateProgramasFormacionDto: UpdateProgramasFormacionDto) {
-    const getProgramaById = await this.programaRepository.preload({
-      idPrograma,
-      ...updateProgramasFormacionDto,
-      fkArea:{idArea:updateProgramasFormacionDto.fkArea}
-    });
+    const getProgramaById = await this.programaRepository.findOneBy({idPrograma});
 
     if (!getProgramaById) {
       throw new Error(`El programa con el id ${idPrograma} no se encuentra registrado`)
     }
-
-    return this.programaRepository.save(getProgramaById)
+    await this.programaRepository.update(idPrograma,{
+      nombre:updateProgramasFormacionDto.nombre
+    });
+    return getProgramaById;
   }
 
   async changeStatus(idPrograma: number) {

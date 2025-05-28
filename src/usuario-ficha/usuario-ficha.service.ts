@@ -52,7 +52,7 @@ export class UsuarioFichaService {
 
     if (!getUsuarioFicha) {
       throw new Error(
-        `No se encontraron asignaciones relacionadas con este id`,
+        `No se encontraron asignaciones relacionadas con este id `,
       );
     }
 
