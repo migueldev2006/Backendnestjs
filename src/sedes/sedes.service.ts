@@ -24,7 +24,7 @@ export class SedesService {
   }
 
   async findOne(idSede: number) :Promise<Sedes | null> {
-   const getSedeById = await this.sedeRepository.findOneBy({idSede});
+  const getSedeById = await this.sedeRepository.findOneBy({idSede});
 
     if (!getSedeById) {
       throw new Error(`El id ${idSede} no se encuentra registrado`)
@@ -34,18 +34,18 @@ export class SedesService {
   }
 
   async update(idSede: number, updateSedeDto: UpdateSedeDto):Promise<Sedes> {
-       const getSedeById = await this.sedeRepository.preload({
+      const getSedeById = await this.sedeRepository.findOneBy({
       idSede,
-      ...updateSedeDto,
-      fkCentro:{idCentro:updateSedeDto.fkCentro},
-    
+
     });
 
     if (!getSedeById) {
       throw new Error(`El id ${idSede} no se encuentra registrado`)
     }
-
-    return this.sedeRepository.save(getSedeById);
+    await this.sedeRepository.update(idSede,{
+      nombre:updateSedeDto.nombre
+    })
+    return getSedeById;
   }
 
   async changeStatus(idSede: number):Promise<Sedes> {

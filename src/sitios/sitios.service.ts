@@ -34,13 +34,25 @@ export class SitiosService {
   }
 
   async update(idSitio: number, updateSitioDto: UpdateSitioDto) {
-    const getSitioById = await this.sitioRepository.preload({
+    const getSitioById = await this.sitioRepository.findOneBy({
       idSitio,
-      ...updateSitioDto,
-      fkArea:{idArea:updateSitioDto.fkArea},
-      fkTipoSitio:{idTipo:updateSitioDto.fkTipoSitio}
     })
+
+    
+    if (!getSitioById) {
+      throw new Error(`No existe el area con el id ${idSitio}`)
+    }
+
+    await this.sitioRepository.update(idSitio, {
+      nombre:updateSitioDto.nombre,
+      personaEncargada:updateSitioDto.personaEncargada,
+      ubicacion:updateSitioDto.ubicacion
+      
+    });
+
+    return getSitioById;
   }
+  
 
   async changeStatus(idSitio: number) {
     const getSitio = await this.sitioRepository.findOneBy({idSitio})

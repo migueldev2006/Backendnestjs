@@ -30,14 +30,17 @@ export class PermisosService {
   }
 
   async update(idPermiso: number, updatePermisoDto: UpdatePermisoDto):Promise<Permisos> {
-    const getPermisoById = await this.permisoRepository.preload({
+    const getPermisoById = await this.permisoRepository.findOneBy({
       idPermiso,
-      ...updatePermisoDto
+
     })
 
     if (!getPermisoById) {
-      throw new Error(`No se encontro el permiso con el id especificado, no se puede actualuzar`)
+      throw new Error(`No se encontro el permiso con el id ${idPermiso} especificado, no se puede actualuzar`)
     }
+    await this.permisoRepository.update(idPermiso,{
+      permiso:updatePermisoDto.permiso
+    });
 
     return getPermisoById;
   }
