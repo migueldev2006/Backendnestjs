@@ -38,6 +38,9 @@ import { VerificacionesModule } from './verificaciones/verificaciones.module';
   imports: [ConfigModule.forRoot({
     isGlobal: true
   }),
+  imports: [ConfigModule.forRoot({
+    isGlobal: true
+  }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,
@@ -73,6 +76,7 @@ import { VerificacionesModule } from './verificaciones/verificaciones.module';
     ElementosModule,
     RolPermisoModule,
     NotificacionesModule,
+    AuthModule,
     AuthModule,
   ],
   controllers: [AppController],

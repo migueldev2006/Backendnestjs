@@ -11,7 +11,7 @@ export class JwtGuard implements CanActivate {
   async canActivate(
     context: ExecutionContext,
   ): Promise<boolean> {
-    const req = context.switchToHttp().getRequest();
+    const req = context.switchToHttp().getRequest(); // para acceder a los datos del request y asi obtener info como los header
     const token = req.header("authorization")?.split(" ")[1];
     if(!token) throw new HttpException("Token not provided",HttpStatus.UNAUTHORIZED);
     try{
