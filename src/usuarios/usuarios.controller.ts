@@ -1,14 +1,11 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { PermisoGuard } from 'src/auth/guards/permiso.guard';
 import { Permiso } from 'src/auth/decorators/permiso.decorator';
-import { JwtGuard } from 'src/auth/guards/jwt.guard';
-import { PermisoGuard } from 'src/auth/guards/permiso.guard';
-import { Permiso } from 'src/auth/decorators/permiso.decorator';
+
 
 @UseGuards(JwtGuard)
 @UseGuards(JwtGuard)

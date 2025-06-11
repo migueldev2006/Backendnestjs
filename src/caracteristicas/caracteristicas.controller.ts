@@ -1,5 +1,4 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { CaracteristicasService } from './caracteristicas.service';
 import { CreateCaracteristicaDto, UpdateCaracteristicaDto } from './dto';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
