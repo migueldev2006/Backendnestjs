@@ -5,11 +5,12 @@ import { Usuarios } from 'src/usuarios/entities/usuario.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PermisoGuard } from './guards/permiso.guard';
 import { RolPermiso } from 'src/rol-permiso/entities/rol-permiso.entity';
+import { UsuariosModule } from 'src/usuarios/usuarios.module';
 
 @Global()
 @Module({
   controllers: [AuthController],
-  imports: [TypeOrmModule.forFeature([Usuarios,RolPermiso])],
+  imports: [TypeOrmModule.forFeature([Usuarios,RolPermiso]),UsuariosModule],
   providers: [AuthService, PermisoGuard],
   exports: [PermisoGuard,TypeOrmModule]
 })

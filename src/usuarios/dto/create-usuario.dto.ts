@@ -1,4 +1,4 @@
-import { IsBoolean, IsInt, IsNumber, IsPositive, IsString, Min, MinLength } from "class-validator";
+import { IsBoolean, IsEmail, IsInt, IsNotEmpty, IsNumber, IsPositive, IsString, Min, MinLength } from "class-validator";
 
 export class CreateUsuarioDto {
 
@@ -22,8 +22,8 @@ export class CreateUsuarioDto {
     @MinLength(10)
     telefono: string;
 
-    @IsString()
-    @MinLength(10)
+    @IsEmail()
+    @IsNotEmpty()
     correo: string;
 
     @IsBoolean()
@@ -42,5 +42,5 @@ export class CreateUsuarioDto {
     perfil: string;
 
     @IsInt()
-    fkrol:number;
+    fkrol: number;
 }

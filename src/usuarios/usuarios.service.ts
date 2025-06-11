@@ -43,7 +43,7 @@ export class UsuariosService {
         idUsuario : id
       }
     })
-    console.log(user)
+    
     return user;
 
   }
@@ -59,4 +59,7 @@ export class UsuariosService {
 
     return usuario
   }
+
+
+  
 }
