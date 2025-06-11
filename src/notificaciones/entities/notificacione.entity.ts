@@ -9,7 +9,6 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Movimientos } from '../../movimientos/entities/movimiento.entity';
-import { Solicitudes } from '../../solicitudes/entities/solicitude.entity';
 
 @Entity('notificaciones', { schema: 'public' })
 export class Notificaciones {
@@ -43,9 +42,6 @@ export class Notificaciones {
   @JoinColumn([{ name: 'fk_movimiento', referencedColumnName: 'idMovimiento' }])
   fkMovimiento: Movimientos;
 
-  @ManyToOne(() => Solicitudes, (solicitudes) => solicitudes.notificaciones)
-  @JoinColumn([{ name: 'fk_solicitud', referencedColumnName: 'idSolicitud' }])
-  fkSolicitud: Solicitudes;
 
   @BeforeInsert()
   checkSlugInsert() {

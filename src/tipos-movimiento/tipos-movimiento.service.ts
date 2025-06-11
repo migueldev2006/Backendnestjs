@@ -8,48 +8,55 @@ import { Repository } from 'typeorm';
 export class TiposMovimientoService {
   constructor(
     @InjectRepository(TipoMovimientos)
-    private readonly tipoRepository:Repository<TipoMovimientos>
-  ){}
-  
-  async create(createTiposMovimientoDto: CreateTiposMovimientoDto):Promise<TipoMovimientos> {
-    const tipo = this.tipoRepository.create(createTiposMovimientoDto)
-    return await this.tipoRepository.save(tipo)
+    private readonly tipoRepository: Repository<TipoMovimientos>,
+  ) {}
+
+  async create(
+    createTiposMovimientoDto: CreateTiposMovimientoDto,
+  ): Promise<TipoMovimientos> {
+    const tipo = this.tipoRepository.create(createTiposMovimientoDto);
+    return await this.tipoRepository.save(tipo);
   }
 
-  async findAll():Promise<TipoMovimientos[]> {
+  async findAll(): Promise<TipoMovimientos[]> {
     return await this.tipoRepository.find();
   }
 
-  async findOne(idTipo: number):Promise<TipoMovimientos | null> {
-    const getTipoById = await this.tipoRepository.findOneBy({idTipo})
+  async findOne(idTipo: number): Promise<TipoMovimientos | null> {
+    const getTipoById = await this.tipoRepository.findOneBy({ idTipo });
 
     if (!getTipoById) {
-      throw new Error(`El tipo de movimeinto con el id ${idTipo} no existe`)
+      throw new Error(`El tipo de movimeinto con el id ${idTipo} no existe`);
     }
 
     return getTipoById;
   }
 
-  async update(idTipo: number, updateTiposMovimientoDto: UpdateTiposMovimientoDto):Promise<TipoMovimientos> {
-    const getTipo = await this.tipoRepository.preload({
+  async update(
+    idTipo: number,
+    updateTiposMovimientoDto: UpdateTiposMovimientoDto,
+  ): Promise<TipoMovimientos> {
+    const getTipo = await this.tipoRepository.findOneBy({
       idTipo,
-      ...updateTiposMovimientoDto
     });
 
     if (!getTipo) {
-      throw new Error(`No se encuentra el tipo de movimiento`)
+      throw new Error(`No se encuentra el tipo de movimiento con el id ${idTipo}`);
     }
-    return this.tipoRepository.save(getTipo);
+
+    await this.tipoRepository.update(idTipo, updateTiposMovimientoDto)
+
+    return getTipo;
   }
 
-  async changeStatus(idTipo: number):Promise<TipoMovimientos> {
-    const getTipo = await this.tipoRepository.findOneBy({idTipo})
-    
+  async changeStatus(idTipo: number): Promise<TipoMovimientos> {
+    const getTipo = await this.tipoRepository.findOneBy({ idTipo });
+
     if (!getTipo) {
-      throw new Error(`No se encuentra el tipo de movimento`)
+      throw new Error(`No se encuentra el tipo de movimento`);
     }
 
-    getTipo.estado = !getTipo.estado
+    getTipo.estado = !getTipo.estado;
 
     return this.tipoRepository.save(getTipo);
   }

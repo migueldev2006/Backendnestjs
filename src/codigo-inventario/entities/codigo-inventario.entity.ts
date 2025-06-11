@@ -14,6 +14,12 @@ export class CodigoInventario {
 
   @Column({type:'text',name:'codigo'})
   codigo:string
+  
+  @Column({type:'boolean', name:'uso', default:false})
+  uso:boolean
+
+  @Column({type:'boolean', name:'baja', default:false})
+  baja:boolean
 
   @Column("timestamp without time zone", {
     name: "created_at",

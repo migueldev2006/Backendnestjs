@@ -29,9 +29,6 @@ export class Elementos {
   })
   descripcion: string | null;
 
-  @Column('integer', { name: 'valor', nullable: true })
-  valor: number | null;
-
   @Column('boolean', { name: 'perecedero', nullable: true })
   perecedero: boolean | null;
 
@@ -47,6 +44,9 @@ export class Elementos {
   @Column('date', { name: 'fecha_uso', nullable: true })
   fechaUso: string | null;
 
+  @Column({type:'boolean', name:'baja', default:false})
+  baja:boolean
+  
   @Column('timestamp without time zone', {
     name: 'created_at',
     default: () => 'now()',
@@ -69,11 +69,9 @@ export class Elementos {
   })
   images?: ElementImage[];
 
-  @OneToMany(
-    () => Caracteristicas,
-    (caracteristicas) => caracteristicas.fkElemento,
-  )
-  caracteristicas: Caracteristicas[];
+  @ManyToOne(() => Caracteristicas, (caracteristicas) => caracteristicas.elementos)
+  @JoinColumn([{ name: 'fk_caracteristica', referencedColumnName: 'idCaracteristica' }])
+  fkCaracteristica: Caracteristicas;
 
   @ManyToOne(() => Categorias, (categorias) => categorias.elementos)
   @JoinColumn([{ name: 'fk_categoria', referencedColumnName: 'idCategoria' }])

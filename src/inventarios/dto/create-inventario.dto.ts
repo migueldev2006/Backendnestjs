@@ -15,4 +15,6 @@ export class CreateInventarioDto {
 
     @IsNumber()
     fkSitio:number
+
+    
 }

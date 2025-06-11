@@ -21,7 +21,6 @@ import { TiposMovimientoModule } from './tipos-movimiento/tipos-movimiento.modul
 import { CaracteristicasModule } from './caracteristicas/caracteristicas.module';
 import { UnidadesMedidaModule } from './unidades-medida/unidades-medida.module';
 import { CategoriasModule } from './categorias/categorias.module';
-import { SolicitudesModule } from './solicitudes/solicitudes.module';
 import { ElementosModule } from './elementos/elementos.module';
 import { APP_FILTER } from '@nestjs/core';
 import { HttpExceptionFilter } from './common/filter/http-exception.filter';
@@ -29,12 +28,16 @@ import { RolPermisoModule } from './rol-permiso/rol-permiso.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { NotificacionesModule } from './notificaciones/notificaciones.module';
+import { AuthModule } from './auth/auth.module';
+import { VerificacionesModule } from './verificaciones/verificaciones.module';
 
 
 
 
 @Module({
-  imports: [ConfigModule.forRoot(),
+  imports: [ConfigModule.forRoot({
+    isGlobal: true
+  }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,
@@ -61,16 +64,16 @@ import { NotificacionesModule } from './notificaciones/notificaciones.module';
     TiposSitioModule,
     SitiosModule,
     InventariosModule,
+    VerificacionesModule,
     MovimientosModule,
     TiposMovimientoModule,
     CaracteristicasModule,
     UnidadesMedidaModule,
     CategoriasModule,
-    SolicitudesModule,
-    SolicitudesModule,
     ElementosModule,
     RolPermisoModule,
     NotificacionesModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [

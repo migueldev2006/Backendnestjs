@@ -9,6 +9,7 @@ export class CreateElementoDto {
   descripcion: string;
 
   @IsNumber()
+  @IsOptional()
   valor: number;
 
   @IsBoolean()

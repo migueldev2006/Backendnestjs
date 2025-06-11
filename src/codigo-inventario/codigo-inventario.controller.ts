@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { CodigoInventarioService } from './codigo-inventario.service';
-import { CreateCodigoInventarioDto } from './dto/create-codigo-inventario.dto';
-import { UpdateCodigoInventarioDto } from './dto/update-codigo-inventario.dto';
+import { CreateCodigoInventarioDto, UpdateCodigoInventarioDto } from './dto'
 
 @Controller('codigo-inventario')
 export class CodigoInventarioController {

@@ -1,18 +1,24 @@
 import { Injectable } from '@nestjs/common';
-import { CreateNotificacioneDto } from './dto/create-notificacione.dto';
-import { UpdateNotificacioneDto } from './dto/update-notificacione.dto';
+import { CreateNotificacioneDto, UpdateNotificacioneDto } from './dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Notificaciones } from './entities/notificacione.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class NotificacionesService {
-  create(createNotificacioneDto: CreateNotificacioneDto) {
+  constructor(
+    @InjectRepository(Notificaciones)
+    private readonly notificacionRepository:Repository<Notificaciones>
+  ){}
+  async create(createNotificacioneDto: CreateNotificacioneDto) {
     return 'This action adds a new notificacione';
   }
 
-  findAll() {
+  async findAll() {
     return `This action returns all notificaciones`;
   }
 
-  findOne(id: number) {
+  async findOne(id: number) {
     return `This action returns a #${id} notificacione`;
   }
 

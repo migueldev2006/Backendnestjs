@@ -1,7 +1,6 @@
 import {
   Column,
   Entity,
-  Index,
   JoinColumn,
   ManyToOne,
   OneToMany,
@@ -9,9 +8,9 @@ import {
 } from "typeorm";
 import { Areas } from "../../areas/entities/area.entity";
 import { Movimientos } from "../../movimientos/entities/movimiento.entity";
-import { Solicitudes } from "../../solicitudes/entities/solicitude.entity";
 import { UsuarioFicha } from "../../usuario-ficha/entities/usuario-ficha.entity";
 import { Roles } from "../../roles/entities/role.entity";
+import { Verificaciones } from "../../verificaciones/entities/verificacione.entity";
 
 @Entity("usuarios", { schema: "public" })
 export class Usuarios {
@@ -66,13 +65,13 @@ export class Usuarios {
   @OneToMany(() => Movimientos, (movimientos) => movimientos.fkUsuario)
   movimientos: Movimientos[];
 
-  @OneToMany(() => Solicitudes, (solicitudes) => solicitudes.fkUsuario)
-  solicitudes: Solicitudes[];
-
   @OneToMany(() => UsuarioFicha, (usuarioFicha) => usuarioFicha.fkUsuario)
   usuarioFichas: UsuarioFicha[];
 
   @ManyToOne(() => Roles, (roles) => roles.usuarios)
   @JoinColumn([{ name: "fk_rol", referencedColumnName: "idRol" }])
   fkRol: Roles;
+
+  @OneToMany(() => Verificaciones, (verificaciones) => verificaciones.fkSitio)
+  verificaciones: Verificaciones[];
 }

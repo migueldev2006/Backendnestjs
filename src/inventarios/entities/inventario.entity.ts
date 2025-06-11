@@ -12,7 +12,7 @@ import {
 import { Elementos } from '../../elementos/entities/elemento.entity';
 import { Sitios } from '../../sitios/entities/sitio.entity';
 import { Movimientos } from '../../movimientos/entities/movimiento.entity';
-import { Solicitudes } from '../../solicitudes/entities/solicitude.entity';
+import { CodigoInventario } from 'src/codigo-inventario/entities/codigo-inventario.entity';
 
 @Entity('inventarios', { schema: 'public' })
 export class Inventarios {
@@ -53,8 +53,8 @@ export class Inventarios {
   @OneToMany(() => Movimientos, (movimientos) => movimientos.fkInventario)
   movimientos: Movimientos[];
 
-  @OneToMany(() => Solicitudes, (solicitudes) => solicitudes.fkInventario)
-  solicitudes: Solicitudes[];
+  @OneToMany(() => CodigoInventario, (codigos) => codigos.fkInventario)
+  codigos: CodigoInventario[];
 
   @BeforeInsert()
   checkSlugInsert() {
