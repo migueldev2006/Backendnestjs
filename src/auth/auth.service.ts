@@ -6,14 +6,15 @@ import * as jwt from 'jsonwebtoken';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Usuarios } from 'src/usuarios/entities/usuario.entity';
 import { Repository } from 'typeorm';
-import { resetPasswordDto } from './dto/reset-password.dto';
-import { UsuariosService } from 'src/usuarios/usuarios.service';
+import { EmailService } from 'src/usuarios/email/email.service';
 @Injectable()
 export class AuthService {
     constructor(
         private configService: ConfigService,
         @InjectRepository(Usuarios)
-        private usuarioRepository: Repository<Usuarios>
+        private usuarioRepository: Repository<Usuarios>,
+        private emailService: EmailService
+        
     ) { }
 
     async login(data: LoginDto) {
@@ -37,6 +38,30 @@ export class AuthService {
         });
 
         return { status: 200, response: "Successfully logged in", access_token: token }
+    }
+
+    async forgotPassword(correo : string) : Promise <void>{
+        const user = this.usuarioRepository.findOneBy({correo})
+
+        if(!user){
+            throw new HttpException(`No se encontro ningun usuario con el correo ${correo}`, HttpStatus.NOT_FOUND)
+        }
+
+        await this.emailService.sendResetPasswordLink(correo);
+    }
+
+
+    async resetPassword(token:string,password:string):Promise<void>{
+        const correo = await this.emailService.decodeConfirmationToken(token);
+
+
+        const user = await this.usuarioRepository.findOneBy({correo})
+
+        if(!user){
+            throw new HttpException(`No se encontro ningun usuario con el correo ${correo}`, HttpStatus.NOT_FOUND)
+        }
+
+        user.password = password;
     }
 
 
