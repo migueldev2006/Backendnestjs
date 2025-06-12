@@ -6,7 +6,7 @@ import * as jwt from 'jsonwebtoken';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Usuarios } from 'src/usuarios/entities/usuario.entity';
 import { Repository } from 'typeorm';
-import { EmailService } from 'src/usuarios/email/email.service';
+import { EmailService } from 'src/auth/email/email.service';
 @Injectable()
 export class AuthService {
     constructor(
@@ -40,7 +40,7 @@ export class AuthService {
         return { status: 200, response: "Successfully logged in", access_token: token }
     }
 
-    async forgotPassword(correo : string) : Promise <void>{
+    async forgotPassword(correo : string) {
         const user = this.usuarioRepository.findOneBy({correo})
 
         if(!user){
@@ -48,10 +48,12 @@ export class AuthService {
         }
 
         await this.emailService.sendResetPasswordLink(correo);
+
+        return {status: 200, message: "Revisa tu correo"}
     }
 
 
-    async resetPassword(token:string,password:string):Promise<void>{
+    async resetPassword(token:string,password:string) {
         const correo = await this.emailService.decodeConfirmationToken(token);
 
 
@@ -62,6 +64,9 @@ export class AuthService {
         }
 
         user.password = password;
+        this.usuarioRepository.save(user);
+
+        return {status: 200, message: "Contraseña actualizada correctamente"}
     }
 
 

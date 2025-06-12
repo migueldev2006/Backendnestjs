@@ -6,7 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PermisoGuard } from './guards/permiso.guard';
 import { RolPermiso } from 'src/rol-permiso/entities/rol-permiso.entity';
 import { UsuariosModule } from 'src/usuarios/usuarios.module';
-import { EmailService } from 'src/usuarios/email/email.service';
+import { EmailService } from 'src/auth/email/email.service';
 
 @Global()
 @Module({

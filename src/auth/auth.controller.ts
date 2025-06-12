@@ -13,12 +13,12 @@ export class AuthController {
     }
 
     @Post("forgot-password")
-    forgotPassword(@Body() {correo}: resetPasswordDto):Promise <void>{
+    forgotPassword(@Body() {correo}: resetPasswordDto) {
         return this.authService.forgotPassword(correo);
     }
 
     @Post("reset-password")
-    async resetPassword(token:string,password:string): Promise<void>{
+    async resetPassword(@Body() {token, password} : {token:string,password:string}) {
         return this.authService.resetPassword(token,password);
     }
 }

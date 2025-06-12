@@ -2,7 +2,7 @@ import { BadRequestException, HttpException, HttpStatus, Injectable, Logger } fr
 import { ConfigService } from "@nestjs/config";
 import { InjectRepository } from "@nestjs/typeorm";
 import * as jwt from 'jsonwebtoken';
-import { Usuarios } from "../entities/usuario.entity";
+import { Usuarios } from "../../usuarios/entities/usuario.entity";
 import { Repository } from "typeorm";
 import { createTransport, Transporter, SendMailOptions } from 'nodemailer';
 
@@ -49,14 +49,13 @@ export class EmailService {
 
         const payload = { correo };
 
-        const token = jwt.sign(payload, {
-            secret: this.configService.get("SECRET"),
-            expiresIn: this.configService.get("EXPIRES") ?? "20s"
+        const token = jwt.sign(payload, this.configService.get("SECRET"),{
+            expiresIn: this.configService.get("EXPIRES") ?? "1h"
         });
 
 
 
-        const url = `${this.configService.get("EMAIL_RESET_PASSWORD_URL")}?token=${token}`;
+        const url = `${this.configService.get("BASE_URL")}reset-password?token=${token}`;
 
         const text = `Holis para cambiar tu contraseña da click aqui: ${url}`;
 
@@ -71,13 +70,12 @@ export class EmailService {
 
     async decodeConfirmationToken(token: string) {
         try {
-            const payload = await jwt.verify(token, {
-                secret: this.configService.get('JWT_VERIFICATION_TOKEN_SECRET')
-            });
+            const payload = await jwt.verify(token, this.configService.get('SECRET'));
 
-            if (typeof payload === 'object' && 'email' in payload) {
-                return payload.email;
+            if (typeof payload === 'object' && 'correo' in payload) {
+                return payload.correo;
             }
+
             throw new BadRequestException();
         } catch (error) {
             if (error?.name === 'TokenExpiredError') {
