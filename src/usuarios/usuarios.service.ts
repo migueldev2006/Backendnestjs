@@ -4,7 +4,8 @@ import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { Usuarios } from './entities/usuario.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import * as bcrypt from 'bcrypt'
+import * as bcrypt from 'bcrypt';
+import * as XLSX from 'xlsx';
 @Injectable()
 export class UsuariosService {
 
@@ -24,6 +25,24 @@ export class UsuariosService {
     });
 
     return await this.usuariosRepository.save(Usuario);
+  }
+
+  async massiveUpload(file: Express.Multer.File) {
+    const workbook = XLSX.read(file.buffer, { type: 'buffer', codepage: 65001 });
+    const sheetName = workbook.SheetNames[0];
+    const sheet = workbook.Sheets[sheetName];
+    const jsonData = XLSX.utils.sheet_to_json(sheet);
+    
+    let newUsersList: Usuarios[] = [];
+
+    for (const row of jsonData) {
+      const usuario = row as CreateUsuarioDto;
+      const createdUser = await this.usuariosRepository.save({
+        ...usuario
+      })
+      newUsersList.push(createdUser);
+    }
+    return {msg: "Users registered successfully", newUsers: newUsersList}
   }
 
   findAll() {

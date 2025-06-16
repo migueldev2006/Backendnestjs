@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request,  UploadedFile, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { UsuariosService } from './usuarios.service';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
@@ -18,6 +19,12 @@ export class UsuariosController {
   @UseGuards(PermisoGuard)
   async create(@Body() newUser: CreateUsuarioDto) {
     return this.usuariosService.create(newUser);
+  }
+
+  @Post("/massive")
+  @UseInterceptors(FileInterceptor("excel"))
+  async massiveUpload(@UploadedFile() file: Express.Multer.File) {
+    return this.usuariosService.massiveUpload(file);
   }
 
   @Get()

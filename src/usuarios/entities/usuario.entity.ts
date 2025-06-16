@@ -59,9 +59,6 @@ export class Usuarios {
   @Column("character varying", { name: "perfil", nullable: true, length: 255 })
   perfil: string ;
 
-  @Column({name:"reset_password_token", unique: true, nullable: true})
-  resetPasswordToken: string;
-
   @OneToMany(() => Areas, (areas) => areas.fkUsuario)
   areas: Areas[];
 
