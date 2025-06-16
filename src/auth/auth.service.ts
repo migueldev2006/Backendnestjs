@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, Res } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { LoginDto } from './dto/login.dto';
 import * as bcrypt from 'bcrypt';
@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Usuarios } from 'src/usuarios/entities/usuario.entity';
 import { Repository } from 'typeorm';
 import { EmailService } from 'src/auth/email/email.service';
+
 @Injectable()
 export class AuthService {
     constructor(
@@ -56,6 +57,8 @@ export class AuthService {
     async resetPassword(token:string,password:string) {
         const correo = await this.emailService.decodeConfirmationToken(token);
 
+        const rounds = 10;
+        const newPassword = await bcrypt.hash(password,rounds)
 
         const user = await this.usuarioRepository.findOneBy({correo})
 
@@ -63,7 +66,7 @@ export class AuthService {
             throw new HttpException(`No se encontro ningun usuario con el correo ${correo}`, HttpStatus.NOT_FOUND)
         }
 
-        user.password = password;
+        user.password = newPassword;
         this.usuarioRepository.save(user);
 
         return {status: 200, message: "Contraseña actualizada correctamente"}

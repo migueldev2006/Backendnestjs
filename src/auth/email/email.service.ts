@@ -22,9 +22,9 @@ export class EmailService {
         private usuarioRepository: Repository<Usuarios>
     ) {
         this.nodemailerTransport = createTransport({
-            service: this.configService.get<string>('SERVICE_MAIL'),
+            service: this.configService.get<string>('SERVICE_MAIL'), //gmail, hotmail y asi
             auth: {
-                user: configService.get('MAIL_USER'),
+                user: configService.get('MAIL_USER'),//quien envia
                 pass: configService.get('MAIL_PASSWORD')
             }
         })
