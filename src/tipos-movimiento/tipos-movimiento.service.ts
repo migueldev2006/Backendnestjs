@@ -44,9 +44,10 @@ export class TiposMovimientoService {
       throw new Error(`No se encuentra el tipo de movimiento con el id ${idTipo}`);
     }
 
-    await this.tipoRepository.update(idTipo, updateTiposMovimientoDto)
+  Object.assign(getTipo, updateTiposMovimientoDto);
 
-    return getTipo;
+  const updatedTipo = await this.tipoRepository.save(getTipo);
+  return updatedTipo;
   }
 
   async changeStatus(idTipo: number): Promise<TipoMovimientos> {

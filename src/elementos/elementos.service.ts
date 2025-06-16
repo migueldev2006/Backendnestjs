@@ -22,6 +22,7 @@ export class ElementosService {
       ...createElementoDto,
       fkCategoria: { idCategoria: createElementoDto.fkCategoria },
       fkUnidadMedida: { idUnidad: createElementoDto.fkUnidadMedida },
+      fkCaracteristica: { idCaracteristica: createElementoDto.fkCaracteristica },
       images: createElementoDto.images.map((url) => ({ url })),
     });
 
@@ -81,7 +82,8 @@ export class ElementosService {
       images: updateElementoDto.images.map((url) => ({ url })),
     });
 
-    return getElementoById;
+  const updatedElemento = await this.elementoRepository.save(getElementoById);
+  return updatedElemento;
   }
 
   async changeStatus(idElemento: number) {

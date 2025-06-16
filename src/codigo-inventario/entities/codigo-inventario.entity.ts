@@ -5,6 +5,7 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from "typeorm";
 
 @Entity("codigo_inventario", { schema: "public" })
@@ -21,14 +22,18 @@ export class CodigoInventario {
   @Column({type:'boolean', name:'baja', default:false})
   baja:boolean
 
+  @Column({type:'boolean', name:'estado', default:true})
+  estado:boolean
+
   @Column("timestamp without time zone", {
     name: "created_at",
     default: () => "now()",
   })
   createdAt: Date;
 
-  @Column("timestamp without time zone", {
+  @UpdateDateColumn({
     name: "updated_at",
+    type:'timestamp',
     default: () => "now()",
   })
   updatedAt: Date;

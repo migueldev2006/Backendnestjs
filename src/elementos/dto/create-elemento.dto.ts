@@ -8,9 +8,6 @@ export class CreateElementoDto {
   @IsOptional()
   descripcion: string;
 
-  @IsNumber()
-  @IsOptional()
-  valor: number;
 
   @IsBoolean()
   perecedero: boolean;
@@ -38,4 +35,7 @@ export class CreateElementoDto {
 
   @IsNumber()
   fkUnidadMedida:number
+
+  @IsNumber()
+  fkCaracteristica:number
 }

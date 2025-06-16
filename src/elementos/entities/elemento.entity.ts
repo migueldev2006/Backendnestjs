@@ -7,6 +7,7 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Caracteristicas } from '../../caracteristicas/entities/caracteristica.entity';
 import { Categorias } from '../../categorias/entities/categoria.entity';
@@ -53,9 +54,10 @@ export class Elementos {
   })
   createdAt: Date;
 
-  @Column('timestamp without time zone', {
-    name: 'updated_at',
-    default: () => 'now()',
+  @UpdateDateColumn({
+    name: "updated_at",
+    type:'timestamp',
+    default: () => "now()",
   })
   updatedAt: Date;
 

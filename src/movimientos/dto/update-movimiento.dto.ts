@@ -21,5 +21,5 @@ export class UpdateMovimientoDto extends PartialType(CreateMovimientoDto) {
 
   @IsString()
   @IsOptional()
-  fechaDevolucion: string;
+  fechaDevolucion: Date;
 }

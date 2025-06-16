@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { InventariosService } from './inventarios.service';
-import { CreateInventarioDto, UpdateInventarioDto } from './dto';
+import { AgregarStockDto, CreateInventarioDto, UpdateInventarioDto } from './dto';
 
 @Controller('inventarios')
 export class InventariosController {
@@ -9,6 +9,11 @@ export class InventariosController {
   @Post()
   create(@Body() createInventarioDto: CreateInventarioDto) {
     return this.inventariosService.create(createInventarioDto);
+  }
+
+  @Post()
+  agregateStock(@Body() agregateStockDto: AgregarStockDto) {
+    return this.inventariosService.agregateStock(agregateStockDto);
   }
 
   @Get()
@@ -21,7 +26,7 @@ export class InventariosController {
     return this.inventariosService.findOne(+idInventario);
   }
 
-  @Patch(':idInventario')
+  @Patch('agregateStock/:idInventario')
   update(@Param('idInventario') idInventario: number, @Body() updateInventarioDto: UpdateInventarioDto) {
     return this.inventariosService.update(+idInventario, updateInventarioDto);
   }

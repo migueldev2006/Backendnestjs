@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateMovimientoDto, UpdateMovimientoDto } from './dto';
 import { Movimientos } from './entities/movimiento.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -6,7 +10,6 @@ import { In, Repository } from 'typeorm';
 import { Inventarios } from 'src/inventarios/entities/inventario.entity';
 import { CodigoInventario } from 'src/codigo-inventario/entities/codigo-inventario.entity';
 import { TipoMovimientos } from 'src/tipos-movimiento/entities/tipos-movimiento.entity';
-import { CreateCodigoInventarioDto } from 'src/codigo-inventario/dto';
 
 @Injectable()
 export class MovimientosService {
@@ -24,94 +27,110 @@ export class MovimientosService {
     private readonly tipoRepository: Repository<TipoMovimientos>,
   ) {}
 
-  // async create(createMovimientoDto: CreateMovimientoDto): Promise<Movimientos> {
-  //   const { fkInventario, fkTipoMovimiento, cantidad, fkUsuario, fkSitio, descripcion } = createMovimientoDto;
+  async create(createMovimientoDto: CreateMovimientoDto): Promise<Movimientos> {
+    const {
+      fkInventario,
+      fkTipoMovimiento,
+      cantidad,
+      fkUsuario,
+      fkSitio,
+      descripcion,
+      codigos,
+    } = createMovimientoDto;
 
-  //   const inventario = await this.inventarioRepository.findOne({
-  //     where: { idInventario: fkInventario },
-  //     relations: ['fkElemento', 'fkElemento.fkCaracteristica'],
-  //   });
-  //   if (!inventario) throw new NotFoundException('Inventario no encontrado');
+    const inventario = await this.inventarioRepository.findOne({
+      where: { idInventario: fkInventario },
+      relations: ['fkElemento', 'fkElemento.fkCaracteristica'],
+    });
+    if (!inventario) throw new NotFoundException('Inventario no encontrado');
 
-  //   const tieneCaracteristicas = !!inventario.fkElemento?.fkCaracteristica;
-  //   const tipoMovimiento = await this.tipoRepository.findOneBy({ idTipo: fkTipoMovimiento });
-  //   if (!tipoMovimiento) throw new NotFoundException('Tipo de movimiento inválido');
+    const tieneCaracteristicas = !!inventario.fkElemento?.fkCaracteristica;
+    const tipoMovimiento = await this.tipoRepository.findOneBy({
+      idTipo: fkTipoMovimiento,
+    });
+    if (!tipoMovimiento)
+      throw new NotFoundException('Tipo de movimiento inválido');
 
-  //   const nombreTipo = tipoMovimiento.nombre.toLowerCase();
+    const nombreTipo = tipoMovimiento.nombre.toLowerCase();
 
-  //   if (tieneCaracteristicas) {
-  //     if (['salida', 'baja', 'prestamo'].includes(nombreTipo)) {
-  //       if (!codigos || codigos.length === 0) {
-  //         throw new BadRequestException('Debe especificar códigos para este movimiento');
-  //       }
+    if (tieneCaracteristicas) {
+      if (['salida', 'baja', 'prestamo'].includes(nombreTipo)) {
+        if (!codigos || codigos.length === 0) {
+          throw new BadRequestException(
+            'Debe especificar códigos para este movimiento',
+          );
+        }
 
-  //       const codigosDisponibles = await this.codigoRepository.find({
-  //         where: { codigo: In(codigos), fkInventario: inventario, uso: false },
-  //       });
+        const codigosDisponibles = await this.codigoRepository.find({
+          where: { codigo: In(codigos), fkInventario: inventario, uso: false },
+        });
 
-  //       if (codigosDisponibles.length !== codigos.length) {
-  //         const disponibles = codigosDisponibles.map(c => c.codigo);
-  //         const faltantes = codigos.filter(c => !disponibles.includes(c));
-  //         throw new BadRequestException(`Los siguientes códigos no están disponibles: ${faltantes.join(', ')}`);
-  //       }
+        if (codigosDisponibles.length !== codigos.length) {
+          const disponibles = codigosDisponibles.map((c) => c.codigo);
+          const faltantes = codigos.filter((c) => !disponibles.includes(c));
+          throw new BadRequestException(
+            `Los siguientes códigos no están disponibles: ${faltantes.join(', ')}`,
+          );
+        }
 
-  //       await this.codigoRepository.update(
-  //         { codigo: In(codigos), fkInventario: inventario },
-  //         { uso: true },
-  //       );
+        await this.codigoRepository.update(
+          { codigo: In(codigos), fkInventario: inventario },
+          { uso: true },
+        );
 
-  //       inventario.stock -= codigos.length;
+        inventario.stock -= codigos.length;
+      } else if (nombreTipo === 'ingreso') {
+        if (!codigos || codigos.length === 0) {
+          throw new BadRequestException(
+            'Debe especificar códigos para este movimiento',
+          );
+        }
+        for (const codigo of codigos) {
+          await this.codigoRepository.save({
+            codigo,
+            fkInventario: inventario,
+            usado: false,
+          });
+        }
 
-  //     } else if (nombreTipo === 'ingreso') {
-  //       for (const codigo of codigos) {
-  //         await this.codigoRepository.save({
-  //           codigo,
-  //           fkInventario: inventario,
-  //           usado: false,
-  //         });
-  //       }
+        inventario.stock += codigos?.length ?? 0;
+      }
+    } else {
+      if (['salida', 'baja', 'prestamo'].includes(nombreTipo)) {
+        if (!cantidad || cantidad <= 0) {
+          throw new BadRequestException('Debe indicar cantidad válida');
+        }
+        if (cantidad > inventario.stock) {
+          throw new BadRequestException('No hay suficiente stock');
+        }
 
-  //       inventario.stock += codigos.length;
-  //     }
+        inventario.stock -= cantidad;
+      } else if (['ingreso', 'devolucion'].includes(nombreTipo)) {
+        if (!cantidad || cantidad <= 0) {
+          throw new BadRequestException('Debe indicar cantidad válida');
+        }
 
-  //   } else {
-  //     if (['salida', 'baja', 'prestamo'].includes(nombreTipo)) {
-  //       if (!cantidad || cantidad <= 0) {
-  //         throw new BadRequestException('Debe indicar cantidad válida');
-  //       }
-  //       if (cantidad > inventario.stock) {
-  //         throw new BadRequestException('No hay suficiente stock');
-  //       }
+        inventario.stock += cantidad;
+      }
+    }
 
-  //       inventario.stock -= cantidad;
+    await this.inventarioRepository.save(inventario);
 
-  //     } else if (['ingreso', 'devolucion'].includes(nombreTipo)) {
-  //       if (!cantidad || cantidad <= 0) {
-  //         throw new BadRequestException('Debe indicar cantidad válida');
-  //       }
+    const movimiento = this.movimientoRepository.create({
+      fkInventario: inventario,
+      fkTipoMovimiento:tipoMovimiento,
+      cantidad: cantidad || (codigos?.length ?? 0),
+      descripcion,
+      fechaPrestamo: new Date(),
+      fkUsuario: { idUsuario: fkUsuario },
+      fkSitio: { idSitio: fkSitio },
+      enProceso: true,
+      aceptado: false,
+      cancelado: false,
+    });
 
-  //       inventario.stock += cantidad;
-  //     }
-  //   }
-
-  //   await this.inventarioRepository.save(inventario);
-
-  //   const movimiento = this.movimientoRepository.create({
-  //     fkInventario: inventario,
-  //     fkTipoMovimiento: tipoMovimiento,
-  //     cantidad: cantidad || (codigos?.length ?? 0),
-  //     codigos: tieneCaracteristicas ? codigos : null,
-  //     descripcion,
-  //     fechaMovimiento: new Date(),
-  //     fkUsuario: { idUsuario: fkUsuario },
-  //     fkSitio: { idSitio: fkSitio },
-  //     enProceso: true,
-  //     aceptado: false,
-  //     cancelado: false,
-  //   });
-
-  //   return await this.movimientoRepository.save(movimiento);
-  // }
+    return await this.movimientoRepository.save(movimiento);
+  }
 
   async findAll(): Promise<Movimientos[]> {
     return await this.movimientoRepository.find();
@@ -149,11 +168,15 @@ export class MovimientosService {
       fechaDevolucion: updateMovimientoDto.fechaDevolucion,
     });
 
-    return getMovimientoById;
+
+  const updatedMovimiento = await this.movimientoRepository.save(getMovimientoById);
+  return updatedMovimiento;
   }
 
   async accept(idMovimiento: number): Promise<Movimientos> {
-    const movimiento = await this.movimientoRepository.findOneBy({ idMovimiento });
+    const movimiento = await this.movimientoRepository.findOneBy({
+      idMovimiento,
+    });
     if (!movimiento) {
       throw new NotFoundException(
         `La movimiento con id ${idMovimiento} no existe`,
@@ -171,7 +194,9 @@ export class MovimientosService {
     return this.movimientoRepository.save(movimiento);
   }
   async cancel(idMovimiento: number): Promise<Movimientos> {
-    const movimiento = await this.movimientoRepository.findOneBy({ idMovimiento });
+    const movimiento = await this.movimientoRepository.findOneBy({
+      idMovimiento,
+    });
     if (!movimiento) {
       throw new NotFoundException(
         `La movimiento con id ${idMovimiento} no existe`,

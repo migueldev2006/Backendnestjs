@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import {
   AgregarStockDto,
   CreateInventarioDto,
@@ -16,7 +20,7 @@ export class InventariosService {
     private readonly inventarioRepository: Repository<Inventarios>,
 
     @InjectRepository(CodigoInventario)
-    private readonly codigosRepository:Repository<CodigoInventario>
+    private readonly codigosRepository: Repository<CodigoInventario>,
   ) {}
   async create(createInventarioDto: CreateInventarioDto): Promise<Inventarios> {
     const inventario = this.inventarioRepository.create({
@@ -39,11 +43,10 @@ export class InventariosService {
     if (!agregateStockInventario) {
       throw new NotFoundException('Inventario no encontrado');
     }
-if (agregateStockInventario.fkElemento.fkCaracteristica) {
-
-    if (!agregateStock.codigos || agregateStock.codigos.length === 0) {
-    throw new Error('Este elemento requiere códigos para agregar stock');
-  }
+    if (agregateStockInventario.fkElemento.fkCaracteristica) {
+      if (!agregateStock.codigos || agregateStock.codigos.length === 0) {
+        throw new Error('Este elemento requiere códigos para agregar stock');
+      }
 
       for (const codigo of agregateStock.codigos) {
         await this.codigosRepository.save({
@@ -53,13 +56,12 @@ if (agregateStockInventario.fkElemento.fkCaracteristica) {
       }
 
       agregateStockInventario.stock += agregateStock.codigos.length;
-    } 
+    }
 
     await this.inventarioRepository.save(agregateStockInventario);
 
     return { message: 'Stock actualizado correctamente' };
   }
-
 
   async findAll(): Promise<Inventarios[]> {
     return await this.inventarioRepository.find();
@@ -83,7 +85,10 @@ if (agregateStockInventario.fkElemento.fkCaracteristica) {
     idInventario: number,
     updateInventarioDto: UpdateInventarioDto,
   ): Promise<Inventarios> {
-    const getInventarioById = await this.inventarioRepository.findOneBy({idInventario})
+    const getInventarioById = await this.inventarioRepository.findOne({
+      where: { idInventario },
+      relations: ['fkElemento', 'fkElemento.caracteristicas'],
+    });
 
     if (!getInventarioById) {
       throw new Error(
@@ -91,11 +96,21 @@ if (agregateStockInventario.fkElemento.fkCaracteristica) {
       );
     }
 
-    await this.inventarioRepository.update(idInventario, {
-      stock:updateInventarioDto.stock
-    })
+    if (getInventarioById.fkElemento.fkCaracteristica) {
+      throw new BadRequestException(
+        'Este inventario requiere códigos. Use el método de agregar stock por códigos.',
+      );
+    }
 
-    return getInventarioById;
+    if (!updateInventarioDto.stock || updateInventarioDto.stock <= 0) {
+      throw new BadRequestException('La cantidad debe ser mayor a 0');
+    }
+
+    getInventarioById.stock += updateInventarioDto.stock;
+
+    const updatedInventario =
+      await this.inventarioRepository.save(getInventarioById);
+    return updatedInventario;
   }
 
   async changeStatus(idInventario: number): Promise<Inventarios> {

@@ -13,5 +13,5 @@ export class AgregarStockDto {
 
   @IsOptional()
   @IsNumber()
-  cantidad?: number;
+  stock?: number;
 }

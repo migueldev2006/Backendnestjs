@@ -37,9 +37,10 @@ export class RolesService {
       throw new Error(`El rol con el id ${idRol} no existe`);
     }
 
-    await this.rolRepository.update(idRol, updateRoleDto);
+  Object.assign(getRolById, updateRoleDto);
 
-    return getRolById;
+  const updatedRol = await this.rolRepository.save(getRolById);
+  return updatedRol;
   }
 
   async changeStatus(idRol: number): Promise<Roles> {
@@ -50,6 +51,6 @@ export class RolesService {
 
     getRolById.estado = !getRolById.estado;
 
-    return getRolById;
+    return this.rolRepository.save(getRolById);
   }
 }

@@ -26,7 +26,7 @@ export class RolesController {
     return this.rolesService.update(+idRol, updateRoleDto);
   }
 
-  @Patch(':idRol')
+  @Patch('/state/:idRol')
   status(@Param('idRol') idRol: number) {
     return this.rolesService.changeStatus(+idRol);
   }

@@ -36,9 +36,10 @@ export class UnidadesMedidaService {
       throw new Error(`No existe el elemento con el id ${idUnidad}`)
     }
 
-    await this.unidadRepository.update(idUnidad, updateUnidadesMedidaDto);
+  Object.assign(getUnidadById, updateUnidadesMedidaDto);
 
-    return getUnidadById;
+  const updatedUnidad = await this.unidadRepository.save(getUnidadById);
+  return updatedUnidad;
   }
 
   async changeStatus(idUnidad: number):Promise<UnidadesMedida> {

@@ -26,8 +26,4 @@ export class CodigoInventarioController {
     return this.codigoInventarioService.update(+id, updateCodigoInventarioDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.codigoInventarioService.remove(+id);
-  }
 }

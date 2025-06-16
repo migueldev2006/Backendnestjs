@@ -30,6 +30,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { NotificacionesModule } from './notificaciones/notificaciones.module';
 import { AuthModule } from './auth/auth.module';
 import { VerificacionesModule } from './verificaciones/verificaciones.module';
+import { WebsocketModule } from './websocket/websocket.module';
+import { CodigoInventarioModule } from './codigo-inventario/codigo-inventario.module';
 
 
 
@@ -73,8 +75,10 @@ import { VerificacionesModule } from './verificaciones/verificaciones.module';
     ElementosModule,
     RolPermisoModule,
     NotificacionesModule,
+    CodigoInventarioModule,
     AuthModule,
     AuthModule,
+    WebsocketModule,
   ],
   controllers: [AppController],
   providers: [

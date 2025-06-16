@@ -14,11 +14,11 @@ export class UnidadesMedida {
   @PrimaryGeneratedColumn({ type: 'integer', name: 'id_unidad' })
   idUnidad: number;
 
-  @Column('character varying', { name: 'nombre', nullable: true, length: 70 })
+  @Column('character varying', { name: 'nombre', length: 70 })
   nombre: string;
 
-  @Column('boolean', { name: 'estado', nullable: true })
-  estado: boolean | null;
+  @Column('boolean', { name: 'estado' })
+  estado: boolean;
 
   @Column('timestamp without time zone', {
     name: 'created_at',
@@ -55,7 +55,7 @@ export class UnidadesMedida {
 
   @BeforeUpdate ()
   checkSlugUpdate() {
-    this.slug = this.slug
+    this.slug = this.nombre
       .toLowerCase()
       .replaceAll(' ', '_')
       .replaceAll("'", '');

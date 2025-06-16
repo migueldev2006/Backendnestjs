@@ -1,4 +1,11 @@
-import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsBoolean,
+  IsDate,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreateMovimientoDto {
   @IsString()
@@ -29,11 +36,12 @@ export class CreateMovimientoDto {
   @IsBoolean()
   noDevolutivo: boolean;
 
-  @IsString()
-  fechaDevolucion: string;
+  @IsDate()
+  fechaPrestamo: Date;
 
-  @IsString()
-  slug: string;
+  @IsDate()
+  fechaDevolucion: Date;
+
 
   @IsNumber()
   fkInventario: number;
@@ -46,4 +54,9 @@ export class CreateMovimientoDto {
 
   @IsNumber()
   fkUsuario: number;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  codigos?: string[];
 }

@@ -5,6 +5,7 @@ import {
   Entity,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Movimientos } from '../../movimientos/entities/movimiento.entity';
 
@@ -25,9 +26,10 @@ export class TipoMovimientos {
   })
   createdAt: Date;
 
-  @Column('timestamp without time zone', {
-    name: 'updated_at',
-    default: () => 'now()',
+  @UpdateDateColumn({
+    name: "updated_at",
+    type:'timestamp',
+    default: () => "now()",
   })
   updatedAt: Date;
 
@@ -53,6 +55,9 @@ export class TipoMovimientos {
 
   @BeforeUpdate()
   checkSlugUpdate() {
+        if (!this.slug) {
+      this.slug = this.nombre;
+    }
     this.slug = this.slug
       .toLowerCase()
       .replaceAll(' ', '_')
