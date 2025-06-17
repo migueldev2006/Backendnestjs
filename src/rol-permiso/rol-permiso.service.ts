@@ -64,6 +64,6 @@ export class RolPermisoService {
     }
     getrolPermiso.estado = !getrolPermiso.estado
 
-    return getrolPermiso
+    return this.rolPermisoRepository.save(getrolPermiso);
   }
 }

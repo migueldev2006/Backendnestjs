@@ -82,6 +82,7 @@ export class SitiosService {
 
     getSitio.estado = !getSitio.estado;
 
-    return getSitio;
+    return this.sitioRepository.save(getSitio);
   }
 }
+  

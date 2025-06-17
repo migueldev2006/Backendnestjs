@@ -32,10 +32,10 @@ export class Roles {
   })
   updatedAt: Date;
 
-  @Column('text', {
-    unique: true,
-  })
-  slug: string;
+  // @Column('text', {
+  //   unique: true,
+  // })
+  // slug: string;
 
   @OneToMany(() => RolPermiso, (rolPermiso) => rolPermiso.fkRol)
   rolPermisos: RolPermiso[];
@@ -43,23 +43,23 @@ export class Roles {
   @OneToMany(() => Usuarios, (usuarios) => usuarios.fkRol)
   usuarios: Usuarios[];
 
-  @BeforeInsert()
-  checkSlugInsert() {
-    if (!this.slug) {
-      this.slug = this.nombre;
-    }
+  // @BeforeInsert()
+  // checkSlugInsert() {
+  //   if (!this.slug) {
+  //     this.slug = this.nombre;
+  //   }
 
-    this.slug = this.slug
-      .toLowerCase()
-      .replaceAll(' ', '_')
-      .replaceAll("'", '');
-  }
+  //   this.slug = this.slug
+  //     .toLowerCase()
+  //     .replaceAll(' ', '_')
+  //     .replaceAll("'", '');
+  // }
 
-  @BeforeUpdate()
-  checkSlugUpdate() {
-    this.slug = this.slug
-      .toLowerCase()
-      .replaceAll(' ', '_')
-      .replaceAll("'", '');
-  }
+  // @BeforeUpdate()
+  // checkSlugUpdate() {
+  //   this.slug = this.slug
+  //     .toLowerCase()
+  //     .replaceAll(' ', '_')
+  //     .replaceAll("'", '');
+  // }
 }

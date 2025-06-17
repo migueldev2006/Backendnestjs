@@ -59,6 +59,8 @@ export class FichasService {
 
     getFichaById.estado = !getFichaById.estado;
 
-    return getFichaById;
+    return this.fichaRepository.save(getFichaById);
   }
 }
+
+

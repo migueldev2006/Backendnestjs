@@ -54,7 +54,7 @@ export class ProgramasFormacionService {
 
     getProgramaById.estado = !getProgramaById.estado
 
-    return getProgramaById
+    return this.programaRepository.save(getProgramaById);
   
   }
 }

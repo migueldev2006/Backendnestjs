@@ -57,6 +57,6 @@ export class SedesService {
   
       getSedeById.estado = !getSedeById.estado
   
-      return getSedeById
+      return this.sedeRepository.save(getSedeById)
   }
 }
