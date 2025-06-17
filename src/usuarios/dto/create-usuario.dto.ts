@@ -1,46 +1,55 @@
-import { IsBoolean, IsEmail, IsInt, IsNotEmpty, IsNumber, IsPositive, IsString, Min, MinLength } from "class-validator";
+import {
+  IsBoolean,
+  IsEmail,
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  IsPositive,
+  IsString,
+  Min,
+  MinLength,
+} from 'class-validator';
 
 export class CreateUsuarioDto {
+  @IsInt()
+  @IsPositive()
+  @Min(10)
+  documento: number;
 
-    @IsInt()
-    @IsPositive()
-    @Min(10)
-    documento: number;
+  @IsString({ message: 'El nombre debe ser un string' })
+  @MinLength(5)
+  nombre: string;
 
-    @IsString({ message: "El nombre debe ser un string" })
-    @MinLength(5)
-    nombre: string;
+  @IsString({ message: 'El apellido debe ser un string' })
+  @MinLength(5)
+  apellido: string;
 
-    @IsString({ message: "El apellido debe ser un string" })
-    @MinLength(5)
-    apellido: string;
+  @IsNumber()
+  edad: number;
 
-    @IsNumber()
-    edad: number
+  @IsString()
+  @MinLength(10)
+  telefono: string;
 
-    @IsString()
-    @MinLength(10)
-    telefono: string;
+  @IsEmail()
+  @IsNotEmpty()
+  correo: string;
 
-    @IsEmail()
-    @IsNotEmpty()
-    correo: string;
+  @IsBoolean()
+  estado: boolean;
 
-    @IsBoolean()
-    estado: boolean;
+  @IsString()
+  @MinLength(6)
+  cargo: string;
 
-    @IsString()
-    @MinLength(6)
-    cargo: string;
+  @IsString()
+  @MinLength(3)
+  password: string;
 
-    @IsString()
-    @MinLength(3)
-    password: string;
+  @IsString()
+  @MinLength(20)
+  perfil: string;
 
-    @IsString()
-    @MinLength(20)
-    perfil: string;
-
-    @IsInt()
-    fkrol: number;
+  @IsNumber()
+  fkrol: number;
 }
