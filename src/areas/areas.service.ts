@@ -10,15 +10,16 @@ export class AreasService {
     @InjectRepository(Areas)
     private readonly areaReposiory:Repository<Areas>
   ){}
+async create(createAreaDto: CreateAreaDto): Promise<Areas> {
+  const area = this.areaReposiory.create({
+    ...createAreaDto,
+    fkSede: { idSede: createAreaDto.fkSede },
+    fkUsuario: { idUsuario: createAreaDto.fkUsuario }     ,
+  });
 
-  async create(createAreaDto: CreateAreaDto):Promise<Areas> {
-    const area = this.areaReposiory.create({
-      ...createAreaDto,
-      fkSede:{idSede:createAreaDto.fkSede},
-      fkUsuario:{idUsuario:createAreaDto.fkSede}
-    });
-    return await this.areaReposiory.save(area);
-  }
+  return await this.areaReposiory.save(area);
+}
+
 
   async findAll():Promise<Areas[]> {
     return await this.areaReposiory.find();
@@ -41,11 +42,9 @@ export class AreasService {
       throw new Error(`No existe el area con el id ${idArea}`)
     }
 
-    await this.areaReposiory.update(idArea, {
-      nombre:updateAreaDto.nombre
-    });
-
-    return getAreaById;
+    Object.assign(getAreaById, updateAreaDto)
+    const updateArea= await this.areaReposiory.save(getAreaById)
+    return updateArea;
   }
 
   async changeStatus(idArea: number):Promise<Areas> {
@@ -57,6 +56,6 @@ export class AreasService {
 
     getAreaById.estado = !getAreaById.estado
 
-    return getAreaById
+    return this.areaReposiory.save(getAreaById);
   }
 }

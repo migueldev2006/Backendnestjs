@@ -6,6 +6,7 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from "typeorm";
 import { Areas } from "../../areas/entities/area.entity";
 import { Centros } from "../../centros/entities/centro.entity";
@@ -27,8 +28,9 @@ export class Sedes {
   })
   createdAt: Date;
 
-  @Column("timestamp without time zone", {
+  @UpdateDateColumn( {
     name: "updated_at",
+    type:"timestamp",
     default: () => "now()",
   })
   updatedAt: Date;

@@ -5,6 +5,7 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from "typeorm";
 import { Permisos } from "../../permisos/entities/permiso.entity";
 import { Roles } from "../../roles/entities/role.entity";
@@ -23,8 +24,9 @@ export class RolPermiso {
   })
   createdAt: Date;
 
-  @Column("timestamp without time zone", {
+  @UpdateDateColumn( {
     name: "updated_at",
+    type:"timestamp",
     default: () => "now()",
   })
   updatedAt: Date;

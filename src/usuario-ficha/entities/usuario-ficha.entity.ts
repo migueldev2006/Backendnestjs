@@ -5,6 +5,7 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from "typeorm";
 import { Fichas } from "../../fichas/entities/ficha.entity";
 import { Usuarios } from "../../usuarios/entities/usuario.entity";
@@ -20,8 +21,9 @@ export class UsuarioFicha {
   })
   createdAt: Date;
 
-  @Column("timestamp without time zone", {
+  @UpdateDateColumn( {
     name: "updated_at",
+    type:"timestamp",
     default: () => "now()",
   })
   updatedAt: Date;

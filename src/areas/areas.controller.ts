@@ -6,10 +6,12 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { AreasService } from './areas.service';
 import { CreateAreaDto, UpdateAreaDto } from './dto';
-
+import { JwtGuard } from 'src/auth/guards/jwt.guard';
+// @UseGuards(JwtGuard)
 @Controller('areas')
 export class AreasController {
   constructor(private readonly areasService: AreasService) {}

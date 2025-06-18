@@ -6,6 +6,7 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from "typeorm";
 import { Sedes } from "../../sedes/entities/sede.entity";
 import { Usuarios } from "../../usuarios/entities/usuario.entity";
@@ -30,11 +31,13 @@ export class Areas {
   })
   createdAt: Date;
 
-  @Column("timestamp without time zone", {
+  @UpdateDateColumn( {
     name: "updated_at",
+    type:"timestamp",
     default: () => "now()",
   })
   updatedAt: Date;
+
 
   @ManyToOne(() => Sedes, (sedes) => sedes.areas)
   @JoinColumn([{ name: "fk_sede", referencedColumnName: "idSede" }])

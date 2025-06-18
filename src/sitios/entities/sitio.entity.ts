@@ -6,6 +6,7 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from "typeorm";
 import { Inventarios } from "../../inventarios/entities/inventario.entity";
 import { Movimientos } from "../../movimientos/entities/movimiento.entity";
@@ -44,8 +45,9 @@ export class Sitios {
   })
   createdAt: Date;
 
-  @Column("timestamp without time zone", {
+  @UpdateDateColumn( {
     name: "updated_at",
+    type:"timestamp",
     default: () => "now()",
   })
   updatedAt: Date;
