@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { ProgramasFormacionService } from './programas-formacion.service';
 import { CreateProgramasFormacionDto, UpdateProgramasFormacionDto } from './dto';
-
+import { JwtGuard } from 'src/auth/guards/jwt.guard';
+@UseGuards(JwtGuard)
 @Controller('programas-formacion')
 export class ProgramasFormacionController {
   constructor(private readonly programasFormacionService: ProgramasFormacionService) {}

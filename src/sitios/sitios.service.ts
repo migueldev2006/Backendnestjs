@@ -33,7 +33,6 @@ export class SitiosService {
         fkElemento: elemento,
         stock: 0,
         estado: false,
-        slug: `${elemento.idElemento}-${nuevoSitio.idSitio}`,
       });
     });
 

@@ -12,34 +12,34 @@ export class TiposSitioController {
 
   @Post()
   @Permiso(12)
-  @UseGuards(PermisoGuard)
+  // @UseGuards(PermisoGuard)
   async create(@Body() newTipoSitio: CreateTiposSitioDto) {
     return this.tiposSitioService.create(newTipoSitio);
   }
 
   @Get()
   @Permiso(11)
-  @UseGuards(PermisoGuard)
+  // @UseGuards(PermisoGuard)
   findAll() {
     return this.tiposSitioService.findAll();
   }
 
   @Get(':nombre')
   @Permiso(13)
-  @UseGuards(PermisoGuard)
+  // @UseGuards(PermisoGuard)
   findOne(@Param('nombre') nombre: string) {
     return this.tiposSitioService.findOne(nombre);
   }
 
   @Patch('update/:id')
   @Permiso(14)
-  @UseGuards(PermisoGuard)
+  // @UseGuards(PermisoGuard)
   update(@Param('id') id: string, @Body() updateTiposSitio: UpdateTiposSitioDto) {
     return this.tiposSitioService.update(+id, updateTiposSitio);
   }
   @Patch('estado/:id')
   @Permiso(15)
-  @UseGuards(PermisoGuard)
+  // @UseGuards(PermisoGuard)
   updatestat(@Param('id') id: string) {
     return this.tiposSitioService.updatestate(+id);
   }

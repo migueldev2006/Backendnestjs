@@ -39,11 +39,6 @@ export class Inventarios {
   })
   updatedAt: Date;
 
-  @Column('text', {
-    unique: true,
-  })
-  slug: string;
-
   @ManyToOne(() => Elementos, (elementos) => elementos.inventarios)
   @JoinColumn([{ name: 'fk_elemento', referencedColumnName: 'idElemento' }])
   fkElemento: Elementos;
@@ -57,24 +52,4 @@ export class Inventarios {
 
   @OneToMany(() => CodigoInventario, (codigos) => codigos.fkInventario)
   codigos: CodigoInventario[];
-
-  @BeforeInsert()
-  checkSlugInsert() {
-    if (!this.slug) {
-      this.slug = this.slug;
-    }
-
-    this.slug = this.slug
-      .toLowerCase()
-      .replaceAll(' ', '_')
-      .replaceAll("'", '');
-  }
-
-  @BeforeUpdate()
-  checkSlugUpdate() {
-    this.slug = this.slug
-      .toLowerCase()
-      .replaceAll(' ', '_')
-      .replaceAll("'", '');
-  }
 }

@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { CodigoInventarioService } from './codigo-inventario.service';
 import { CreateCodigoInventarioDto, UpdateCodigoInventarioDto } from './dto'
-
+import { JwtGuard } from 'src/auth/guards/jwt.guard';
+@UseGuards(JwtGuard)
 @Controller('codigo-inventario')
 export class CodigoInventarioController {
   constructor(private readonly codigoInventarioService: CodigoInventarioService) {}

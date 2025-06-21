@@ -35,7 +35,7 @@ export class AuthService {
             password: undefined,
             fkRol: user.fkRol?.idRol ?? undefined
         }, this.configService.get("SECRET"), {
-            expiresIn: this.configService.get("EXPIRES") ?? "1h"
+            expiresIn: this.configService.get("EXPIRES") ?? "24h"
         });
 
         return { status: 200, response: "Successfully logged in", access_token: token }

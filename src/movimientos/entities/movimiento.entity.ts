@@ -66,11 +66,6 @@
     })
     createdAt: Date;
 
-    @Column('text', {
-      unique: true,
-    })
-    slug: string;
-
   @UpdateDateColumn({
     name: "updated_at",
     type:'timestamp',
@@ -103,23 +98,4 @@
     )
     notificaciones: Notificaciones[];
 
-    @BeforeInsert()
-    checkSlugInsert() {
-      if (!this.slug) {
-        this.slug = this.slug;
-      }
-
-      this.slug = this.slug
-        .toLowerCase()
-        .replaceAll(' ', '_')
-        .replaceAll("'", '');
-    }
-
-    @BeforeUpdate()
-    checkSlugUpdate() {
-      this.slug = this.slug
-        .toLowerCase()
-        .replaceAll(' ', '_')
-        .replaceAll("'", '');
-    }
   }

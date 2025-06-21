@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { RolPermisoService } from './rol-permiso.service';
 import { CreateRolPermisoDto, UpdateRolPermisoDto } from './dto';
-
+import { JwtGuard } from 'src/auth/guards/jwt.guard';
+@UseGuards(JwtGuard)
 @Controller('rol-permiso')
 export class RolPermisoController {
   constructor(private readonly rolPermisoService: RolPermisoService) {}

@@ -7,9 +7,6 @@ export class CreateInventarioDto {
     @IsBoolean()
     estado:boolean
 
-    @IsString()
-    slug:string
-
     @IsNumber()
     fkElemento:number
 

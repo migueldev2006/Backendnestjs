@@ -21,6 +21,7 @@ export class UsuariosService {
 
     const Usuario = this.usuariosRepository.create({
       ...newUser,
+      fkRol:{idRol:newUser.fkRol},
       password: hash
     });
 
@@ -38,7 +39,8 @@ export class UsuariosService {
     for (const row of jsonData) {
       const usuario = row as CreateUsuarioDto;
       const createdUser = await this.usuariosRepository.save({
-        ...usuario
+        ...usuario,
+        fkRol: {idRol: usuario.fkRol}
       })
       newUsersList.push(createdUser);
     }

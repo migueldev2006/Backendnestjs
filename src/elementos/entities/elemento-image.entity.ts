@@ -12,7 +12,7 @@ export class ElementImage {
     @ManyToOne(
         () => Elementos,
         (Elemento) =>
-            Elemento.images
+            Elemento.imagenElemento
     )
   Elemento:Elementos;
 }

@@ -28,7 +28,7 @@ export class CreateElementoDto {
 
   @IsArray()
   @IsString({each:true})
-  images: string[];
+  imagenElemento: string[];
 
   @IsNumber()
   fkCategoria:number

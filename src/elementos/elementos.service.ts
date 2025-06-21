@@ -23,7 +23,7 @@ export class ElementosService {
       fkCategoria: { idCategoria: createElementoDto.fkCategoria },
       fkUnidadMedida: { idUnidad: createElementoDto.fkUnidadMedida },
       fkCaracteristica: { idCaracteristica: createElementoDto.fkCaracteristica },
-      images: createElementoDto.images.map((url) => ({ url })),
+      imagenElemento: createElementoDto.imagenElemento.map((url) => ({ url })),
     });
 
     const nuevoElemento = await this.elementoRepository.save(elemento);
@@ -79,7 +79,7 @@ export class ElementosService {
     await this.elementoRepository.update(idElemento, {
       nombre: updateElementoDto.nombre,
       descripcion: updateElementoDto.descripcion,
-      images: updateElementoDto.images.map((url) => ({ url })),
+      imagenElemento: updateElementoDto.imagenElemento.map((url) => ({ url })),
     });
 
   const updatedElemento = await this.elementoRepository.save(getElementoById);

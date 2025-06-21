@@ -33,33 +33,7 @@ export class Notificaciones {
   })
   createdAt: Date;
 
-  @Column('text', {
-    unique: true,
-  })
-  slug: string;
-
   @ManyToOne(() => Movimientos, (movimientos) => movimientos.notificaciones)
   @JoinColumn([{ name: 'fk_movimiento', referencedColumnName: 'idMovimiento' }])
   fkMovimiento: Movimientos;
-
-
-  @BeforeInsert()
-  checkSlugInsert() {
-    if (!this.slug) {
-      this.slug = this.titulo;
-    }
-
-    this.slug = this.slug
-      .toLowerCase()
-      .replaceAll(' ', '_')
-      .replaceAll("'", '');
-  }
-
-  @BeforeUpdate()
-  checkSlugUpdate() {
-    this.slug = this.slug
-      .toLowerCase()
-      .replaceAll(' ', '_')
-      .replaceAll("'", '');
-  }
 }

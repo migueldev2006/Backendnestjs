@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, UseGuards } from '@nestjs/common';
 import { ElementosService } from './elementos.service';
 import { CreateElementoDto, UpdateElementoDto } from './dto';
-
+import { JwtGuard } from 'src/auth/guards/jwt.guard';
+@UseGuards(JwtGuard)
 @Controller('elementos')
 export class ElementosController {
   constructor(private readonly elementosService: ElementosService) {}

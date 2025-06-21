@@ -12,35 +12,35 @@ export class MunicipiosController {
 
   @Post()
   @Permiso(17)
-  @UseGuards(PermisoGuard)
+  // @UseGuards(PermisoGuard)
   create(@Body() createMunicipioDto: CreateMunicipioDto) {
     return this.municipiosService.create(createMunicipioDto);
   }
 
   @Get()
   @Permiso(16)
-  @UseGuards(PermisoGuard)
+  // @UseGuards(PermisoGuard)
   findAll() {
     return this.municipiosService.findAll();
   }
 
   @Get(':id')
   @Permiso(18)
-  @UseGuards(PermisoGuard)
+  // @UseGuards(PermisoGuard)
   findOne(@Param('id') id: string) {
     return this.municipiosService.findOne(+id);
   }
 
   @Patch('update/:id')
   @Permiso(19)
-  @UseGuards(PermisoGuard)
+  // @UseGuards(PermisoGuard)
   update(@Param('id') id: string, @Body() updateMunicipioDto: UpdateMunicipioDto) {
     return this.municipiosService.update(+id, updateMunicipioDto);
   }
 
   @Patch('estado/:id')
   @Permiso(20)
-  @UseGuards(PermisoGuard)
+  // @UseGuards(PermisoGuard)
   updateStatus(@Param('id') id: string) {
     return this.municipiosService.updateStatus(+id);
   }
