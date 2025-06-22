@@ -7,7 +7,6 @@ import { Repository } from "typeorm";
 import { createTransport, Transporter, SendMailOptions } from 'nodemailer';
 
 
-
 @Injectable()
 
 export class EmailService {
@@ -49,21 +48,23 @@ export class EmailService {
 
         const payload = { correo };
 
-        const token = jwt.sign(payload, this.configService.get("SECRET"),{
+        const token = jwt.sign(payload, this.configService.get("SECRET"), {
             expiresIn: this.configService.get("EXPIRES") ?? "1h"
         });
 
 
 
-        const url = `${this.configService.get("BASE_URL")}reset-password?token=${token}`;
+        const url = `${this.configService.get("BASE_URL")}/reset-password?token=${token}`;
 
-        const text = `Holis para cambiar tu contraseña da click aqui: ${url}`;
+        const html = `<p>Hola para cambiar tu contraseña click <a href="${url}">aqui</a></p>`
+
 
 
         return this.sendMail({
             to: correo,
             subject: 'Reset password',
-            text
+            html,
+
         });
 
     }

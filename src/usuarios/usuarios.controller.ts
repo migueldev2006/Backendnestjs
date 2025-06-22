@@ -8,15 +8,12 @@ import { PermisoGuard } from 'src/auth/guards/permiso.guard';
 import { Permiso } from 'src/auth/decorators/permiso.decorator';
 
 
-@UseGuards(JwtGuard)
-@UseGuards(JwtGuard)
+
 @Controller('usuarios')
 export class UsuariosController {
   constructor(private readonly usuariosService: UsuariosService) { }
 
   @Post()
-  @Permiso(2)
-  @UseGuards(PermisoGuard)
   async create(@Body() newUser: CreateUsuarioDto) {
     return this.usuariosService.create(newUser);
   }
@@ -28,8 +25,6 @@ export class UsuariosController {
   }
 
   @Get()
-  @Permiso(1)
-  @UseGuards(PermisoGuard)
   findAll() {
     return this.usuariosService.findAll();
   }
