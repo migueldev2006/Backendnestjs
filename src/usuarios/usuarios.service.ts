@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, UsePipes } from '@nestjs/common';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { Usuarios } from './entities/usuario.entity';
@@ -37,8 +37,11 @@ export class UsuariosService {
 
     for (const row of jsonData) {
       const usuario = row as CreateUsuarioDto;
+      const userPass = usuario.nombre.slice(0,1) + usuario.apellido.slice(0,1)+usuario.documento;
+      const passwordHash = await bcrypt.hash(userPass, 12);
       const createdUser = await this.usuariosRepository.save({
-        ...usuario
+        ...usuario,
+        password: passwordHash
       })
       newUsersList.push(createdUser);
     }
