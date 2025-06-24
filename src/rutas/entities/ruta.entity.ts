@@ -1,12 +1,13 @@
 import {
   Column,
   Entity,
-  Index,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { Modulos } from "../../modulos/entities/modulo.entity";
+import { Permisos } from "../../permisos/entities/permiso.entity";
 
 @Entity("rutas", { schema: "public" })
 export class Rutas {
@@ -48,4 +49,7 @@ export class Rutas {
   @ManyToOne(() => Modulos, (modulos) => modulos.rutas)
   @JoinColumn([{ name: "fk_modulo", referencedColumnName: "idModulo" }])
   fkModulo: Modulos;
+
+  @OneToMany(() => Permisos, (permiso) => permiso.fkRuta)
+  permisos: Permisos[];
 }

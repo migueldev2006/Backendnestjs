@@ -1,7 +1,6 @@
 import {
   Column,
   Entity,
-  Index,
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
@@ -37,9 +36,6 @@ export class Modulos {
 
   @Column("boolean", { name: "estado", nullable: true })
   estado: boolean | null;
-
-  @OneToMany(() => Permisos, (permisos) => permisos.fkModulo)
-  permisos: Permisos[];
 
   @OneToMany(() => Rutas, (rutas) => rutas.fkModulo)
   rutas: Rutas[];
