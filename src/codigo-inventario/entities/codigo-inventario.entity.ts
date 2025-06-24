@@ -22,9 +22,6 @@ export class CodigoInventario {
   @Column({type:'boolean', name:'baja', default:false})
   baja:boolean
 
-  @Column({type:'boolean', name:'estado', default:true})
-  estado:boolean
-
   @Column("timestamp without time zone", {
     name: "created_at",
     default: () => "now()",

@@ -64,7 +64,7 @@ export class InventariosService {
   }
 
   async findAll(): Promise<Inventarios[]> {
-    return await this.inventarioRepository.find();
+    return await this.inventarioRepository.find({ relations: ['fkSitio', 'fkElemento'] });
   }
 
   async findOne(idInventario: number): Promise<Inventarios | null> {
@@ -126,6 +126,6 @@ export class InventariosService {
 
     getInventarioById.estado = !getInventarioById.estado;
 
-    return getInventarioById;
+    return await this.inventarioRepository.save(getInventarioById);
   }
 }

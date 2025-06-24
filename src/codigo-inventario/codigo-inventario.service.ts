@@ -43,7 +43,6 @@ export class CodigoInventarioService {
 
     await this.codigoRepository.update(idCodigoIventario,{
       codigo:updateCodigoInventarioDto.codigo,
-      estado:updateCodigoInventarioDto.estado
     })
     const updatedCodigo = await this.codigoRepository.save(getCodigoById)
     return updatedCodigo

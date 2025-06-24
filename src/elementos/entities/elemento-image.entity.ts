@@ -6,7 +6,7 @@ export class ElementImage {
     @PrimaryGeneratedColumn()
     id:number
 
-    @Column('text')
+    @Column()
     url:string
 
     @ManyToOne(

@@ -41,7 +41,7 @@ export class SitiosService {
   }
 
   async findAll(): Promise<Sitios[]> {
-    return await this.sitioRepository.find();
+    return await this.sitioRepository.find({ relations: ['fkArea'] });
   }
 
   async findOne(idSitio: number): Promise<Sitios> {

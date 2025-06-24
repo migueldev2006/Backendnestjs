@@ -66,9 +66,9 @@ export class Elementos {
   })
   imagenElemento?: ElementImage[];
 
-  @ManyToOne(() => Caracteristicas, (caracteristicas) => caracteristicas.elementos)
+  @ManyToOne(() => Caracteristicas, (caracteristicas) => caracteristicas.elementos, {nullable:true})
   @JoinColumn([{ name: 'fk_caracteristica', referencedColumnName: 'idCaracteristica' }])
-  fkCaracteristica: Caracteristicas;
+  fkCaracteristica?: Caracteristicas;
 
   @ManyToOne(() => Categorias, (categorias) => categorias.elementos)
   @JoinColumn([{ name: 'fk_categoria', referencedColumnName: 'idCategoria' }])
