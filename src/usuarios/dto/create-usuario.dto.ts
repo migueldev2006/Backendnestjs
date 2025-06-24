@@ -37,10 +37,6 @@ export class CreateUsuarioDto {
     @MinLength(3)
     password: string;
 
-    @IsString()
-    @MinLength(20)
-    perfil: string;
-
     @IsInt()
     fkrol: number;
 }

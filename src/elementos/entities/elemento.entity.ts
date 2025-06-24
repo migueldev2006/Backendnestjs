@@ -59,10 +59,10 @@ export class Elementos {
   })
   updatedAt: Date;
 
-  @Column('text', {
-    unique: true,
-  })
-  slug: string;
+  // @Column('text', {
+  //   unique: true,
+  // })
+  // slug: string;
 
   @OneToMany(() => ElementImage, (ElementImage) => ElementImage.Elemento, {
     cascade: true,
@@ -84,23 +84,23 @@ export class Elementos {
   @OneToMany(() => Inventarios, (inventarios) => inventarios.fkElemento)
   inventarios: Inventarios[];
 
-  @BeforeInsert()
-  checkSlugInsert() {
-    if (!this.slug) {
-      this.slug = this.nombre;
-    }
+  // @BeforeInsert()
+  // checkSlugInsert() {
+  //   if (!this.slug) {
+  //     this.slug = this.nombre;
+  //   }
 
-    this.slug = this.slug
-      .toLowerCase()
-      .replaceAll(' ', '_')
-      .replaceAll("'", '');
-  }
+  //   this.slug = this.slug
+  //     .toLowerCase()
+  //     .replaceAll(' ', '_')
+  //     .replaceAll("'", '');
+  // }
 
-  @BeforeUpdate()
-  checkSlugUpdate() {
-    this.slug = this.slug
-      .toLowerCase()
-      .replaceAll(' ', '_')
-      .replaceAll("'", '');
-  }
+  // @BeforeUpdate()
+  // checkSlugUpdate() {
+  //   this.slug = this.slug
+  //     .toLowerCase()
+  //     .replaceAll(' ', '_')
+  //     .replaceAll("'", '');
+  // }
 }

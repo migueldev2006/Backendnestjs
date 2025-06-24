@@ -14,14 +14,15 @@ export class UsuariosService {
     private usuariosRepository: Repository<Usuarios>,
   ){}
 
-  async create(newUser: CreateUsuarioDto) {
+  async create(newUser: CreateUsuarioDto, filename?: string) {
     
     const saltRounds = 10;
     const hash = await bcrypt.hash(newUser.password, saltRounds);
 
     const Usuario = this.usuariosRepository.create({
       ...newUser,
-      password: hash
+      password: hash,
+      perfil:filename ?? "defaultPerfil.png"
     });
 
     return await this.usuariosRepository.save(Usuario);

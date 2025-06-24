@@ -76,6 +76,7 @@ import { VerificacionesModule } from './verificaciones/verificaciones.module';
     AuthModule,
     AuthModule,
   ],
+
   controllers: [AppController],
   providers: [
     { provide: APP_FILTER, useClass: HttpExceptionFilter },
