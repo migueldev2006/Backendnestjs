@@ -10,7 +10,7 @@ import {
 
 @Entity("codigo_inventario", { schema: "public" })
 export class CodigoInventario {
-  @PrimaryGeneratedColumn({ type: "integer", name: "id_verificacion" })
+  @PrimaryGeneratedColumn({ type: "integer", name: "id_codigo_inventario" })
   idCodigoIventario: number;
 
   @Column({type:'text',name:'codigo'})

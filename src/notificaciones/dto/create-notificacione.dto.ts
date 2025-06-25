@@ -1,25 +1,42 @@
-import { IsBoolean, IsNumber, IsString } from "class-validator";
+import {
+  IsString,
+  IsOptional,
+  IsBoolean,
+  IsEnum,
+  IsObject,
+  IsInt,
+} from 'class-validator';
 
 export class CreateNotificacioneDto {
-    @IsString()
-    titulo:string
+  @IsString()
+  titulo: string;
 
-    @IsString()
-    mensaje:string
+  @IsString()
+  @IsOptional()
+  mensaje?: string;
 
-    @IsString()
-    destino:string
+  @IsString()
+  @IsOptional()
+  destino?: string; // puede ser email, id usuario, etc.
 
-    @IsBoolean()
-    leido:boolean
+  @IsBoolean()
+  @IsOptional()
+  leido?: boolean;
 
-    @IsString()
-    slug:string
+  @IsBoolean()
+  @IsOptional()
+  requiereAccion?: boolean;
 
-    @IsNumber()
-    fkMovimiento:number
+  @IsEnum(['pendiente', 'aceptado', 'rechazado'], {
+    message: 'estado debe ser pendiente, aceptado o rechazado',
+  })
+  @IsOptional()
+  estado?: 'pendiente' | 'aceptado' | 'rechazado';
 
-    @IsNumber()
-    fkSoicitud:number
+  @IsObject()
+  @IsOptional()
+  data?: any; // datos adicionales
 
+  @IsInt()
+  fkUsuario: number; // FK al usuario que recibe la notificación
 }

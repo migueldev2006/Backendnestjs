@@ -51,9 +51,6 @@
     @Column('boolean', { name: 'no_devolutivo', nullable: true })
     noDevolutivo: boolean;
 
-    @Column('date', { name: 'fecha_prestamo'})
-    fechaPrestamo: Date;
-
     @Column('date', { name: 'fecha_devolucion'})
     fechaDevolucion: Date;
     
@@ -91,11 +88,5 @@
     @ManyToOne(() => Usuarios, (usuarios) => usuarios.movimientos)
     @JoinColumn([{ name: 'fk_usuario', referencedColumnName: 'idUsuario' }])
     fkUsuario: Usuarios;
-
-    @OneToMany(
-      () => Notificaciones,
-      (notificaciones) => notificaciones.fkMovimiento,
-    )
-    notificaciones: Notificaciones[];
 
   }

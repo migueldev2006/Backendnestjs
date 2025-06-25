@@ -15,7 +15,7 @@ export class AuthService {
         @InjectRepository(Usuarios)
         private usuarioRepository: Repository<Usuarios>,
         private emailService: EmailService
-        
+
     ) { }
 
     async login(data: LoginDto) {
@@ -41,37 +41,47 @@ export class AuthService {
         return { status: 200, response: "Successfully logged in", access_token: token }
     }
 
-    async forgotPassword(correo : string) {
-        const user = this.usuarioRepository.findOneBy({correo})
+    async forgotPassword(correo: string) {
+        const user = await this.usuarioRepository.findOneBy({ correo })
 
-        if(!user){
+        if (!user) {
             throw new HttpException(`No se encontro ningun usuario con el correo ${correo}`, HttpStatus.NOT_FOUND)
         }
 
-        await this.emailService.sendResetPasswordLink(correo);
+        this.emailService.sendResetPasswordLink(correo);
 
-        return {status: 200, message: "Revisa tu correo"}
+        return { status: 200, message: "Revisa tu correo" }
     }
 
 
-    async resetPassword(token:string,password:string) {
+    async resetPassword(token: string, password: string, confirmPassword: string) {
+
+        if (password !== confirmPassword) {
+            throw new HttpException(
+                'Las contraseñas no coinciden',
+                HttpStatus.BAD_REQUEST,
+            );
+        }
+
         const correo = await this.emailService.decodeConfirmationToken(token);
 
+
+
         const rounds = 10;
-        const newPassword = await bcrypt.hash(password,rounds)
+        const newPassword = await bcrypt.hash(password, rounds)
 
-        const user = await this.usuarioRepository.findOneBy({correo})
+        const user = await this.usuarioRepository.findOneBy({ correo })
 
-        if(!user){
+        if (!user) {
             throw new HttpException(`No se encontro ningun usuario con el correo ${correo}`, HttpStatus.NOT_FOUND)
         }
 
         user.password = newPassword;
-        this.usuarioRepository.save(user);
+        await this.usuarioRepository.save(user);
 
-        return {status: 200, message: "Contraseña actualizada correctamente"}
+        return { status: 200, message: "Contraseña actualizada correctamente" }
     }
 
 
-  
+
 }

@@ -121,7 +121,6 @@ export class MovimientosService {
       fkTipoMovimiento:tipoMovimiento,
       cantidad: cantidad || (codigos?.length ?? 0),
       descripcion,
-      fechaPrestamo: new Date(),
       fkUsuario: { idUsuario: fkUsuario },
       fkSitio: { idSitio: fkSitio },
       enProceso: true,

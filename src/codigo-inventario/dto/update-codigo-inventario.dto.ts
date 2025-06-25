@@ -6,8 +6,4 @@ export class UpdateCodigoInventarioDto extends PartialType(CreateCodigoInventari
     @IsString()
     @IsOptional()
     codigo?: string
-    
-    @IsString()
-    @IsOptional()
-    estado:boolean
 }

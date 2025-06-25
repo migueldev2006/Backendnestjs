@@ -6,5 +6,5 @@ export class CreatePermisoDto {
     permiso:string
 
     @IsNumber()
-    fkModulo:number
+    fkRuta:number
 }

@@ -9,45 +9,55 @@ import { Repository } from 'typeorm';
 export class CodigoInventarioService {
   constructor(
     @InjectRepository(CodigoInventario)
-    private readonly codigoRepository:Repository<CodigoInventario>
-  ){}
-  async create(createCodigoInventarioDto: CreateCodigoInventarioDto): Promise<CodigoInventario>{
+    private readonly codigoRepository: Repository<CodigoInventario>,
+  ) {}
+  async create(
+    createCodigoInventarioDto: CreateCodigoInventarioDto,
+  ): Promise<CodigoInventario> {
     const codigo = this.codigoRepository.create({
       ...createCodigoInventarioDto,
-      fkInventario:{idInventario:createCodigoInventarioDto.fkInventario}
+      fkInventario: { idInventario: createCodigoInventarioDto.fkInventario },
     });
 
     return await this.codigoRepository.save(codigo);
   }
 
-  async findAll():Promise<CodigoInventario[]> {
-    return await this.codigoRepository.find()
+  async findAll(): Promise<CodigoInventario[]> {
+    return await this.codigoRepository.find({
+      relations: ['fkInventario'],
+    });
   }
 
-  async findOne(idCodigoIventario: number):Promise<CodigoInventario | null> {
-    const getCodigoById = await this.codigoRepository.findOneBy({idCodigoIventario});
+  async findOne(idCodigoIventario: number): Promise<CodigoInventario | null> {
+    const getCodigoById = await this.codigoRepository.findOneBy({
+      idCodigoIventario,
+    });
 
-    if(!getCodigoById){
-      throw new Error(`No se encuentra el codigo con el id ${idCodigoIventario}`)
+    if (!getCodigoById) {
+      throw new Error(
+        `No se encuentra el codigo con el id ${idCodigoIventario}`,
+      );
     }
 
     return getCodigoById;
   }
 
-  async update(idCodigoIventario: number, updateCodigoInventarioDto: UpdateCodigoInventarioDto) {
-    const getCodigoById = await this.codigoRepository.findOneBy({idCodigoIventario})
+  async update(
+    idCodigoIventario: number,
+    updateCodigoInventarioDto: UpdateCodigoInventarioDto,
+  ) {
+    const getCodigoById = await this.codigoRepository.findOneBy({
+      idCodigoIventario,
+    });
 
     if (!getCodigoById) {
-      throw new Error(`No se encontro el codigo correspondiente a este id`)
+      throw new Error(`No se encontro el codigo correspondiente a este id`);
     }
 
-    await this.codigoRepository.update(idCodigoIventario,{
-      codigo:updateCodigoInventarioDto.codigo,
-    })
-    const updatedCodigo = await this.codigoRepository.save(getCodigoById)
-    return updatedCodigo
+    await this.codigoRepository.update(idCodigoIventario, {
+      codigo: updateCodigoInventarioDto.codigo,
+    });
+    const updatedCodigo = await this.codigoRepository.save(getCodigoById);
+    return updatedCodigo;
   }
-
-  
-
 }

@@ -17,14 +17,14 @@ export class CodigoInventarioController {
     return this.codigoInventarioService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.codigoInventarioService.findOne(+id);
+  @Get(':idCodigoInventario')
+  findOne(@Param('idCodigoInventario') idCodigoInventario: string) {
+    return this.codigoInventarioService.findOne(+idCodigoInventario);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCodigoInventarioDto: UpdateCodigoInventarioDto) {
-    return this.codigoInventarioService.update(+id, updateCodigoInventarioDto);
+  @Patch(':idCodigoInventario')
+  update(@Param('idCodigoInventario') idCodigoInventario: string, @Body() updateCodigoInventarioDto: UpdateCodigoInventarioDto) {
+    return this.codigoInventarioService.update(+idCodigoInventario, updateCodigoInventarioDto);
   }
 
 }

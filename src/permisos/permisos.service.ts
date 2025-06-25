@@ -14,7 +14,7 @@ export class PermisosService {
   async create(createPermisoDto: CreatePermisoDto): Promise<Permisos> {
     const permiso = this.permisoRepository.create({
       ...createPermisoDto,
-      fkModulo: { idModulo: createPermisoDto.fkModulo },
+      fkRuta: { idRuta: createPermisoDto.fkRuta },
     });
     return await this.permisoRepository.save(permiso);
   }

@@ -37,11 +37,7 @@ export class CreateMovimientoDto {
   noDevolutivo: boolean;
 
   @IsDate()
-  fechaPrestamo: Date;
-
-  @IsDate()
   fechaDevolucion: Date;
-
 
   @IsNumber()
   fkInventario: number;

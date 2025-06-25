@@ -7,10 +7,10 @@ import { JwtGuard } from 'src/auth/guards/jwt.guard';
 export class MovimientosController {
   constructor(private readonly movimientosService: MovimientosService) {}
 
-  // @Post()
-  // create(@Body() createMovimientoDto: CreateMovimientoDto) {
-  //   return this.movimientosService.create(createMovimientoDto);
-  // }
+  @Post()
+  create(@Body() createMovimientoDto: CreateMovimientoDto) {
+    return this.movimientosService.create(createMovimientoDto);
+  }
 
   @Get()
   findAll() {

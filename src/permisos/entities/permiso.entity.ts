@@ -1,15 +1,14 @@
 import {
   Column,
   Entity,
-  Index,
   JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { Modulos } from "../../modulos/entities/modulo.entity";
 import { RolPermiso } from "../../rol-permiso/entities/rol-permiso.entity";
+import { Rutas } from "../../rutas/entities/ruta.entity";
 
 @Entity("permisos", { schema: "public" })
 export class Permisos {
@@ -32,10 +31,10 @@ export class Permisos {
   })
   updatedAt: Date;
 
-  @ManyToOne(() => Modulos, (modulos) => modulos.permisos)
-  @JoinColumn([{ name: "fk_modulo", referencedColumnName: "idModulo" }])
-  fkModulo: Modulos;
-
   @OneToMany(() => RolPermiso, (rolPermiso) => rolPermiso.fkPermiso)
   rolPermisos: RolPermiso[];
+
+  @ManyToOne(() => Rutas, (ruta) => ruta.permisos, { onDelete: "CASCADE" })
+  @JoinColumn([{ name: "fk_ruta", referencedColumnName: "idRuta" }])
+  fkRuta: Rutas;
 }

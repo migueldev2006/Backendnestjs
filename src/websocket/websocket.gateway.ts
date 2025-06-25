@@ -1,20 +1,48 @@
-import { SubscribeMessage, WebSocketGateway, OnGatewayConnection, OnGatewayDisconnect, WebSocketServer, ConnectedSocket, MessageBody } from '@nestjs/websockets';
-import { connected } from 'process';
-import { Server, Socket } from 'socket.io'
-@WebSocketGateway()
+
+import {
+  WebSocketGateway,
+  OnGatewayConnection,
+  OnGatewayDisconnect,
+  WebSocketServer,
+  ConnectedSocket,
+  SubscribeMessage,
+  MessageBody,
+} from '@nestjs/websockets';
+import { Server, Socket } from 'socket.io';
+
+@WebSocketGateway({
+  cors: {
+    origin: '*',
+  },
+})
 export class WebsocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
-  server:Server
+  server: Server;
+
+  private usuariosConectados: Map<number, string> = new Map();
 
   handleConnection(client: Socket) {
-    console.log(`client connected : ${client.id}`)
+    const idUsuario = Number(client.handshake.query.idUsuario);
+    if (idUsuario) {
+      this.usuariosConectados.set(idUsuario, client.id);
+      console.log(`📡 Usuario ${idUsuario} conectado: ${client.id}`);
+    }
   }
-  handleDisconnect(client: Socket) {
-        console.log(`client disconnected : ${client.id}`)
 
+  handleDisconnect(client: Socket) {
+    for (const [idUsuario, socketId] of this.usuariosConectados.entries()) {
+      if (socketId === client.id) {
+        this.usuariosConectados.delete(idUsuario);
+        console.log(`🔌 Usuario ${idUsuario} desconectado`);
+        break;
+      }
+    }
   }
-  @SubscribeMessage('message')
-  handleMessage(@ConnectedSocket() client: Socket, @MessageBody() payload: any){
-    console.log(payload)
+
+  emitirNotificacion(idUsuario: number, notificacion: any) {
+    const socketId = this.usuariosConectados.get(idUsuario);
+    if (socketId) {
+      this.server.to(socketId).emit('notificacion', notificacion);
+    }
   }
 }

@@ -12,7 +12,7 @@ export class InventariosController {
     return this.inventariosService.create(createInventarioDto);
   }
 
-  @Post()
+  @Post('agregateStock')
   agregateStock(@Body() agregateStockDto: AgregarStockDto) {
     return this.inventariosService.agregateStock(agregateStockDto);
   }
