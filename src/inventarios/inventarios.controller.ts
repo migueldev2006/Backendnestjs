@@ -5,8 +5,7 @@ import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { PermisoGuard } from 'src/auth/guards/permiso.guard';
 import { Permiso } from 'src/auth/decorators/permiso.decorator';
 
-@UseGuards(JwtGuard)
-@UseGuards(PermisoGuard)
+@UseGuards(JwtGuard, PermisoGuard)
 @Controller('inventarios')
 export class InventariosController {
   constructor(private readonly inventariosService: InventariosService) {}
@@ -18,34 +17,33 @@ export class InventariosController {
   }
 
   @Post('agregateStock')
+  @Permiso(39)
   agregateStock(@Body() agregateStockDto: AgregarStockDto) {
     return this.inventariosService.agregateStock(agregateStockDto);
   }
 
   @Get()
-  @Permiso(39)
+  @Permiso(40)
   findAll() {
     return this.inventariosService.findAll();
   }
 
   @Get(':idInventario')
-  @Permiso(40)
+  @Permiso(41)
   findOne(@Param('idInventario') idInventario: number) {
     return this.inventariosService.findOne(+idInventario);
   }
 
   @Patch(':idInventario')
-  @Permiso(41)
+  @Permiso(42)
   update(@Param('idInventario') idInventario: number, @Body() updateInventarioDto: UpdateInventarioDto) {
     return this.inventariosService.update(+idInventario, updateInventarioDto);
   }
 
   @Patch('state/:idInventario')
-  @Permiso(42)
+  @Permiso(43)
   stastus(@Param('idInventario') idInventario: number) {
     return this.inventariosService.changeStatus(+idInventario);
   }
-
-  // @Permiso(43) agregar stock lucho
 
 }

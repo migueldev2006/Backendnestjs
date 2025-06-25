@@ -12,8 +12,7 @@ import { CreateMovimientoDto, UpdateMovimientoDto } from './dto';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { PermisoGuard } from 'src/auth/guards/permiso.guard';
 import { Permiso } from 'src/auth/decorators/permiso.decorator';
-@UseGuards(JwtGuard)
-@UseGuards(PermisoGuard)
+@UseGuards(JwtGuard, PermisoGuard)
 @Controller('movimientos')
 export class MovimientosController {
   constructor(private readonly movimientosService: MovimientosService) {}

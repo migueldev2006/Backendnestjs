@@ -17,7 +17,7 @@ export interface UserFromToken {
   correo: string;
   fkRol: number; // o string si es nombre
 }
-@UseGuards(JwtGuard)
+@UseGuards(JwtGuard, PermisoGuard)
 // @UseGuards(PermisoGuard)
 @Controller('usuarios')
 export class UsuariosController {

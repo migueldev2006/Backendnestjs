@@ -14,8 +14,7 @@ import { CreateFichaDto, UpdateFichaDto } from './dto';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { PermisoGuard } from 'src/auth/guards/permiso.guard';
 import { Permiso } from 'src/auth/decorators/permiso.decorator';
-@UseGuards(JwtGuard)
-@UseGuards(PermisoGuard)
+@UseGuards(JwtGuard, PermisoGuard)
 @Controller('fichas')
 export class FichasController {
   constructor(private readonly fichasService: FichasService) {}
