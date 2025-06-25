@@ -5,13 +5,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Sitios } from './entities/sitio.entity';
 import { Elementos } from 'src/elementos/entities';
 import { Inventarios } from 'src/inventarios/entities/inventario.entity';
-import { Verificaciones } from 'src/verificaciones/entities/verificacione.entity';
+
 
 @Module({
   controllers: [SitiosController],
   providers: [SitiosService],
   imports: [
-    TypeOrmModule.forFeature([Sitios, Elementos, Inventarios, Verificaciones]),
+    TypeOrmModule.forFeature([Sitios, Elementos, Inventarios]),
   ],
   exports: [TypeOrmModule],
 })

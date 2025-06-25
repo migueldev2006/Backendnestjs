@@ -1,16 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  UseGuards,
-  Request,
-  UploadedFile,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards,  UploadedFile, UseInterceptors, Req } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UsuariosService } from './usuarios.service';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
@@ -21,13 +9,22 @@ import { Permiso } from 'src/auth/decorators/permiso.decorator';
 import { diskStorage } from 'multer';
 import { fileName } from 'typeorm-model-generator/dist/src/NamingStrategy';
 import { extname } from 'path';
+import { Request } from 'express';
 
+export interface UserFromToken {
+  idUsuario: number;
+  nombre: string;
+  correo: string;
+  fkRol: number; // o string si es nombre
+}
 @UseGuards(JwtGuard)
+// @UseGuards(PermisoGuard)
 @Controller('usuarios')
 export class UsuariosController {
   constructor(private readonly usuariosService: UsuariosService) {}
 
   @Post()
+  @Permiso(1)
   @UseInterceptors(FileInterceptor('perfil', {
     storage: diskStorage({
       destination: './public/perfiles',
@@ -46,35 +43,50 @@ export class UsuariosController {
     return this.usuariosService.create(newUser, file?.filename);
   }
 
-  @Post('/massive')
-  @UseInterceptors(FileInterceptor('excel'))
+  @Post("/massive")
+  @Permiso(2)
+  @UseInterceptors(FileInterceptor("excel"))
   async massiveUpload(@UploadedFile() file: Express.Multer.File) {
     return this.usuariosService.massiveUpload(file);
   }
 
   @Get()
+  @Permiso(3)
   findAll() {
     return this.usuariosService.findAll();
   }
 
+  @Get('perfil')
+  @Permiso(4)
+  @UseGuards(JwtGuard)
+  getPerfil(@Req() req){
+    const user = req.user;
+
+    return {
+      correo :user.correo
+    }
+    
+  }
+
+
+
   @Get(':nombre')
-  @Permiso(3)
-  // @UseGuards(PermisoGuard)
+  @Permiso(5)
   findOne(@Param('nombre') nombre: string) {
     return this.usuariosService.findOne(nombre);
   }
 
-  @Patch('update/:idUsuario')
-  @Permiso(4)
-  // @UseGuards(PermisoGuard)
+  
+  @Patch('update/:id')
+  @Permiso(6)
   update(@Param('idUsuario') idUsuario: string, @Body() updateUsuario: UpdateUsuarioDto) {
     return this.usuariosService.update(+idUsuario, updateUsuario);
   }
 
-  @Patch('estado/:idUsuario')
-  @Permiso(5)
-  // @UseGuards(PermisoGuard)
-  updatestate(@Param('idUsuario') idUsuario: string) {
-    return this.usuariosService.updatestate(+idUsuario);
+  @Patch('estado/:id')
+  @Permiso(7)
+  @UseGuards(PermisoGuard)
+  updatestate(@Param('id') id: string) {
+    return this.usuariosService.updatestate(+id);
   }
 }

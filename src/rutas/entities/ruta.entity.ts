@@ -25,11 +25,21 @@ export class Rutas {
   descripcion: string | null;
 
   @Column("character varying", {
-    name: "url_destino",
-    nullable: true,
+    name: "href",
+    nullable: false,
     length: 205,
   })
-  urlDestino: string | null;
+  href: string;
+
+  @Column("character varying", {
+    name: "icono",
+    nullable: false,
+    length: 205,
+  })
+  icono: string;
+
+  @Column("boolean", { name: "listed", nullable: false })
+  listed: boolean;
 
   @Column("boolean", { name: "estado", nullable: true })
   estado: boolean | null;
