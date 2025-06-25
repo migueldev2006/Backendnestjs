@@ -22,6 +22,20 @@ export class Modulos {
   })
   descripcion: string | null;
 
+  @Column("character varying", {
+    name: "href",
+    nullable: true,
+    length: 205,
+  })
+  href: string | null;
+
+  @Column("character varying", {
+    name: "icono",
+    nullable: false,
+    length: 205,
+  })
+  icono: string;
+
   @Column("timestamp without time zone", {
     name: "created_at",
     default: () => "now()",

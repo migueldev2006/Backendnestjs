@@ -7,6 +7,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Usuarios } from 'src/usuarios/entities/usuario.entity';
 import { Repository } from 'typeorm';
 import { EmailService } from 'src/auth/email/email.service';
+import { groupBy } from "lodash";
+
+
 
 @Injectable()
 export class AuthService {
@@ -38,7 +41,56 @@ export class AuthService {
             expiresIn: this.configService.get("EXPIRES") ?? "1h"
         });
 
-        return { status: 200, response: "Successfully logged in", access_token: token }
+        const flatData = await this.usuarioRepository
+            .createQueryBuilder("usuario")
+            .leftJoin("usuario.fkRol", "rol")
+            .leftJoin("rol.rolPermisos", "rolPermiso")
+            .leftJoin("rolPermiso.fkPermiso", "permiso")
+            .leftJoin("permiso.fkRuta", "ruta")
+            .leftJoin("ruta.fkModulo", "modulo")
+            .select([
+                "modulo.idModulo",
+                "modulo.nombre",
+                "modulo.icono",
+                "modulo.href",
+                "ruta.idRuta",
+                "ruta.nombre",
+                "ruta.href",
+                "ruta.icono",
+            ])
+            .where("usuario.idUsuario = :userId", { userId: user.idUsuario })
+            .andWhere("rolPermiso.estado = true")
+            .andWhere("ruta.estado = true")
+            .andWhere("modulo.estado = true")
+            .getRawMany();
+
+            // Group and transform
+            const grouped = Object.values(
+            flatData.reduce((acc, row) => {
+                const moduloId = row.modulo_idModulo;
+
+                if (!acc[moduloId]) {
+                acc[moduloId] = {
+                    id: moduloId,
+                    nombre: row.modulo_nombre,
+                    icono: row.modulo_icono,
+                    href: row.modulo_href,
+                    rutas: [],
+                };
+                }
+
+                acc[moduloId].rutas.push({
+                id: row.ruta_idRuta,
+                nombre: row.ruta_nombre,
+                href: row.ruta_href,
+                icono: row.ruta_icono,
+                });
+
+                return acc;
+            }, {} as Record<number, any>)
+            );
+
+        return { status: 200, response: "Successfully logged in", access_token: token, modules: grouped }
     }
 
     async forgotPassword(correo: string) {

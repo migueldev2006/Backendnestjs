@@ -29,7 +29,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { NotificacionesModule } from './notificaciones/notificaciones.module';
 import { AuthModule } from './auth/auth.module';
-import { VerificacionesModule } from './verificaciones/verificaciones.module';
+
 
 
 
@@ -64,7 +64,6 @@ import { VerificacionesModule } from './verificaciones/verificaciones.module';
     TiposSitioModule,
     SitiosModule,
     InventariosModule,
-    VerificacionesModule,
     MovimientosModule,
     TiposMovimientoModule,
     CaracteristicasModule,

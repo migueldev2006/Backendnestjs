@@ -11,7 +11,7 @@ import { Inventarios } from "../../inventarios/entities/inventario.entity";
 import { Movimientos } from "../../movimientos/entities/movimiento.entity";
 import { Areas } from "../../areas/entities/area.entity";
 import { TipoSitios } from "../../tipos-sitio/entities/tipos-sitio.entity";
-import { Verificaciones } from "../../verificaciones/entities/verificacione.entity";
+
 
 @Entity("sitios", { schema: "public" })
 export class Sitios {
@@ -63,8 +63,4 @@ export class Sitios {
   @ManyToOne(() => TipoSitios, (tipoSitios) => tipoSitios.sitios)
   @JoinColumn([{ name: "fk_tipo_sitio", referencedColumnName: "idTipo" }])
   fkTipoSitio: TipoSitios;
-
-  @OneToMany(() => Verificaciones, (verificaciones) => verificaciones.fkSitio)
-  verificaciones: Verificaciones[];
-
 }

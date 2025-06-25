@@ -6,30 +6,40 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { AreasService } from './areas.service';
 import { CreateAreaDto, UpdateAreaDto } from './dto';
+import { JwtGuard } from 'src/auth/guards/jwt.guard';
+import { PermisoGuard } from 'src/auth/guards/permiso.guard';
+import { Permiso } from 'src/auth/decorators/permiso.decorator';
 
+@UseGuards(JwtGuard)
+@UseGuards(PermisoGuard)
 @Controller('areas')
 export class AreasController {
   constructor(private readonly areasService: AreasService) {}
 
   @Post()
+  @Permiso(13)
   create(@Body() createAreaDto: CreateAreaDto) {
     return this.areasService.create(createAreaDto);
   }
 
   @Get()
+  @Permiso(14)
   findAll() {
     return this.areasService.findAll();
   }
 
   @Get(':idArea')
+  @Permiso(15)
   findOne(@Param('idArea') idArea: number) {
     return this.areasService.findOne(+idArea);
   }
 
   @Patch(':idArea')
+  @Permiso(16)
   update(
     @Param('idArea') idArea: number,
     @Body() updateAreaDto: UpdateAreaDto,
@@ -38,6 +48,7 @@ export class AreasController {
   }
 
   @Patch('state/:idArea')
+  @Permiso(17)
   status(@Param('idArea') idArea: number) {
     return this.areasService.changeStatus(+idArea);
   }
