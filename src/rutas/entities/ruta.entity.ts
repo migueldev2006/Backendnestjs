@@ -33,7 +33,7 @@ export class Rutas {
 
   @Column("character varying", {
     name: "icono",
-    nullable: false,
+    nullable: true,
     length: 205,
   })
   icono: string;
