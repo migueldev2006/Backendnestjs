@@ -18,6 +18,9 @@ import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { PermisoGuard } from 'src/auth/guards/permiso.guard';
 import { Permiso } from 'src/auth/decorators/permiso.decorator';
+import { diskStorage } from 'multer';
+import { fileName } from 'typeorm-model-generator/dist/src/NamingStrategy';
+import { extname } from 'path';
 
 @UseGuards(JwtGuard)
 @Controller('usuarios')
@@ -25,8 +28,22 @@ export class UsuariosController {
   constructor(private readonly usuariosService: UsuariosService) {}
 
   @Post()
-  async create(@Body() newUser: CreateUsuarioDto) {
-    return this.usuariosService.create(newUser);
+  @UseInterceptors(FileInterceptor('perfil', {
+    storage: diskStorage({
+      destination: './public/perfiles',
+      filename: (req, file, cb) => {
+        const nombre = req.body.nombre?.toLowerCase().replace(/\s+/g, '-'); // limpiar espacios
+        const ext = extname(file.originalname);
+        const filename = `perfil-${nombre || 'sin-nombre'}${ext}`;
+        cb(null, filename);
+      },
+    }),
+  }))
+
+  async create(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() newUser: CreateUsuarioDto) {
+    return this.usuariosService.create(newUser, file?.filename);
   }
 
   @Post('/massive')
