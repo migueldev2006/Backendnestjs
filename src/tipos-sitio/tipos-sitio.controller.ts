@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
 import { TiposSitioService } from './tipos-sitio.service';
 import { CreateTiposSitioDto } from './dto/create-tipos-sitio.dto';
 import { UpdateTiposSitioDto } from './dto/update-tipos-sitio.dto';
@@ -8,7 +17,7 @@ import { PermisoGuard } from 'src/auth/guards/permiso.guard';
 @UseGuards(JwtGuard)
 @Controller('tipos_sitio')
 export class TiposSitioController {
-  constructor(private readonly tiposSitioService: TiposSitioService) { }
+  constructor(private readonly tiposSitioService: TiposSitioService) {}
 
   @Post()
   @Permiso(12)
@@ -34,7 +43,10 @@ export class TiposSitioController {
   @Patch('update/:id')
   @Permiso(14)
   @UseGuards(PermisoGuard)
-  update(@Param('id') id: string, @Body() updateTiposSitio: UpdateTiposSitioDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateTiposSitio: UpdateTiposSitioDto,
+  ) {
     return this.tiposSitioService.update(+id, updateTiposSitio);
   }
   @Patch('estado/:id')
@@ -43,5 +55,4 @@ export class TiposSitioController {
   updatestat(@Param('id') id: string) {
     return this.tiposSitioService.updatestate(+id);
   }
-
 }
