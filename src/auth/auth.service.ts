@@ -57,6 +57,7 @@ export class AuthService {
             "ruta.nombre",
             "ruta.href",
             "ruta.icono",
+            "permiso.idPermiso"
         ])
         .where("usuario.idUsuario = :userId", { userId: user.idUsuario })
         .andWhere("rolPermiso.estado = true")
@@ -79,16 +80,23 @@ export class AuthService {
                 };
             }
 
-            // Only add route if it doesn't already exist
-            const routeExists = acc[moduloId].rutas.some(ruta => ruta.id === row.ruta_id_ruta);
-            if (!routeExists) {
-                acc[moduloId].rutas.push({
-                    id: row.ruta_id_ruta,
+            const routeId = row.ruta_id_ruta;
+
+            // Busca si ya existe la ruta
+            let ruta = acc[moduloId].rutas.find(r => r.id === routeId);
+
+            if (!ruta) {
+                ruta = {
+                    id: routeId,
                     nombre: row.ruta_nombre,
                     href: row.ruta_href,
                     icono: row.ruta_icono,
-                });
+                    permisos: []
+                };
+                acc[moduloId].rutas.push(ruta);
             }
+
+            ruta.permisos.push(row.permiso_id_permiso);
 
             return acc;
         }, {} as Record<number, any>)
