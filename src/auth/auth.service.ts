@@ -22,54 +22,54 @@ export class AuthService {
     ) { }
 
     async login(data: LoginDto) {
-        const user = await this.usuarioRepository.findOne({
-            where: {
-                documento: data.documento
-            },
-            relations: ["fkRol"]
-        });
-        if (!user) throw new HttpException("Usuario no existe", HttpStatus.NOT_FOUND)
+    const user = await this.usuarioRepository.findOne({
+        where: {
+            documento: data.documento
+        },
+        relations: ["fkRol"]
+    });
+    if (!user) throw new HttpException("Usuario no existe", HttpStatus.NOT_FOUND)
 
-        const verified = await bcrypt.compare(data.password, user.password);
-        if (!verified) throw new HttpException("Wrong password", HttpStatus.UNAUTHORIZED);
+    const verified = await bcrypt.compare(data.password, user.password);
+    if (!verified) throw new HttpException("Wrong password", HttpStatus.UNAUTHORIZED);
 
-        const token = jwt.sign({
-            ...user,
-            password: undefined,
-            fkRol: user.fkRol?.idRol ?? undefined
-        }, this.configService.get("SECRET"), {
-            expiresIn: this.configService.get("EXPIRES") ?? "96h"
-        });
+    const token = jwt.sign({
+        ...user,
+        password: undefined,
+        fkRol: user.fkRol?.idRol ?? undefined
+    }, this.configService.get("SECRET"), {
+        expiresIn: this.configService.get("EXPIRES") ?? "96h"
+    });
 
-        const flatData = await this.usuarioRepository
-            .createQueryBuilder("usuario")
-            .leftJoin("usuario.fkRol", "rol")
-            .leftJoin("rol.rolPermisos", "rolPermiso")
-            .leftJoin("rolPermiso.fkPermiso", "permiso")
-            .leftJoin("permiso.fkRuta", "ruta")
-            .leftJoin("ruta.fkModulo", "modulo")
-            .select([
-                "modulo.idModulo",
-                "modulo.nombre",
-                "modulo.icono",
-                "modulo.href",
-                "ruta.idRuta",
-                "ruta.nombre",
-                "ruta.href",
-                "ruta.icono",
-            ])
-            .where("usuario.idUsuario = :userId", { userId: user.idUsuario })
-            .andWhere("rolPermiso.estado = true")
-            .andWhere("ruta.estado = true")
-            .andWhere("modulo.estado = true")
-            .getRawMany();
+    const flatData = await this.usuarioRepository
+        .createQueryBuilder("usuario")
+        .leftJoin("usuario.fkRol", "rol")
+        .leftJoin("rol.rolPermisos", "rolPermiso")
+        .leftJoin("rolPermiso.fkPermiso", "permiso")
+        .leftJoin("permiso.fkRuta", "ruta")
+        .leftJoin("ruta.fkModulo", "modulo")
+        .select([
+            "modulo.idModulo",
+            "modulo.nombre",
+            "modulo.icono",
+            "modulo.href",
+            "ruta.idRuta",
+            "ruta.nombre",
+            "ruta.href",
+            "ruta.icono",
+        ])
+        .where("usuario.idUsuario = :userId", { userId: user.idUsuario })
+        .andWhere("rolPermiso.estado = true")
+        .andWhere("ruta.estado = true")
+        .andWhere("modulo.estado = true")
+        .getRawMany();
 
-            // Group and transform
-            const grouped = Object.values(
-            flatData.reduce((acc, row) => {
-                const moduloId = row.modulo_idModulo;
+        // Group and transform
+    const grouped = Object.values(
+        flatData.reduce((acc, row) => {
+            const moduloId = row.modulo_id_modulo;
 
-                if (!acc[moduloId]) {
+            if (!acc[moduloId]) {
                 acc[moduloId] = {
                     id: moduloId,
                     nombre: row.modulo_nombre,
@@ -77,21 +77,25 @@ export class AuthService {
                     href: row.modulo_href,
                     rutas: [],
                 };
-                }
+            }
 
+            // Only add route if it doesn't already exist
+            const routeExists = acc[moduloId].rutas.some(ruta => ruta.id === row.ruta_id_ruta);
+            if (!routeExists) {
                 acc[moduloId].rutas.push({
-                id: row.ruta_idRuta,
-                nombre: row.ruta_nombre,
-                href: row.ruta_href,
-                icono: row.ruta_icono,
+                    id: row.ruta_id_ruta,
+                    nombre: row.ruta_nombre,
+                    href: row.ruta_href,
+                    icono: row.ruta_icono,
                 });
+            }
 
-                return acc;
-            }, {} as Record<number, any>)
-            );
+            return acc;
+        }, {} as Record<number, any>)
+    );
 
-        return { status: 200, response: "Successfully logged in", access_token: token, modules: grouped }
-    }
+    return { status: 200, response: "Successfully logged in", access_token: token, modules: grouped }
+}
 
     async forgotPassword(correo: string) {
         const user = await this.usuarioRepository.findOneBy({ correo })
