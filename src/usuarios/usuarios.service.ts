@@ -30,8 +30,46 @@ export class UsuariosService {
   }
 
   async updateProfilePhoto(userId: number, perfil?: string){
-    const updated = await this.usuariosRepository.update(userId,{perfil: perfil});
+    await this.usuariosRepository.update(userId,{perfil: perfil});
+    const updated = await this.usuariosRepository.findOne({
+      where: {
+        idUsuario: userId
+      },
+      select: {
+        idUsuario: true,
+        documento: true,
+        edad: true,
+        nombre: true,
+        apellido: true,
+        telefono: true,
+        correo: true,
+        perfil: true,
+        fkRol: true,
+      },
+      relations: ["fkRol"]
+    });
     return {status: 200, message: "Foto actualizada con exito",updated};
+  }
+
+  async getPerfil(id: number){
+    const user = await this.usuariosRepository.findOne({
+      where: {
+        idUsuario: id
+      },
+      select: {
+        idUsuario: true,
+        documento: true,
+        edad: true,
+        nombre: true,
+        apellido: true,
+        telefono: true,
+        correo: true,
+        perfil: true,
+        fkRol: true,
+      },
+      relations: ["fkRol"]
+    });
+    return { status: 200, message: "Perfil obtenido exitosamente", usuario: user };
   }
 
   async massiveUpload(file: Express.Multer.File) {

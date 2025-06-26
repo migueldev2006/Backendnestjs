@@ -53,9 +53,8 @@ export class UsuariosController {
   @Get('perfil')
   getPerfil(@Req() req){
     const user = req.user;
-    return {
-      usuario : user
-    }
+    const id = user.idUsuario;
+    return this.usuariosService.getPerfil(id);
   }
 
   @Patch('updatefoto')
@@ -63,9 +62,8 @@ export class UsuariosController {
     storage: diskStorage({
       destination: './public/perfiles',
       filename: (req, file, cb) => {
-        const nombre = req.body.nombre?.toLowerCase().replace(/\s+/g, '-'); // limpia espacios
         const ext = extname(file.originalname);
-        const filename = `perfil-${nombre || 'sin-nombre'}${ext}`;
+        const filename = `${Date.now()}-${Math.floor(Math.random()*(100))}-${ext}`;
         cb(null, filename);
       },
     }),
@@ -73,10 +71,7 @@ export class UsuariosController {
   async updatePhoto ( @UploadedFile() perfil: Express.Multer.File, @Req() req ){
     if(!perfil) throw new BadRequestException('No se proporcionó ningún archivo');
     const userId = req.user.idUsuario;
-    const usuario = await this.usuariosService.updateProfilePhoto(userId,perfil.filename)
-    return {
-      message : 'Foto actualizada con exito'
-    }
+    return await this.usuariosService.updateProfilePhoto(userId,perfil.filename)
   }
 
 
