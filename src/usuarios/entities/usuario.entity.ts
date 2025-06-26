@@ -10,7 +10,6 @@ import { Areas } from '../../areas/entities/area.entity';
 import { Movimientos } from '../../movimientos/entities/movimiento.entity';
 import { UsuarioFicha } from '../../usuario-ficha/entities/usuario-ficha.entity';
 import { Roles } from '../../roles/entities/role.entity';
-import { Verificaciones } from '../../verificaciones/entities/verificacione.entity';
 import { Notificaciones } from 'src/notificaciones/entities/notificacione.entity';
 
 @Entity('usuarios', { schema: 'public' })
@@ -72,9 +71,6 @@ export class Usuarios {
   @ManyToOne(() => Roles, (roles) => roles.usuarios)
   @JoinColumn([{ name: 'fk_rol', referencedColumnName: 'idRol' }])
   fkRol: Roles;
-
-  @OneToMany(() => Verificaciones, (verificaciones) => verificaciones.fkSitio)
-  verificaciones: Verificaciones[];
 
   @OneToMany(
     () => Notificaciones,

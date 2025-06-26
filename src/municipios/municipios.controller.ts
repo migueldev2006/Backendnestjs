@@ -24,24 +24,24 @@ export class MunicipiosController {
     return this.municipiosService.findAll();
   }
 
-  @Get(':id')
+  @Get(':idMunicipio')
   @Permiso(18)
   // @UseGuards(PermisoGuard)
-  findOne(@Param('id') id: string) {
-    return this.municipiosService.findOne(+id);
+  findOne(@Param('idMunicipio') idMunicipio: string) {
+    return this.municipiosService.findOne(+idMunicipio);
   }
 
-  @Patch('update/:id')
+  @Patch('update/:idMunicipio')
   @Permiso(19)
   // @UseGuards(PermisoGuard)
-  update(@Param('id') id: string, @Body() updateMunicipioDto: UpdateMunicipioDto) {
-    return this.municipiosService.update(+id, updateMunicipioDto);
+  update(@Param('idMunicipio') idMunicipio: string, @Body() updateMunicipioDto: UpdateMunicipioDto) {
+    return this.municipiosService.update(+idMunicipio, updateMunicipioDto);
   }
 
-  @Patch('estado/:id')
+  @Patch('estado/:idMunicipio')
   @Permiso(20)
   // @UseGuards(PermisoGuard)
-  updateStatus(@Param('id') id: string) {
-    return this.municipiosService.updateStatus(+id);
+  updateStatus(@Param('idMunicipio') idMunicipio: string) {
+    return this.municipiosService.updateStatus(+idMunicipio);
   }
 }

@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@n
 import { PermisosService } from './permisos.service';
 import { CreatePermisoDto, UpdatePermisoDto } from './dto';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
+
 @UseGuards(JwtGuard)
 @Controller('permisos')
 export class PermisosController {

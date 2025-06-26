@@ -40,7 +40,7 @@ export class CreateUsuarioDto {
   estado: boolean;
 
   @IsString()
-  @MinLength(6)
+  @MinLength(3)
   cargo: string;
 
   @IsString()

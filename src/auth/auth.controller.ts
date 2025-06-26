@@ -1,9 +1,9 @@
-import { Body, Controller, Post, Query, Res } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, Request, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { forgotPasswordDto } from './dto/forgot-password.dto';
-import { Response } from 'express';
 import { resetPasswordDto } from './dto/reset-password.dto';
+import { JwtGuard } from './guards/jwt.guard';
 @Controller('auth')
 export class AuthController {
     constructor(private authService: AuthService){}
@@ -16,6 +16,13 @@ export class AuthController {
     @Post("forgot-password")
     forgotPassword(@Body() {correo}: forgotPasswordDto) {
         return this.authService.forgotPassword(correo);
+    }
+
+    @Get("refetch")
+    @UseGuards(JwtGuard)
+    refetch(@Request() req){
+        const user = req.user;
+        return this.authService.refetch(user.idUsuario);
     }
 
     @Post("reset-password")

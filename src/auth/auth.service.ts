@@ -7,6 +7,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Usuarios } from 'src/usuarios/entities/usuario.entity';
 import { Repository } from 'typeorm';
 import { EmailService } from 'src/auth/email/email.service';
+import { groupBy } from "lodash";
+
+
 
 @Injectable()
 export class AuthService {
@@ -19,28 +22,152 @@ export class AuthService {
     ) { }
 
     async login(data: LoginDto) {
-        const user = await this.usuarioRepository.findOne({
-            where: {
-                documento: data.documento
-            },
-            relations: ["fkRol"]
-        });
-        if (!user) throw new HttpException("Usuario no existe", HttpStatus.NOT_FOUND)
+    const user = await this.usuarioRepository.findOne({
+        where: {
+            documento: data.documento
+        },
+        relations: ["fkRol"]
+    });
+    if (!user) throw new HttpException("Usuario no existe", HttpStatus.NOT_FOUND)
 
-        const verified = await bcrypt.compare(data.password, user.password);
-        if (!verified) throw new HttpException("Wrong password", HttpStatus.UNAUTHORIZED);
+    const verified = await bcrypt.compare(data.password, user.password);
+    if (!verified) throw new HttpException("Wrong password", HttpStatus.UNAUTHORIZED);
 
-        const token = jwt.sign({
-            ...user,
-            password: undefined,
-            fkRol: user.fkRol?.idRol ?? undefined
-        }, this.configService.get("SECRET"), {
-            expiresIn: this.configService.get("EXPIRES") ?? "96h"
-        });
+    const token = jwt.sign({
+        ...user,
+        password: undefined,
+        fkRol: user.fkRol?.idRol ?? undefined
+    }, this.configService.get("SECRET"), {
+        expiresIn: this.configService.get("EXPIRES") ?? "96h"
+    });
 
-        return { status: 200, response: "Successfully logged in", access_token: token }
+    const flatData = await this.usuarioRepository
+        .createQueryBuilder("usuario")
+        .leftJoin("usuario.fkRol", "rol")
+        .leftJoin("rol.rolPermisos", "rolPermiso")
+        .leftJoin("rolPermiso.fkPermiso", "permiso")
+        .leftJoin("permiso.fkRuta", "ruta")
+        .leftJoin("ruta.fkModulo", "modulo")
+        .select([
+            "modulo.idModulo",
+            "modulo.nombre",
+            "modulo.icono",
+            "modulo.href",
+            "ruta.idRuta",
+            "ruta.nombre",
+            "ruta.href",
+            "ruta.icono",
+            "permiso.idPermiso"
+        ])
+        .where("usuario.idUsuario = :userId", { userId: user.idUsuario })
+        .andWhere("rolPermiso.estado = true")
+        .andWhere("ruta.estado = true")
+        .andWhere("modulo.estado = true")
+        .getRawMany();
+
+        // Group and transform
+    const grouped = Object.values(
+        flatData.reduce((acc, row) => {
+            const moduloId = row.modulo_id_modulo;
+
+            if (!acc[moduloId]) {
+                acc[moduloId] = {
+                    id: moduloId,
+                    nombre: row.modulo_nombre,
+                    icono: row.modulo_icono,
+                    href: row.modulo_href,
+                    rutas: [],
+                };
+            }
+
+            const routeId = row.ruta_id_ruta;
+
+            // Busca si ya existe la ruta
+            let ruta = acc[moduloId].rutas.find(r => r.id === routeId);
+
+            if (!ruta) {
+                ruta = {
+                    id: routeId,
+                    nombre: row.ruta_nombre,
+                    href: row.ruta_href,
+                    icono: row.ruta_icono,
+                    permisos: []
+                };
+                acc[moduloId].rutas.push(ruta);
+            }
+
+            ruta.permisos.push(row.permiso_id_permiso);
+
+            return acc;
+        }, {} as Record<number, any>)
+    );
+
+    return { status: 200, response: "Successfully logged in", access_token: token, modules: grouped }
+}
+
+    async refetch(idUsuario: number){
+        const flatData = await this.usuarioRepository
+        .createQueryBuilder("usuario")
+        .leftJoin("usuario.fkRol", "rol")
+        .leftJoin("rol.rolPermisos", "rolPermiso")
+        .leftJoin("rolPermiso.fkPermiso", "permiso")
+        .leftJoin("permiso.fkRuta", "ruta")
+        .leftJoin("ruta.fkModulo", "modulo")
+        .select([
+            "modulo.idModulo",
+            "modulo.nombre",
+            "modulo.icono",
+            "modulo.href",
+            "ruta.idRuta",
+            "ruta.nombre",
+            "ruta.href",
+            "ruta.icono",
+            "permiso.idPermiso"
+        ])
+        .where("usuario.idUsuario = :userId", { userId: idUsuario })
+        .andWhere("rolPermiso.estado = true")
+        .andWhere("ruta.estado = true")
+        .andWhere("modulo.estado = true")
+        .getRawMany();
+
+        // Group and transform
+    const grouped = Object.values(
+        flatData.reduce((acc, row) => {
+            const moduloId = row.modulo_id_modulo;
+
+            if (!acc[moduloId]) {
+                acc[moduloId] = {
+                    id: moduloId,
+                    nombre: row.modulo_nombre,
+                    icono: row.modulo_icono,
+                    href: row.modulo_href,
+                    rutas: [],
+                };
+            }
+
+            const routeId = row.ruta_id_ruta;
+
+            // Busca si ya existe la ruta
+            let ruta = acc[moduloId].rutas.find(r => r.id === routeId);
+
+            if (!ruta) {
+                ruta = {
+                    id: routeId,
+                    nombre: row.ruta_nombre,
+                    href: row.ruta_href,
+                    icono: row.ruta_icono,
+                    permisos: []
+                };
+                acc[moduloId].rutas.push(ruta);
+            }
+
+            ruta.permisos.push(row.permiso_id_permiso);
+
+            return acc;
+        }, {} as Record<number, any>)
+    );
+    return { status: 200, message: "Permisos obtenidos correctamente", modules: grouped }
     }
-
     async forgotPassword(correo: string) {
         const user = await this.usuarioRepository.findOneBy({ correo })
 
