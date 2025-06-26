@@ -17,8 +17,7 @@ export interface UserFromToken {
   correo: string;
   fkRol: number; // o string si es nombre
 }
-@UseGuards(JwtGuard, PermisoGuard)
-// @UseGuards(PermisoGuard)
+// @UseGuards(JwtGuard, PermisoGuard)
 @Controller('usuarios')
 export class UsuariosController {
   constructor(private readonly usuariosService: UsuariosService) {}
@@ -77,16 +76,15 @@ export class UsuariosController {
   }
 
   
-  @Patch('update/:id')
+  @Patch('update/:idUsuario')
   @Permiso(6)
-  update(@Param('idUsuario') idUsuario: string, @Body() updateUsuario: UpdateUsuarioDto) {
+  update(@Param('idUsuario') idUsuario: number, @Body() updateUsuario: UpdateUsuarioDto) {
     return this.usuariosService.update(+idUsuario, updateUsuario);
   }
 
   @Patch('estado/:id')
   @Permiso(7)
-  @UseGuards(PermisoGuard)
-  updatestate(@Param('id') id: string) {
+  updatestate(@Param('id') id: number) {
     return this.usuariosService.updatestate(+id);
   }
 }

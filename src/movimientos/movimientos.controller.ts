@@ -17,11 +17,11 @@ import { Permiso } from 'src/auth/decorators/permiso.decorator';
 export class MovimientosController {
   constructor(private readonly movimientosService: MovimientosService) {}
 
-  // @Post()
-  // @Permiso(32)
-  // create(@Body() createMovimientoDto: CreateMovimientoDto) {
-  //   return this.movimientosService.create(createMovimientoDto);
-  // }
+  @Post()
+  @Permiso(32)
+  create(@Body() createMovimientoDto: CreateMovimientoDto) {
+    return this.movimientosService.create(createMovimientoDto);
+  }
 
   @Get()
   @Permiso(33)

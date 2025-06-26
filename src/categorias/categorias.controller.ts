@@ -24,13 +24,13 @@ export class CategoriasController {
     return this.categoriasService.findOne(nombre);
   }
 
-  @Patch('update/:id')
-  update(@Param('id') id: string, @Body() updateCategoria: UpdateCategoriaDto) {
-    return this.categoriasService.update(+id, updateCategoria);
+  @Patch('update/:idCategoria')
+  update(@Param('idCategoria') idCategoria: string, @Body() updateCategoria: UpdateCategoriaDto) {
+    return this.categoriasService.update(+idCategoria, updateCategoria);
   }
 
-  @Patch('estado/:id')
-  remove(@Param('id') id: string) {
-    return this.categoriasService.updatestate(+id);
+  @Patch('estado/:idCategoria')
+  remove(@Param('idCategoria') idCategoria: string) {
+    return this.categoriasService.updatestate(+idCategoria);
   }
 }
