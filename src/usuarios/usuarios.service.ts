@@ -29,6 +29,11 @@ export class UsuariosService {
     return await this.usuariosRepository.save(Usuario);
   }
 
+  async updateProfilePhoto(userId: number, perfil?: string){
+    const updated = await this.usuariosRepository.update(userId,{perfil: perfil});
+    return {status: 200, message: "Foto actualizada con exito",updated};
+  }
+
   async massiveUpload(file: Express.Multer.File) {
     const workbook = XLSX.read(file.buffer, { type: 'buffer', codepage: 65001 });
     const sheetName = workbook.SheetNames[0];

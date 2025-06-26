@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards,  UploadedFile, UseInterceptors, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards,  UploadedFile, UseInterceptors, Req, BadRequestException } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UsuariosService } from './usuarios.service';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
@@ -11,14 +11,8 @@ import { fileName } from 'typeorm-model-generator/dist/src/NamingStrategy';
 import { extname } from 'path';
 import { Request } from 'express';
 
-export interface UserFromToken {
-  idUsuario: number;
-  nombre: string;
-  correo: string;
-  fkRol: number; // o string si es nombre
-}
+
 @UseGuards(JwtGuard, PermisoGuard)
-// @UseGuards(PermisoGuard)
 @Controller('usuarios')
 export class UsuariosController {
   constructor(private readonly usuariosService: UsuariosService) {}
@@ -29,7 +23,7 @@ export class UsuariosController {
     storage: diskStorage({
       destination: './public/perfiles',
       filename: (req, file, cb) => {
-        const nombre = req.body.nombre?.toLowerCase().replace(/\s+/g, '-'); // limpiar espacios
+        const nombre = req.body.nombre?.toLowerCase().replace(/\s+/g, '-'); // limpia espacios
         const ext = extname(file.originalname);
         const filename = `perfil-${nombre || 'sin-nombre'}${ext}`;
         cb(null, filename);
@@ -57,15 +51,32 @@ export class UsuariosController {
   }
 
   @Get('perfil')
-  @Permiso(4)
-  @UseGuards(JwtGuard)
   getPerfil(@Req() req){
     const user = req.user;
-
     return {
-      correo :user.correo
+      usuario : user
     }
-    
+  }
+
+  @Patch('updatefoto')
+  @UseInterceptors(FileInterceptor('perfil', {
+    storage: diskStorage({
+      destination: './public/perfiles',
+      filename: (req, file, cb) => {
+        const nombre = req.body.nombre?.toLowerCase().replace(/\s+/g, '-'); // limpia espacios
+        const ext = extname(file.originalname);
+        const filename = `perfil-${nombre || 'sin-nombre'}${ext}`;
+        cb(null, filename);
+      },
+    }),
+  }))
+  async updatePhoto ( @UploadedFile() perfil: Express.Multer.File, @Req() req ){
+    if(!perfil) throw new BadRequestException('No se proporcionó ningún archivo');
+    const userId = req.user.idUsuario;
+    const usuario = await this.usuariosService.updateProfilePhoto(userId,perfil.filename)
+    return {
+      message : 'Foto actualizada con exito'
+    }
   }
 
 
@@ -79,7 +90,7 @@ export class UsuariosController {
   
   @Patch('update/:id')
   @Permiso(6)
-  update(@Param('idUsuario') idUsuario: string, @Body() updateUsuario: UpdateUsuarioDto) {
+  update(@Param('id') idUsuario: string, @Body() updateUsuario: UpdateUsuarioDto) {
     return this.usuariosService.update(+idUsuario, updateUsuario);
   }
 
