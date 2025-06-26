@@ -3,9 +3,11 @@ import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/filter/http-exception.filter';
 import { ValidationPipe } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
+import { join } from 'path';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   app.enableCors({
     origin: process.env.BASE_URL,
@@ -24,6 +26,10 @@ async function bootstrap() {
       },
     }),
   );
+
+  app.useStaticAssets(join(__dirname, '..', 'public'), {
+    prefix: '/img',
+  });
   await app.listen(process.env.PORT ?? 4000);
 }
 bootstrap();

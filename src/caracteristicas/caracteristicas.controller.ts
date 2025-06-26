@@ -4,7 +4,6 @@ import { CreateCaracteristicaDto, UpdateCaracteristicaDto } from './dto';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 
 @UseGuards(JwtGuard)
-@UseGuards(JwtGuard)
 @Controller('caracteristicas')
 export class CaracteristicasController {
   constructor(private readonly caracteristicasService: CaracteristicasService) {}

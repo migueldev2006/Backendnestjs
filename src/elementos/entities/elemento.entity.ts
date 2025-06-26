@@ -61,19 +61,14 @@ export class Elementos {
   })
   updatedAt: Date;
 
-  @Column('text', {
-    unique: true,
-  })
-  slug: string;
-
   @OneToMany(() => ElementImage, (ElementImage) => ElementImage.Elemento, {
     cascade: true,
   })
-  images?: ElementImage[];
+  imagenElemento?: ElementImage[];
 
-  @ManyToOne(() => Caracteristicas, (caracteristicas) => caracteristicas.elementos)
+  @ManyToOne(() => Caracteristicas, (caracteristicas) => caracteristicas.elementos, {nullable:true})
   @JoinColumn([{ name: 'fk_caracteristica', referencedColumnName: 'idCaracteristica' }])
-  fkCaracteristica: Caracteristicas;
+  fkCaracteristica?: Caracteristicas;
 
   @ManyToOne(() => Categorias, (categorias) => categorias.elementos)
   @JoinColumn([{ name: 'fk_categoria', referencedColumnName: 'idCategoria' }])
@@ -85,24 +80,4 @@ export class Elementos {
 
   @OneToMany(() => Inventarios, (inventarios) => inventarios.fkElemento)
   inventarios: Inventarios[];
-
-  @BeforeInsert()
-  checkSlugInsert() {
-    if (!this.slug) {
-      this.slug = this.nombre;
-    }
-
-    this.slug = this.slug
-      .toLowerCase()
-      .replaceAll(' ', '_')
-      .replaceAll("'", '');
-  }
-
-  @BeforeUpdate()
-  checkSlugUpdate() {
-    this.slug = this.slug
-      .toLowerCase()
-      .replaceAll(' ', '_')
-      .replaceAll("'", '');
-  }
 }

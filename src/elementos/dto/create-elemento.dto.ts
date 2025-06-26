@@ -1,4 +1,4 @@
-import { IsArray, IsBoolean, IsDate, IsNumber, IsOptional, IsString } from "class-validator";
+import { IsBoolean, IsNumber, IsOptional, IsString } from "class-validator";
 
 export class CreateElementoDto {
   @IsString()
@@ -7,7 +7,6 @@ export class CreateElementoDto {
   @IsString()
   @IsOptional()
   descripcion: string;
-
 
   @IsBoolean()
   perecedero: boolean;
@@ -18,17 +17,15 @@ export class CreateElementoDto {
   @IsBoolean()
   estado: boolean;
 
-  @IsDate()
+  @IsString()
   @IsOptional()
   fechaVencimiento?:string
 
-  @IsDate()
-  @IsOptional()
-  fechaUso?:string
+  @IsString()
+  fechaUso:string
 
-  @IsArray()
-  @IsString({each:true})
-  images: string[];
+  @IsString()
+  imagenElemento: string;
 
   @IsNumber()
   fkCategoria:number
@@ -37,5 +34,6 @@ export class CreateElementoDto {
   fkUnidadMedida:number
 
   @IsNumber()
-  fkCaracteristica:number
+  @IsOptional()
+  fkCaracteristica?:number
 }

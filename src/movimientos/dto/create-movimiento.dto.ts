@@ -17,6 +17,8 @@ export class CreateMovimientoDto {
 
   @IsString()
   horaIngreso: string;
+  @IsString()
+  lugarDestino?: string;
 
   @IsString()
   horaSalida: string;
@@ -37,11 +39,7 @@ export class CreateMovimientoDto {
   noDevolutivo: boolean;
 
   @IsDate()
-  fechaPrestamo: Date;
-
-  @IsDate()
-  fechaDevolucion: Date;
-
+  fechaDevolucion?: Date;
 
   @IsNumber()
   fkInventario: number;

@@ -37,7 +37,7 @@ export class InventariosService {
         fkElemento: { idElemento: agregateStock.fkElemento },
         fkSitio: { idSitio: agregateStock.fkSitio },
       },
-      relations: ['fkElemento', 'fkElemento.caracteristicas', 'fkSitio'],
+      relations: ['fkElemento', 'fkElemento.fkCaracteristica', 'fkSitio'],
     });
 
     if (!agregateStockInventario) {
@@ -64,7 +64,7 @@ export class InventariosService {
   }
 
   async findAll(): Promise<Inventarios[]> {
-    return await this.inventarioRepository.find();
+    return await this.inventarioRepository.find({ relations: ['fkSitio', 'fkElemento', 'fkElemento.fkCaracteristica'] });
   }
 
   async findOne(idInventario: number): Promise<Inventarios | null> {
@@ -87,7 +87,7 @@ export class InventariosService {
   ): Promise<Inventarios> {
     const getInventarioById = await this.inventarioRepository.findOne({
       where: { idInventario },
-      relations: ['fkElemento', 'fkElemento.caracteristicas'],
+      relations: ['fkElemento', 'fkElemento.fkCaracteristica'],
     });
 
     if (!getInventarioById) {
@@ -126,6 +126,6 @@ export class InventariosService {
 
     getInventarioById.estado = !getInventarioById.estado;
 
-    return getInventarioById;
+    return await this.inventarioRepository.save(getInventarioById);
   }
 }

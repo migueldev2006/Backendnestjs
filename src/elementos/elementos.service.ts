@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateElementoDto, UpdateElementoDto } from './dto';
-import { Repository } from 'typeorm';
-import { Elementos } from './entities';
+import {  Repository } from 'typeorm';
+import { ElementImage, Elementos } from './entities';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Inventarios } from 'src/inventarios/entities/inventario.entity';
 import { Sitios } from 'src/sitios/entities/sitio.entity';
@@ -22,8 +22,14 @@ export class ElementosService {
       ...createElementoDto,
       fkCategoria: { idCategoria: createElementoDto.fkCategoria },
       fkUnidadMedida: { idUnidad: createElementoDto.fkUnidadMedida },
-      fkCaracteristica: { idCaracteristica: createElementoDto.fkCaracteristica },
-      images: createElementoDto.images.map((url) => ({ url })),
+      fkCaracteristica: createElementoDto.fkCaracteristica
+      ? { idCaracteristica: createElementoDto.fkCaracteristica }
+      : undefined,
+          imagenElemento: [
+      {
+        url: createElementoDto.imagenElemento,
+      },
+    ],
     });
 
     const nuevoElemento = await this.elementoRepository.save(elemento);
@@ -45,7 +51,9 @@ export class ElementosService {
   }
 
   async findAll(): Promise<Elementos[]> {
-    return await this.elementoRepository.find();
+    return await this.elementoRepository.find(
+      {relations: ['imagenElemento'],}
+    );
   }
 
   async findOne(idElemento: number): Promise<Elementos | null> {
@@ -66,24 +74,27 @@ export class ElementosService {
     idElemento: number,
     updateElementoDto: UpdateElementoDto,
   ): Promise<Elementos> {
-    const getElementoById = await this.elementoRepository.findOneBy({
-      idElemento
+const getElementoById = await this.elementoRepository.findOne({
+    where: { idElemento },
+    relations: ['imagenElemento'],
+  });
+
+  if (!getElementoById) {
+    throw new Error(`No se encontró el elemento, el id ${idElemento} no existe`);
+  }
+
+
+  getElementoById.nombre = updateElementoDto.nombre ?? getElementoById.nombre;
+  getElementoById.descripcion = updateElementoDto.descripcion ?? getElementoById.descripcion;
+
+if (updateElementoDto.imagenElemento) {
+    const nuevaImagen = Object.assign(new ElementImage(), {
+      url: updateElementoDto.imagenElemento,
     });
+    getElementoById.imagenElemento = [nuevaImagen];
+  }
 
-    if (!getElementoById) {
-      throw new Error(
-        `No se encontro el elemento, el id ${idElemento} no existe`,
-      );
-    }
-
-    await this.elementoRepository.update(idElemento, {
-      nombre: updateElementoDto.nombre,
-      descripcion: updateElementoDto.descripcion,
-      images: updateElementoDto.images.map((url) => ({ url })),
-    });
-
-  const updatedElemento = await this.elementoRepository.save(getElementoById);
-  return updatedElemento;
+  return await this.elementoRepository.save(getElementoById);
   }
 
   async changeStatus(idElemento: number) {
@@ -99,6 +110,6 @@ export class ElementosService {
 
     getElementoById.estado = !getElementoById.estado;
 
-    return getElementoById;
+    return await this.elementoRepository.save(getElementoById);
   }
 }

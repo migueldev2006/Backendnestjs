@@ -12,7 +12,7 @@ export class UpdateElementoDto extends PartialType(CreateElementoDto) {
   descripcion: string;
 
   @IsArray()
-  @IsString({ each: true })
+  @IsString()
   @IsOptional()
-  images: string[];
+  imagenElemento: string;
 }

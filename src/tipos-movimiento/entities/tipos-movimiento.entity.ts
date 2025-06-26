@@ -33,34 +33,6 @@ export class TipoMovimientos {
   })
   updatedAt: Date;
 
-  @Column('text', {
-    unique: true,
-  })
-  slug: string;
-
   @OneToMany(() => Movimientos, (movimientos) => movimientos.fkTipoMovimiento)
   movimientos: Movimientos[];
-
-  @BeforeInsert()
-  checkSlugInsert() {
-    if (!this.slug) {
-      this.slug = this.nombre;
-    }
-
-    this.slug = this.slug
-      .toLowerCase()
-      .replaceAll(' ', '_')
-      .replaceAll("'", '');
-  }
-
-  @BeforeUpdate()
-  checkSlugUpdate() {
-        if (!this.slug) {
-      this.slug = this.nombre;
-    }
-    this.slug = this.slug
-      .toLowerCase()
-      .replaceAll(' ', '_')
-      .replaceAll("'", '');
-  }
 }

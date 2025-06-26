@@ -5,6 +5,7 @@ import {
   Entity,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { RolPermiso } from '../../rol-permiso/entities/rol-permiso.entity';
 import { Usuarios } from '../../usuarios/entities/usuario.entity';
@@ -26,40 +27,16 @@ export class Roles {
   })
   createdAt: Date;
 
-  @Column('timestamp without time zone', {
+  @UpdateDateColumn({
     name: 'updated_at',
+    type: 'timestamp',
     default: () => 'now()',
   })
   updatedAt: Date;
-
-  // @Column('text', {
-  //   unique: true,
-  // })
-  // slug: string;
 
   @OneToMany(() => RolPermiso, (rolPermiso) => rolPermiso.fkRol)
   rolPermisos: RolPermiso[];
 
   @OneToMany(() => Usuarios, (usuarios) => usuarios.fkRol)
   usuarios: Usuarios[];
-
-  // @BeforeInsert()
-  // checkSlugInsert() {
-  //   if (!this.slug) {
-  //     this.slug = this.nombre;
-  //   }
-
-  //   this.slug = this.slug
-  //     .toLowerCase()
-  //     .replaceAll(' ', '_')
-  //     .replaceAll("'", '');
-  // }
-
-  // @BeforeUpdate()
-  // checkSlugUpdate() {
-  //   this.slug = this.slug
-  //     .toLowerCase()
-  //     .replaceAll(' ', '_')
-  //     .replaceAll("'", '');
-  // }
 }

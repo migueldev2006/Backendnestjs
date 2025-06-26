@@ -6,13 +6,13 @@ export class ElementImage {
     @PrimaryGeneratedColumn()
     id:number
 
-    @Column('text')
+    @Column()
     url:string
 
     @ManyToOne(
         () => Elementos,
         (Elemento) =>
-            Elemento.images
+            Elemento.imagenElemento
     )
   Elemento:Elementos;
 }

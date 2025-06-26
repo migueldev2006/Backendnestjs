@@ -1,65 +1,40 @@
 import {
-  BeforeInsert,
-  BeforeUpdate,
-  Column,
   Entity,
-  Index,
-  JoinColumn,
-  ManyToOne,
   PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  CreateDateColumn,
 } from 'typeorm';
-import { Movimientos } from '../../movimientos/entities/movimiento.entity';
+import { Usuarios } from '../../usuarios/entities/usuario.entity';
 
-@Entity('notificaciones', { schema: 'public' })
+@Entity('notificaciones')
 export class Notificaciones {
-  @PrimaryGeneratedColumn({ type: 'integer', name: 'id_notificacion' })
+  @PrimaryGeneratedColumn({ name: 'id_notificacion' })
   idNotificacion: number;
 
-  @Column('character varying', { name: 'titulo', nullable: true, length: 205 })
+  @Column({ type: 'varchar', length: 205 })
   titulo: string;
 
-  @Column('character varying', { name: 'mensaje', nullable: true, length: 205 })
-  mensaje: string | null;
+  @Column({ type: 'varchar', length: 500, nullable: true })
+  mensaje: string;
 
-  @Column('character varying', { name: 'destino', nullable: true, length: 205 })
-  destino: string | null;
+  @Column({ type: 'boolean', default: false })
+  leido: boolean;
 
-  @Column('boolean', { name: 'leido', nullable: true, default: () => 'false' })
-  leido: boolean | null;
+  @Column({ type: 'boolean', default: false })
+  requiereAccion: boolean;
 
-  @Column('timestamp without time zone', {
-    name: 'created_at',
-    default: () => 'now()',
-  })
+  @Column({ type: 'varchar', length: 50, nullable: true })
+  estado?: 'aceptado' | 'rechazado' | 'pendiente'; // solo si requiere acción
+
+  @Column({ type: 'jsonb', nullable: true })
+  data: any; // datos relacionados: idElemento, motivo, etc.
+
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  @Column('text', {
-    unique: true,
-  })
-  slug: string;
-
-  @ManyToOne(() => Movimientos, (movimientos) => movimientos.notificaciones)
-  @JoinColumn([{ name: 'fk_movimiento', referencedColumnName: 'idMovimiento' }])
-  fkMovimiento: Movimientos;
-
-
-  @BeforeInsert()
-  checkSlugInsert() {
-    if (!this.slug) {
-      this.slug = this.titulo;
-    }
-
-    this.slug = this.slug
-      .toLowerCase()
-      .replaceAll(' ', '_')
-      .replaceAll("'", '');
-  }
-
-  @BeforeUpdate()
-  checkSlugUpdate() {
-    this.slug = this.slug
-      .toLowerCase()
-      .replaceAll(' ', '_')
-      .replaceAll("'", '');
-  }
+  @ManyToOne(() => Usuarios)
+  @JoinColumn({ name: 'fk_usuario' })
+  fkUsuario: Usuarios;
 }

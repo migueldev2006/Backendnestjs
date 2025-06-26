@@ -33,31 +33,6 @@ export class UnidadesMedida {
   })
   updatedAt: Date;
 
-  @Column('text', {
-    unique: true,
-  })
-  slug: string;
-
   @OneToMany(() => Elementos, (elementos) => elementos.fkUnidadMedida)
   elementos: Elementos[];
-
-    @BeforeInsert()
-  checkSlugInsert() {
-    if (!this.slug) {
-      this.slug = this.nombre;
-    }
-
-    this.slug = this.slug
-      .toLowerCase()
-      .replaceAll(' ', '_')
-      .replaceAll("'", '');
-  }
-
-  @BeforeUpdate ()
-  checkSlugUpdate() {
-    this.slug = this.nombre
-      .toLowerCase()
-      .replaceAll(' ', '_')
-      .replaceAll("'", '');
-  }
 }

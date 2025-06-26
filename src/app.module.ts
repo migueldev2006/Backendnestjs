@@ -49,7 +49,7 @@ import { CodigoInventarioModule } from './codigo-inventario/codigo-inventario.mo
       password: process.env.DB_PASSWORD,
       entities: [__dirname + '//*.entity{.ts,.js}'],
       autoLoadEntities: true,
-      synchronize: true
+      synchronize: true,
     }),
     RolesModule,
     UsuariosModule,

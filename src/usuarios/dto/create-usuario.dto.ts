@@ -4,6 +4,7 @@ import {
   IsInt,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsPositive,
   IsString,
   Min,
@@ -48,8 +49,9 @@ export class CreateUsuarioDto {
 
   @IsString()
   @MinLength(20)
+  @IsOptional()
   perfil: string;
 
   @IsNumber()
-  fkrol: number;
+  fkRol: number;
 }

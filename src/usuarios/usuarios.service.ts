@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, UsePipes } from '@nestjs/common';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { Usuarios } from './entities/usuario.entity';
@@ -14,14 +14,16 @@ export class UsuariosService {
     private usuariosRepository: Repository<Usuarios>,
   ){}
 
-  async create(newUser: CreateUsuarioDto) {
+  async create(newUser: CreateUsuarioDto, filename?: string) {
     
     const saltRounds = 10;
     const hash = await bcrypt.hash(newUser.password, saltRounds);
 
     const Usuario = this.usuariosRepository.create({
       ...newUser,
-      password: hash
+      password: hash,
+      perfil:filename ?? "defaultPerfil.png",
+      fkRol:{idRol:newUser.fkRol}
     });
 
     return await this.usuariosRepository.save(Usuario);
@@ -37,8 +39,12 @@ export class UsuariosService {
 
     for (const row of jsonData) {
       const usuario = row as CreateUsuarioDto;
+      const userPass = usuario.nombre.slice(0,1) + usuario.apellido.slice(0,1)+usuario.documento;
+      const passwordHash = await bcrypt.hash(userPass, 12);
       const createdUser = await this.usuariosRepository.save({
-        ...usuario
+        ...usuario,
+        password: passwordHash,
+        fkRol:{idRol:usuario.fkRol}
       })
       newUsersList.push(createdUser);
     }
