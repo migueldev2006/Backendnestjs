@@ -19,6 +19,7 @@ export class PermisoGuard implements CanActivate {
   ): Promise<boolean> {
 
     const fkPermiso = this.reflector.get<number>("permiso",context.getHandler());
+    if(!fkPermiso) return true
     const { user: {fkRol} } = context.switchToHttp().getRequest();
 
     if(!fkRol) throw new HttpException("No tienes un rol asignado",HttpStatus.FORBIDDEN);

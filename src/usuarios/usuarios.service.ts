@@ -29,6 +29,49 @@ export class UsuariosService {
     return await this.usuariosRepository.save(Usuario);
   }
 
+  async updateProfilePhoto(userId: number, perfil?: string){
+    await this.usuariosRepository.update(userId,{perfil: perfil});
+    const updated = await this.usuariosRepository.findOne({
+      where: {
+        idUsuario: userId
+      },
+      select: {
+        idUsuario: true,
+        documento: true,
+        edad: true,
+        nombre: true,
+        apellido: true,
+        telefono: true,
+        correo: true,
+        perfil: true,
+        fkRol: true,
+      },
+      relations: ["fkRol"]
+    });
+    return {status: 200, message: "Foto actualizada con exito",updated};
+  }
+
+  async getPerfil(id: number){
+    const user = await this.usuariosRepository.findOne({
+      where: {
+        idUsuario: id
+      },
+      select: {
+        idUsuario: true,
+        documento: true,
+        edad: true,
+        nombre: true,
+        apellido: true,
+        telefono: true,
+        correo: true,
+        perfil: true,
+        fkRol: true,
+      },
+      relations: ["fkRol"]
+    });
+    return { status: 200, message: "Perfil obtenido exitosamente", usuario: user };
+  }
+
   async massiveUpload(file: Express.Multer.File) {
     const workbook = XLSX.read(file.buffer, { type: 'buffer', codepage: 65001 });
     const sheetName = workbook.SheetNames[0];

@@ -31,6 +31,9 @@ import { NotificacionesModule } from './notificaciones/notificaciones.module';
 import { AuthModule } from './auth/auth.module';
 import { CodigoInventarioModule } from './codigo-inventario/codigo-inventario.module';
 import { WebsocketModule } from './websocket/websocket.module';
+import { SeedsService } from './database/seeds/seeds.service';
+import { SeedsModule } from './database/seeds/seeds.module';
+import { CommandModule } from 'nestjs-command';
 
 
 
@@ -77,11 +80,14 @@ import { WebsocketModule } from './websocket/websocket.module';
     AuthModule,
     AuthModule,
     WebsocketModule,
+    CommandModule,
+    SeedsModule,
   ],
   controllers: [AppController],
   providers: [
     { provide: APP_FILTER, useClass: HttpExceptionFilter },
     AppService,
+    SeedsService,
   ],
 })
 export class AppModule {}
