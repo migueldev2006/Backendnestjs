@@ -89,7 +89,7 @@ export class UsuariosController {
     return this.usuariosService.update(+idUsuario, updateUsuario);
   }
 
-  @Patch('estado/:id')
+  @Patch('estado/:idUsuario')
   @Permiso(7)
   updatestate(@Param('id') id: string) {
     return this.usuariosService.updatestate(+id);

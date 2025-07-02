@@ -51,11 +51,11 @@ export class Movimientos {
   @Column('boolean', { name: 'no_devolutivo', nullable: true })
   noDevolutivo: boolean;
 
-  @Column('date', { name: 'fecha_devolucion', nullable: true })
-  fechaDevolucion: Date;
-
-  @Column('character varying', { name: 'lugar_destino', nullable: true })
-  lugarDestino: string;
+    @Column('date', { name: 'fecha_devolucion', nullable:true})
+    fechaDevolucion: Date;
+    
+    @Column('character varying', { name: 'lugar_destino', nullable:true })
+    lugarDestino: string;
 
   @Column('timestamp without time zone', {
     name: 'created_at',
