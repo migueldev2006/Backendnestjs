@@ -10,6 +10,7 @@ import { diskStorage } from 'multer';
 import { fileName } from 'typeorm-model-generator/dist/src/NamingStrategy';
 import { extname } from 'path';
 import { Request } from 'express';
+import { UpdatePerfilDto } from './dto/update-perfil.dto';
 
 
 @UseGuards(JwtGuard, PermisoGuard)
@@ -68,13 +69,12 @@ export class UsuariosController {
       },
     }),
   }))
+
   async updatePhoto ( @UploadedFile() perfil: Express.Multer.File, @Req() req ){
     if(!perfil) throw new BadRequestException('No se proporcionó ningún archivo');
     const userId = req.user.idUsuario;
     return await this.usuariosService.updateProfilePhoto(userId,perfil.filename)
   }
-
-
 
   @Get(':nombre')
   @Permiso(5)
@@ -91,8 +91,13 @@ export class UsuariosController {
 
   @Patch('estado/:id')
   @Permiso(7)
-  @UseGuards(PermisoGuard)
   updatestate(@Param('id') id: string) {
     return this.usuariosService.updatestate(+id);
+  }
+
+  @Patch('perfil')
+  updatePerfilInfo(@Body() updatePerfil : UpdatePerfilDto, @Req() req: any){
+    const userId = req.user.idUsuario;
+    return this.usuariosService.updatePerfil(userId,updatePerfil)
   }
 }
