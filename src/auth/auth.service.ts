@@ -28,10 +28,10 @@ export class AuthService {
         },
         relations: ["fkRol"]
     });
-    if (!user) throw new HttpException("Usuario no existe", HttpStatus.NOT_FOUND)
+    if (!user) throw new HttpException({status: 404, message: "Usuario no existe"}, HttpStatus.NOT_FOUND)
 
     const verified = await bcrypt.compare(data.password, user.password);
-    if (!verified) throw new HttpException("Wrong password", HttpStatus.UNAUTHORIZED);
+    if (!verified) throw new HttpException({status: 401, message:"Contraseña incorrecta"}, HttpStatus.UNAUTHORIZED);
 
     const token = jwt.sign({
         ...user,
