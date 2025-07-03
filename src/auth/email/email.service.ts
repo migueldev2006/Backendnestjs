@@ -5,6 +5,7 @@ import * as jwt from 'jsonwebtoken';
 import { Usuarios } from "../../usuarios/entities/usuario.entity";
 import { Repository } from "typeorm";
 import { createTransport, Transporter, SendMailOptions } from 'nodemailer';
+import { mailBody } from "./mail.body";
 
 
 @Injectable()
@@ -52,11 +53,9 @@ export class EmailService {
             expiresIn: this.configService.get("EXPIRES") ?? "1h"
         });
 
-
-
         const url = `${this.configService.get("BASE_URL")}/reset-password?token=${token}`;
 
-        const html = `<p>Hola para cambiar tu contraseña click <a href="${url}">aqui</a></p>`
+        const html = mailBody(url);
 
 
 

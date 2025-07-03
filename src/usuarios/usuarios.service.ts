@@ -118,10 +118,27 @@ export class UsuariosService {
   async updatePerfil(userId: number, updatePerfil: UpdatePerfilDto) {
     if(updatePerfil.password) updatePerfil.password = await bcrypt.hash(updatePerfil.password,10);
      await this.usuariosRepository.update(userId, updatePerfil)
-    const updated = await this.usuariosRepository.findOne({
+    await this.usuariosRepository.findOne({
       where: { idUsuario: userId },
     });
-    return updated;
+    const user = await this.usuariosRepository.findOne({
+      where: {
+        idUsuario: userId
+      },
+      select: {
+        idUsuario: true,
+        documento: true,
+        edad: true,
+        nombre: true,
+        apellido: true,
+        telefono: true,
+        correo: true,
+        perfil: true,
+        fkRol: true,
+      },
+      relations: ["fkRol"]
+    });
+    return { status: 200, message: "Perfil obtenido exitosamente", usuario: user };
   }
 
   async updatestate(id: number) {
