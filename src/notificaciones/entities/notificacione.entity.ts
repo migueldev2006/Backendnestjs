@@ -26,7 +26,7 @@ export class Notificaciones {
   requiereAccion: boolean;
 
   @Column({ type: 'varchar', length: 50, nullable: true })
-  estado?: 'aceptado' | 'rechazado' | 'pendiente'; // solo si requiere acción
+  estado?: 'aceptado' | 'rechazado' | 'pendiente'| null; 
 
   @Column({ type: 'jsonb', nullable: true })
   data: any; // datos relacionados: idElemento, motivo, etc.

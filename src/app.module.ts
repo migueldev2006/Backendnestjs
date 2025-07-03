@@ -34,6 +34,7 @@ import { WebsocketModule } from './websocket/websocket.module';
 import { SeedsService } from './database/seeds/seeds.service';
 import { SeedsModule } from './database/seeds/seeds.module';
 import { CommandModule } from 'nestjs-command';
+import { ReportesModule } from './reportes/reportes.module';
 
 
 
@@ -82,6 +83,7 @@ import { CommandModule } from 'nestjs-command';
     WebsocketModule,
     CommandModule,
     SeedsModule,
+    ReportesModule,
   ],
   controllers: [AppController],
   providers: [

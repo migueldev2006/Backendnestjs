@@ -12,6 +12,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Inventarios } from './entities/inventario.entity';
 import { Repository } from 'typeorm';
 import { CodigoInventario } from 'src/codigo-inventario/entities/codigo-inventario.entity';
+import { NotificacionesService } from 'src/notificaciones/notificaciones.service';
 
 @Injectable()
 export class InventariosService {
@@ -21,6 +22,8 @@ export class InventariosService {
 
     @InjectRepository(CodigoInventario)
     private readonly codigosRepository: Repository<CodigoInventario>,
+
+    private readonly notificacionesService: NotificacionesService,
   ) {}
   async create(createInventarioDto: CreateInventarioDto): Promise<Inventarios> {
     const inventario = this.inventarioRepository.create({
@@ -60,11 +63,15 @@ export class InventariosService {
 
     await this.inventarioRepository.save(agregateStockInventario);
 
+    await this.notificacionesService.notificarStockBajo(agregateStockInventario);
+
     return { message: 'Stock actualizado correctamente' };
   }
 
   async findAll(): Promise<Inventarios[]> {
-    return await this.inventarioRepository.find({ relations: ['fkSitio', 'fkElemento', 'fkElemento.fkCaracteristica'] });
+    return await this.inventarioRepository.find({
+      relations: ['fkSitio', 'fkElemento', 'fkElemento.fkCaracteristica', 'codigos'],
+    })
   }
 
   async findOne(idInventario: number): Promise<Inventarios | null> {

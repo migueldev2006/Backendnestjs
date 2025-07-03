@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer';
 import {
   IsArray,
   IsBoolean,
@@ -36,8 +37,13 @@ export class CreateMovimientoDto {
   @IsBoolean()
   noDevolutivo: boolean;
 
+  @IsString()
+  lugarDestino:string
+
+  @Type(() => Date)
   @IsDate()
-  fechaDevolucion: Date;
+  @IsOptional()
+  fechaDevolucion?: Date;
 
   @IsNumber()
   fkInventario: number;

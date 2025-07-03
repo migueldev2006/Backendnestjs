@@ -14,7 +14,7 @@ import {
 export class CreateUsuarioDto {
   @IsInt()
   @IsPositive()
-  @Min(10)
+  @Min(8)
   documento: number;
 
   @IsString({ message: 'El nombre debe ser un string' })
@@ -44,7 +44,7 @@ export class CreateUsuarioDto {
   cargo: string;
 
   @IsString()
-  @MinLength(3)
+  @MinLength(8)
   password: string;
 
   @IsString()

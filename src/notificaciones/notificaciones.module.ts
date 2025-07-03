@@ -9,6 +9,7 @@ import { WebsocketModule } from 'src/websocket/websocket.module';
   controllers: [NotificacionesController],
   providers: [NotificacionesService],
   imports: [TypeOrmModule.forFeature([Notificaciones]),  WebsocketModule],
-  exports:[TypeOrmModule]
+  exports:[TypeOrmModule, NotificacionesService]
+  
 })
 export class NotificacionesModule {}
