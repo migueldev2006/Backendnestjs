@@ -57,12 +57,14 @@ export class AuthService {
             "ruta.nombre",
             "ruta.href",
             "ruta.icono",
+            "ruta.listed",
             "permiso.idPermiso"
         ])
         .where("usuario.idUsuario = :userId", { userId: user.idUsuario })
         .andWhere("rolPermiso.estado = true")
         .andWhere("ruta.estado = true")
         .andWhere("modulo.estado = true")
+        .andWhere("rol.estado = true")
         .getRawMany();
 
         // Group and transform
@@ -91,6 +93,7 @@ export class AuthService {
                     nombre: row.ruta_nombre,
                     href: row.ruta_href,
                     icono: row.ruta_icono,
+                    listed: row.ruta_listed,
                     permisos: []
                 };
                 acc[moduloId].rutas.push(ruta);
@@ -122,12 +125,14 @@ export class AuthService {
             "ruta.nombre",
             "ruta.href",
             "ruta.icono",
+            "ruta.listed",
             "permiso.idPermiso"
         ])
         .where("usuario.idUsuario = :userId", { userId: idUsuario })
         .andWhere("rolPermiso.estado = true")
         .andWhere("ruta.estado = true")
         .andWhere("modulo.estado = true")
+        .andWhere("rol.estado = true")
         .getRawMany();
 
         // Group and transform
@@ -156,6 +161,7 @@ export class AuthService {
                     nombre: row.ruta_nombre,
                     href: row.ruta_href,
                     icono: row.ruta_icono,
+                    listed: row.ruta_listed,
                     permisos: []
                 };
                 acc[moduloId].rutas.push(ruta);
