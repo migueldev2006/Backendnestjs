@@ -10,6 +10,8 @@ import { In, Repository } from 'typeorm';
 import { Inventarios } from 'src/inventarios/entities/inventario.entity';
 import { CodigoInventario } from 'src/codigo-inventario/entities/codigo-inventario.entity';
 import { TipoMovimientos } from 'src/tipos-movimiento/entities/tipos-movimiento.entity';
+import { Notificaciones } from 'src/notificaciones/entities/notificacione.entity';
+import { NotificacionesService } from 'src/notificaciones/notificaciones.service';
 
 @Injectable()
 export class MovimientosService {
@@ -25,6 +27,8 @@ export class MovimientosService {
 
     @InjectRepository(TipoMovimientos)
     private readonly tipoRepository: Repository<TipoMovimientos>,
+
+    private readonly notificacionesService: NotificacionesService,
   ) {}
 
   async create(createMovimientoDto: CreateMovimientoDto): Promise<Movimientos> {
@@ -89,7 +93,7 @@ export class MovimientosService {
           await this.codigoRepository.save({
             codigo,
             fkInventario: inventario,
-            usado: false,
+            uso: false,
           });
         }
 
@@ -118,7 +122,7 @@ export class MovimientosService {
 
     const movimiento = this.movimientoRepository.create({
       fkInventario: inventario,
-      fkTipoMovimiento:tipoMovimiento,
+      fkTipoMovimiento: tipoMovimiento,
       cantidad: cantidad || (codigos?.length ?? 0),
       descripcion,
       fkUsuario: { idUsuario: fkUsuario },
@@ -126,6 +130,28 @@ export class MovimientosService {
       enProceso: true,
       aceptado: false,
       cancelado: false,
+      horaIngreso: createMovimientoDto.horaIngreso,
+      horaSalida: createMovimientoDto.horaSalida,
+      fechaDevolucion: createMovimientoDto.fechaDevolucion,
+      devolutivo: createMovimientoDto.devolutivo,
+      noDevolutivo: createMovimientoDto.noDevolutivo,
+      lugarDestino: createMovimientoDto.lugarDestino,
+    });
+
+    await this.notificacionesService.notificarMovimientoPendiente({
+      idMovimiento: movimiento.idMovimiento,
+      tipo: tipoMovimiento,
+      usuario: { fkUsuario: { idUsuario: fkUsuario } },
+      sitio: { id: fkSitio, nombre: inventario.fkSitio?.nombre || 'Sitio' },
+    });
+
+    await this.notificacionesService.notificarIngreso({
+      id: movimiento.idMovimiento,
+      tipo: tipoMovimiento,
+      cantidad: movimiento.cantidad,
+      elemento: inventario.fkElemento,
+      usuario: { fkUsuario: { idUsuario: fkUsuario } },
+      sitio: { id: fkSitio, nombre: inventario.fkSitio?.nombre || 'Sitio' },
     });
 
     return await this.movimientoRepository.save(movimiento);
@@ -167,9 +193,9 @@ export class MovimientosService {
       fechaDevolucion: updateMovimientoDto.fechaDevolucion,
     });
 
-
-  const updatedMovimiento = await this.movimientoRepository.save(getMovimientoById);
-  return updatedMovimiento;
+    const updatedMovimiento =
+      await this.movimientoRepository.save(getMovimientoById);
+    return updatedMovimiento;
   }
 
   async accept(idMovimiento: number): Promise<Movimientos> {

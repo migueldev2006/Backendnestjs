@@ -28,14 +28,14 @@ export class CodigoInventarioService {
     });
   }
 
-  async findOne(idCodigoIventario: number): Promise<CodigoInventario | null> {
+  async findOne(idCodigoInventario: number): Promise<CodigoInventario | null> {
     const getCodigoById = await this.codigoRepository.findOneBy({
-      idCodigoIventario,
+      idCodigoInventario,
     });
 
     if (!getCodigoById) {
       throw new Error(
-        `No se encuentra el codigo con el id ${idCodigoIventario}`,
+        `No se encuentra el codigo con el id ${idCodigoInventario}`,
       );
     }
 
@@ -43,18 +43,18 @@ export class CodigoInventarioService {
   }
 
   async update(
-    idCodigoIventario: number,
+    idCodigoInventario: number,
     updateCodigoInventarioDto: UpdateCodigoInventarioDto,
   ) {
     const getCodigoById = await this.codigoRepository.findOneBy({
-      idCodigoIventario,
+      idCodigoInventario,
     });
 
     if (!getCodigoById) {
       throw new Error(`No se encontro el codigo correspondiente a este id`);
     }
 
-    await this.codigoRepository.update(idCodigoIventario, {
+    await this.codigoRepository.update(idCodigoInventario, {
       codigo: updateCodigoInventarioDto.codigo,
     });
     const updatedCodigo = await this.codigoRepository.save(getCodigoById);

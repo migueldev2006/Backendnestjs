@@ -51,11 +51,11 @@ export class Movimientos {
   @Column('boolean', { name: 'no_devolutivo', nullable: true })
   noDevolutivo: boolean;
 
-    @Column('date', { name: 'fecha_devolucion', nullable:true})
-    fechaDevolucion: Date;
-    
-    @Column('character varying', { name: 'lugar_destino', nullable:true })
-    lugarDestino: string;
+  @Column('date', { name: 'fecha_devolucion', nullable: true })
+  fechaDevolucion: Date;
+
+  @Column('character varying', { name: 'lugar_destino', nullable: true })
+  lugarDestino: string;
 
   @Column('timestamp without time zone', {
     name: 'created_at',
@@ -88,4 +88,29 @@ export class Movimientos {
   @ManyToOne(() => Usuarios, (usuarios) => usuarios.movimientos)
   @JoinColumn([{ name: 'fk_usuario', referencedColumnName: 'idUsuario' }])
   fkUsuario: Usuarios;
+
+  // Relación con usuario (ya existe como fkUsuario)
+  @ManyToOne(() => Usuarios)
+  @JoinColumn({ name: 'fk_usuario' })
+  usuario: Usuarios;
+
+  // Nuevo: Relación con usuario que entrega
+  @ManyToOne(() => Usuarios)
+  @JoinColumn({ name: 'fk_usuario_entrega' })
+  usuarioEntrega: Usuarios;
+
+  // Nuevo: Relación con usuario que recibe
+  @ManyToOne(() => Usuarios)
+  @JoinColumn({ name: 'fk_usuario_recibe' })
+  usuarioRecibe: Usuarios;
+
+  // Nuevo: Relación con sitio destino
+  @ManyToOne(() => Sitios)
+  @JoinColumn({ name: 'fk_sitio_destino' })
+  sitioDestino: Sitios;
+
+  // Alias adicional al que ya tienes como fkTipoMovimiento
+  @ManyToOne(() => TipoMovimientos)
+  @JoinColumn({ name: 'fk_tipo_movimiento' })
+  tipo: TipoMovimientos;
 }
