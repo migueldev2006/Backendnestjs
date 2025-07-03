@@ -7,6 +7,7 @@ import { Rutas } from 'src/rutas/entities/ruta.entity'
 import { Permisos } from 'src/permisos/entities/permiso.entity';
 import { RolPermiso } from 'src/rol-permiso/entities/rol-permiso.entity';
 import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class SeedsService {
@@ -1128,7 +1129,12 @@ export class SeedsService {
 
         for (const user of users) {
             const exists = await this.usuariosRepository.findOneBy({ idUsuario: user.idUsuario });
-            if (!exists) await this.usuariosRepository.query(`INSERT INTO usuarios(id_usuario, documento, nombre, estado, password, fk_rol) VALUES ($1,$2,$3,$4,$5,$6)`,[user.idUsuario,user.documento,user.nombre,user.estado,user.password,user.fkRol.idRol]);
+
+            if(!exists) {
+                const saltOrRounds = 10;
+                const hashedPassword = await bcrypt.hash(user.password, saltOrRounds);
+                await this.usuariosRepository.query(`INSERT INTO usuarios(id_usuario, documento, nombre, estado, password, fk_rol) VALUES ($1,$2,$3,$4,$5,$6)`,[user.idUsuario,user.documento,user.nombre,user.estado,hashedPassword,user.fkRol.idRol]);
+            }
         }
 
         for (const ruta of rutas) {
