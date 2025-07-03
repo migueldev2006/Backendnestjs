@@ -20,25 +20,24 @@ export class AreasController {
   constructor(private readonly areasService: AreasService) {}
 
   @Post()
-  @Permiso(13)
+  @Permiso(10)
   create(@Body() createAreaDto: CreateAreaDto) {
     return this.areasService.create(createAreaDto);
   }
 
   @Get()
-  @Permiso(14)
+  @Permiso(11)
   findAll() {
     return this.areasService.findAll();
   }
 
   @Get(':idArea')
-  @Permiso(15)
   findOne(@Param('idArea') idArea: number) {
     return this.areasService.findOne(+idArea);
   }
 
   @Patch(':idArea')
-  @Permiso(16)
+  @Permiso(12)
   update(
     @Param('idArea') idArea: number,
     @Body() updateAreaDto: UpdateAreaDto,
@@ -47,7 +46,7 @@ export class AreasController {
   }
 
   @Patch('state/:idArea')
-  @Permiso(17)
+  @Permiso(13)
   status(@Param('idArea') idArea: number) {
     return this.areasService.changeStatus(+idArea);
   }

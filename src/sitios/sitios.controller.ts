@@ -10,31 +10,30 @@ export class SitiosController {
   constructor(private readonly sitiosService: SitiosService) {}
 
   @Post()
-  @Permiso(18)
+  @Permiso(14)
   create(@Body() createSitioDto: CreateSitioDto) {
     return this.sitiosService.create(createSitioDto);
   }
 
   @Get()
-  @Permiso(19)
+  @Permiso(15)
   findAll() {
     return this.sitiosService.findAll();
   }
 
   @Get(':idSitio')
-  @Permiso(20)
   findOne(@Param('idSitio') idSitio: string) {
     return this.sitiosService.findOne(+idSitio);
   }
 
   @Patch(':idSitio')
-  @Permiso(21)
+  @Permiso(16)
   update(@Param('idSitio') idSitio: string, @Body() updateSitioDto: UpdateSitioDto) {
     return this.sitiosService.update(+idSitio, updateSitioDto);
   }
 
   @Patch('state/:idSitio')
-  @Permiso(22)
+  @Permiso(17)
   status(@Param('idSitio') idSitio: string) {
     return this.sitiosService.changeStatus(+idSitio);
   }

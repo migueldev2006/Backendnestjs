@@ -18,25 +18,24 @@ export class MovimientosController {
   constructor(private readonly movimientosService: MovimientosService) {}
 
   // @Post()
-  // @Permiso(32)
+  // @Permiso(22)
   // create(@Body() createMovimientoDto: CreateMovimientoDto) {
   //   return this.movimientosService.create(createMovimientoDto);
   // }
 
   @Get()
-  @Permiso(33)
+  @Permiso(23)
   findAll() {
     return this.movimientosService.findAll();
   }
 
   @Get(':idMovimiento')
-  @Permiso(34)
   findOne(@Param('idMovimiento') idMovimiento: number) {
     return this.movimientosService.findOne(+idMovimiento);
   }
 
   @Patch(':idMovimiento')
-  @Permiso(35)
+  @Permiso(24)
   update(
     @Param('idMovimiento') idMovimiento: number,
     @Body() updateMovimientoDto: UpdateMovimientoDto,
@@ -45,13 +44,13 @@ export class MovimientosController {
   }
 
   @Patch('accept/:idMovimiento')
-  @Permiso(36)
+  @Permiso(25)
   accept(@Param('idMovimiento') idMovimiento: number) {
     return this.movimientosService.accept(+idMovimiento);
   }
 
   @Patch('cancel/:idMovimiento')
-  @Permiso(37)
+  @Permiso(26)
   cancel(@Param('idMovimiento') idMovimiento: number) {
     return this.movimientosService.cancel(+idMovimiento);
   }

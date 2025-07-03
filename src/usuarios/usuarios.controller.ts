@@ -77,20 +77,19 @@ export class UsuariosController {
   }
 
   @Get(':nombre')
-  @Permiso(5)
   findOne(@Param('nombre') nombre: string) {
     return this.usuariosService.findOne(nombre);
   }
 
   
   @Patch('update/:id')
-  @Permiso(6)
+  @Permiso(4)
   update(@Param('id') idUsuario: string, @Body() updateUsuario: UpdateUsuarioDto) {
     return this.usuariosService.update(+idUsuario, updateUsuario);
   }
 
   @Patch('estado/:id')
-  @Permiso(7)
+  @Permiso(5)
   updatestate(@Param('id') id: string) {
     return this.usuariosService.updatestate(+id);
   }
