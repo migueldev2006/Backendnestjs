@@ -18,9 +18,7 @@ export class CreateMovimientoDto {
 
   @IsString()
   horaIngreso: string;
-  @IsString()
-  lugarDestino?: string;
-
+  
   @IsString()
   horaSalida: string;
 

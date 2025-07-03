@@ -67,6 +67,6 @@ export class Sitios {
   @JoinColumn([{ name: "fk_tipo_sitio", referencedColumnName: "idTipo" }])
   fkTipoSitio: TipoSitios;
 
-  @OneToMany(() => Usuarios, (usuario) => usuario.sitio)
-usuarios: Usuarios[];
+//   @OneToMany(() => Usuarios, (usuario) => usuario.sitio)
+// usuarios: Usuarios[];
 }

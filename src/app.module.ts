@@ -53,6 +53,7 @@ import { ReportesModule } from './reportes/reportes.module';
       entities: [__dirname + '//*.entity{.ts,.js}'],
       autoLoadEntities: true,
       synchronize: true,
+      dropSchema:true
     }),
     RolesModule,
     UsuariosModule,

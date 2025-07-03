@@ -89,28 +89,28 @@ export class Movimientos {
   @JoinColumn([{ name: 'fk_usuario', referencedColumnName: 'idUsuario' }])
   fkUsuario: Usuarios;
 
-  // Relación con usuario (ya existe como fkUsuario)
-  @ManyToOne(() => Usuarios)
-  @JoinColumn({ name: 'fk_usuario' })
-  usuario: Usuarios;
+  // // Relación con usuario (ya existe como fkUsuario)
+  // @ManyToOne(() => Usuarios)
+  // @JoinColumn({ name: 'fk_usuario' })
+  // usuario: Usuarios;
 
-  // Nuevo: Relación con usuario que entrega
-  @ManyToOne(() => Usuarios)
-  @JoinColumn({ name: 'fk_usuario_entrega' })
-  usuarioEntrega: Usuarios;
+  // // Nuevo: Relación con usuario que entrega
+  // @ManyToOne(() => Usuarios)
+  // @JoinColumn({ name: 'fk_usuario_entrega' })
+  // usuarioEntrega: Usuarios;
 
-  // Nuevo: Relación con usuario que recibe
-  @ManyToOne(() => Usuarios)
-  @JoinColumn({ name: 'fk_usuario_recibe' })
-  usuarioRecibe: Usuarios;
+  // // Nuevo: Relación con usuario que recibe
+  // @ManyToOne(() => Usuarios)
+  // @JoinColumn({ name: 'fk_usuario_recibe' })
+  // usuarioRecibe: Usuarios;
 
-  // Nuevo: Relación con sitio destino
-  @ManyToOne(() => Sitios)
-  @JoinColumn({ name: 'fk_sitio_destino' })
-  sitioDestino: Sitios;
+  // // Nuevo: Relación con sitio destino
+  // @ManyToOne(() => Sitios)
+  // @JoinColumn({ name: 'fk_sitio_destino' })
+  // sitioDestino: Sitios;
 
-  // Alias adicional al que ya tienes como fkTipoMovimiento
-  @ManyToOne(() => TipoMovimientos)
-  @JoinColumn({ name: 'fk_tipo_movimiento' })
-  tipo: TipoMovimientos;
+  // // Alias adicional al que ya tienes como fkTipoMovimiento
+  // @ManyToOne(() => TipoMovimientos)
+  // @JoinColumn({ name: 'fk_tipo_movimiento' })
+  // tipo: TipoMovimientos;
 }
