@@ -7,15 +7,14 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class CategoriasService {
-
-  constructor ( 
+  constructor(
     @InjectRepository(Categorias)
-    private categoriasRepository : Repository<Categorias>
-  ){}
+    private categoriasRepository: Repository<Categorias>,
+  ) {}
 
   async create(newCategoria: CreateCategoriaDto) {
     const categoria = this.categoriasRepository.create(newCategoria);
-    return await this.categoriasRepository.save(categoria)
+    return await this.categoriasRepository.save(categoria);
   }
 
   findAll() {
@@ -23,22 +22,24 @@ export class CategoriasService {
   }
 
   async findOne(nombre: string) {
-    const categoria = await this.categoriasRepository.findOneBy({nombre});
-    if(!categoria) throw new HttpException("Categoria no encontrada", HttpStatus.NOT_FOUND);
+    const categoria = await this.categoriasRepository.findOneBy({ nombre });
+    if (!categoria)
+      throw new HttpException('Categoria no encontrada', HttpStatus.NOT_FOUND);
     return categoria;
   }
 
   update(id: number, updateCategoria: UpdateCategoriaDto) {
-    return this.categoriasRepository.update(id,updateCategoria);
+    return this.categoriasRepository.update(id, updateCategoria);
   }
 
-  async updatestate(id: number){
+  async updatestate(id: number) {
     const categoria = await this.categoriasRepository.findOne({
       where: {
-        idCategoria: id
-      }
+        idCategoria: id,
+      },
     });
-    if(!categoria) throw new HttpException("Categoria no encontrada", HttpStatus.NOT_FOUND)
-    return this.categoriasRepository.update(id,{estado : !(categoria.estado)})
+    if (!categoria)
+      throw new HttpException('Categoria no encontrada', HttpStatus.NOT_FOUND);
+    return this.categoriasRepository.update(id, { estado: !categoria.estado });
   }
 }

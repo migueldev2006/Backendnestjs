@@ -21,11 +21,13 @@ export class NotificacionesController {
   @Post()
   async create(@Body() dto: CreateNotificacioneDto) {
     const notificacion = await this.notificacionesService.create(dto);
-
-this.websocketGateway.emitirNotificacion(notificacion.fkUsuario.idUsuario, notificacion);
-
-
+    this.websocketGateway.emitirNotificacion(notificacion.fkUsuario.idUsuario, notificacion);
     return notificacion;
+  }
+
+  @Get('usuario/:idUsuario')
+  getNotificacionesPorUsuario(@Param('idUsuario') idUsuario: number) {
+    return this.notificacionesService.getNotificacionesPorUsuario(+idUsuario);
   }
 
   @Get()
@@ -44,6 +46,19 @@ this.websocketGateway.emitirNotificacion(notificacion.fkUsuario.idUsuario, notif
     @Body() dto: UpdateNotificacioneDto,
   ) {
     return this.notificacionesService.update(+idNotificacion, dto);
+  }
+
+  @Patch(':idNotificacion/leida')
+  marcarComoLeida(@Param('idNotificacion') idNotificacion: number) {
+    return this.notificacionesService.marcarComoLeida(+idNotificacion);
+  }
+
+  @Patch(':idNotificacion/estado')
+  cambiarEstado(
+    @Param('idNotificacion') idNotificacion: number,
+    @Body('estado') estado: 'aceptado' | 'rechazado',
+  ) {
+    return this.notificacionesService.cambiarEstado(+idNotificacion, estado);
   }
 
   @Delete(':idNotificacion')

@@ -24,6 +24,10 @@ export class UpdateUsuarioDto extends PartialType(OmitType(CreateUsuarioDto, ['f
     correo: string;
 
     @IsString()
-    @MinLength(20)
-    perfil: string;
+    @MinLength(3)
+    cargo: string;
+
+    // @IsString()
+    // @MinLength(20)
+    // perfil: string;
 }

@@ -1,10 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
 import { CategoriasService } from './categorias.service';
 import { CreateCategoriaDto } from './dto/create-categoria.dto';
 import { UpdateCategoriaDto } from './dto/update-categoria.dto';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 
-@UseGuards(JwtGuard)
+// @UseGuards(JwtGuard)
 @Controller('categorias')
 export class CategoriasController {
   constructor(private readonly categoriasService: CategoriasService) {}
@@ -24,13 +33,13 @@ export class CategoriasController {
     return this.categoriasService.findOne(nombre);
   }
 
-  @Patch('update/:id')
-  update(@Param('id') id: string, @Body() updateCategoria: UpdateCategoriaDto) {
-    return this.categoriasService.update(+id, updateCategoria);
+  @Patch('update/:idCategoria')
+  update(@Param('idCategoria') idCategoria: string, @Body() updateCategoria: UpdateCategoriaDto) {
+    return this.categoriasService.update(+idCategoria, updateCategoria);
   }
 
-  @Patch('estado/:id')
-  remove(@Param('id') id: string) {
-    return this.categoriasService.updatestate(+id);
+  @Patch('estado/:idCategoria')
+  remove(@Param('idCategoria') idCategoria: string) {
+    return this.categoriasService.updatestate(+idCategoria);
   }
 }

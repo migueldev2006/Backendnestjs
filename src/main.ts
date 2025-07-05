@@ -9,25 +9,27 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-
   app.enableCors({
-    origin: process.env.BASE_URL, 
+    origin: process.env.BASE_URL,
     credentials: true,
   });
 
   app.use(cookieParser());
-  app.useGlobalFilters(new HttpExceptionFilter())
-  app.useGlobalPipes(new ValidationPipe({
-    whitelist:true,
-    forbidNonWhitelisted:true,
-    transform:true,
-    transformOptions:{
-      enableImplicitConversion:true
-  }}))
+  app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
+    }),
+  );
 
   app.useStaticAssets(join(__dirname, '..', 'public'), {
-  prefix: '/img',
-});
+    prefix: '/img',
+  });
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
