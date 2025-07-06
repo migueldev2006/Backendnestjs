@@ -1,11 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Inventarios } from 'src/inventarios/entities/inventario.entity';
 import { Movimientos } from 'src/movimientos/entities/movimiento.entity';
 import { CodigoInventario } from 'src/codigo-inventario/entities/codigo-inventario.entity';
 import { Usuarios } from 'src/usuarios/entities/usuario.entity';
-import { Sitios } from 'src/sitios/entities/sitio.entity';
 import { Elementos } from 'src/elementos/entities';
 
 @Injectable()
@@ -16,9 +15,6 @@ export class ReportesService {
 
     @InjectRepository(Movimientos)
     private readonly movimientosRepo: Repository<Movimientos>,
-
-    @InjectRepository(CodigoInventario)
-    private readonly codigoRepo: Repository<CodigoInventario>,
 
     @InjectRepository(Usuarios)
     private readonly usuariosRepo: Repository<Usuarios>,

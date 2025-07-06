@@ -48,6 +48,7 @@ export class MovimientosService {
     });
     if (!inventario) throw new NotFoundException('Inventario no encontrado');
 
+
     const tieneCaracteristicas = !!inventario.fkElemento?.fkCaracteristica;
     const tipoMovimiento = await this.tipoRepository.findOneBy({
       idTipo: fkTipoMovimiento,
@@ -66,19 +67,34 @@ export class MovimientosService {
         }
 
         const codigosDisponibles = await this.codigoRepository.find({
-          where: { codigo: In(codigos), fkInventario: inventario, uso: false },
+          where: { fkInventario: {idInventario:inventario.idInventario}, uso: false },
         });
 
-        if (codigosDisponibles.length !== codigos.length) {
-          const disponibles = codigosDisponibles.map((c) => c.codigo);
-          const faltantes = codigos.filter((c) => !disponibles.includes(c));
+        const disponibles = codigosDisponibles.map((c) => c.codigo);
+
+        const faltanes = codigos.filter((c) => !disponibles.includes(c));
+
+        console.log(codigosDisponibles);
+        console.log('Códigos recibidos:', codigos);
+        console.log(
+          'Códigos disponibles en DB:',
+          codigosDisponibles.map((c) => c.codigo),
+        );
+
+        const codigosEnInventario = await this.codigoRepository.find({
+          where: { fkInventario: inventario },
+        });
+
+        console.log('Códigos en inventario seleccionado:', codigosEnInventario);
+
+        if (faltanes.length > 0) {
           throw new BadRequestException(
-            `Los siguientes códigos no están disponibles: ${faltantes.join(', ')}`,
+            `Estos codigos no estan disponibles: ${faltanes}`,
           );
         }
 
         await this.codigoRepository.update(
-          { codigo: In(codigos), fkInventario: inventario },
+          { codigo: In(codigos), fkInventario: {idInventario:inventario.idInventario} },
           { uso: true },
         );
 
@@ -157,9 +173,17 @@ export class MovimientosService {
     return await this.movimientoRepository.save(movimiento);
   }
 
-  async findAll(): Promise<Movimientos[]> {
-    return await this.movimientoRepository.find();
-  }
+async findAll(): Promise<Movimientos[]> {
+  return await this.movimientoRepository.find({
+    relations: [
+      "fkInventario",
+      "fkInventario.fkElemento",
+      "fkSitio",
+      "fkTipoMovimiento",
+      "fkUsuario",
+    ],
+  });
+}
 
   async findOne(idMovimiento: number): Promise<Movimientos | null> {
     const getMovimientoById = await this.movimientoRepository.findOneBy({

@@ -75,19 +75,5 @@ export class Usuarios {
 
   @OneToMany(() => Notificaciones, (notificaciones) => notificaciones.fkUsuario)
   notificaciones: Notificaciones[];
-
-  @Column('integer', { name: 'fk_sitio', nullable: true })
-  fkSitio: number;
-
-  // // Relación con Sitio
-  // @ManyToOne(() => Sitios, (sitio) => sitio.usuarios)
-  // @JoinColumn({ name: 'fk_sitio' })
-  // sitio: Sitios;
-
-  // // Relación con Área
-  // @ManyToOne(() => Areas)
-  // @JoinColumn({ name: 'fk_area' })
-  // area: Areas;
-
   
 }

@@ -158,7 +158,7 @@
         const lider = await this.usuarioRepository.findOne({
           where: {
             fkRol: { nombre: 'lider' },
-            fkSitio: movimiento.sitio.id,
+            // fkSitio: movimiento.sitio.id,
           },
         });
 
@@ -195,7 +195,7 @@
         const admins = await this.usuarioRepository.find({
           where: { fkRol: { nombre: 'administrador' } },
         });
-        const mensaje = `Stock bajo de "${inventario.elemento.nombre}": quedan ${inventario.stock} unidades.`;
+        const mensaje = `Stock bajo de ese elemento"`;
 
         for (const admin of admins) {
           await this.enviarYGuardarNotificacion(

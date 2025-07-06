@@ -18,7 +18,7 @@ export class CreateMovimientoDto {
 
   @IsString()
   horaIngreso: string;
-  
+
   @IsString()
   horaSalida: string;
 
@@ -38,7 +38,7 @@ export class CreateMovimientoDto {
   noDevolutivo: boolean;
 
   @IsString()
-  lugarDestino:string
+  lugarDestino?:string
 
   @Type(() => Date)
   @IsDate()
