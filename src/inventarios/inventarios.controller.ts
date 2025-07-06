@@ -11,37 +11,36 @@ export class InventariosController {
   constructor(private readonly inventariosService: InventariosService) {}
 
   @Post()
-  @Permiso(34)
+  @Permiso(27)
   create(@Body() createInventarioDto: CreateInventarioDto) {
     return this.inventariosService.create(createInventarioDto);
   }
 
   @Post('agregateStock')
-  @Permiso(35)
+  @Permiso(28)
   agregateStock(@Body() agregateStockDto: AgregarStockDto) {
     return this.inventariosService.agregateStock(agregateStockDto);
   }
 
   @Get()
-  @Permiso(36)
+  @Permiso(29)
   findAll() {
     return this.inventariosService.findAll();
   }
 
   @Get(':idInventario')
-  @Permiso(37)
   findOne(@Param('idInventario') idInventario: number) {
     return this.inventariosService.findOne(+idInventario);
   }
 
   @Patch(':idInventario')
-  @Permiso(38)
+  @Permiso(30)
   update(@Param('idInventario') idInventario: number, @Body() updateInventarioDto: UpdateInventarioDto) {
     return this.inventariosService.update(+idInventario, updateInventarioDto);
   }
 
   @Patch('state/:idInventario')
-  @Permiso(39)
+  @Permiso(31)
   stastus(@Param('idInventario') idInventario: number) {
     return this.inventariosService.changeStatus(+idInventario);
   }

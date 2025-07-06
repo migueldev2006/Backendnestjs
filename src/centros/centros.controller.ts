@@ -20,35 +20,30 @@ export class CentrosController {
 
   @Post()
   @Permiso(7)
-  // @UseGuards(PermisoGuard)
   create(@Body() createCentroDto: CreateCentroDto) {
     return this.centrosService.create(createCentroDto);
   }
 
   @Get()
   @Permiso(6)
-  // @UseGuards(PermisoGuard)
   findAll() {
     return this.centrosService.findAll();
   }
 
   @Get(':id')
   @Permiso(8)
-  // @UseGuards(PermisoGuard)
   findOne(@Param('id') id: string) {
     return this.centrosService.findOne(+id);
   }
 
   @Patch('update/:id')
   @Permiso(9)
-  // @UseGuards(PermisoGuard)
   update(@Param('id') id: string, @Body() updateCentroDto: UpdateCentroDto) {
     return this.centrosService.update(+id, updateCentroDto);
   }
 
   @Patch('estado/:id')
   @Permiso(10)
-  // @UseGuards(PermisoGuard)
   updateStatus(@Param('id') id: string) {
     return this.centrosService.updateStatus(+id);
   }

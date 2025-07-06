@@ -23,7 +23,7 @@ export class ElementosController {
   constructor(private readonly elementosService: ElementosService) {}
 
   @Post()
-  @Permiso(27)
+  @Permiso(18)
   @UseInterceptors(
     FileInterceptor('imagenElemento', {
       storage: diskStorage({
@@ -47,19 +47,18 @@ export class ElementosController {
   }
 
   @Get()
-  @Permiso(28)
+  @Permiso(19)
   findAll() {
     return this.elementosService.findAll();
   }
 
   @Get(':idElemento')
-  @Permiso(29)
   findOne(@Param('idElemento') idElemento: number) {
     return this.elementosService.findOne(+idElemento);
   }
 
   @Patch(':idElemento')
-  @Permiso(30)
+  @Permiso(20)
   @UseInterceptors(
     FileInterceptor('imagenElemento', {
       storage: diskStorage({
@@ -84,7 +83,7 @@ export class ElementosController {
   }
 
   @Patch('state/:idElemento')
-  @Permiso(31)
+  @Permiso(21)
   status(@Param('idElemento') idElemento: number) {
     return this.elementosService.changeStatus(+idElemento);
   }

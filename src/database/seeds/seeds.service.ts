@@ -670,486 +670,511 @@ export class SeedsService {
             {
                 idRolPermiso: 1,
                 estado: true,
-                fkPermiso: { idPermiso: 1},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 1 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 2,
                 estado: true,
-                fkPermiso: { idPermiso: 2},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 2 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 3,
                 estado: true,
-                fkPermiso: { idPermiso: 3},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 3 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 4,
                 estado: true,
-                fkPermiso: { idPermiso: 4},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 4 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 5,
                 estado: true,
-                fkPermiso: { idPermiso: 5},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 5 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 6,
                 estado: true,
-                fkPermiso: { idPermiso: 6},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 6 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 7,
                 estado: true,
-                fkPermiso: { idPermiso: 7},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 7 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 8,
                 estado: true,
-                fkPermiso: { idPermiso: 8},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 8 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 9,
                 estado: true,
-                fkPermiso: { idPermiso: 9},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 9 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 10,
                 estado: true,
-                fkPermiso: { idPermiso: 10},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 10 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 11,
                 estado: true,
-                fkPermiso: { idPermiso: 11},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 11 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 12,
                 estado: true,
-                fkPermiso: { idPermiso: 12},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 12 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 13,
                 estado: true,
-                fkPermiso: { idPermiso: 13},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 13 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 14,
                 estado: true,
-                fkPermiso: { idPermiso: 14},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 14 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 15,
                 estado: true,
-                fkPermiso: { idPermiso: 15},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 15 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 16,
                 estado: true,
-                fkPermiso: { idPermiso: 16},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 16 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 17,
                 estado: true,
-                fkPermiso: { idPermiso: 17},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 17 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 18,
                 estado: true,
-                fkPermiso: { idPermiso: 18},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 18 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 19,
                 estado: true,
-                fkPermiso: { idPermiso: 19},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 19 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 20,
                 estado: true,
-                fkPermiso: { idPermiso: 20},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 20 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 21,
                 estado: true,
-                fkPermiso: { idPermiso: 21},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 21 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 22,
                 estado: true,
-                fkPermiso: { idPermiso: 22},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 22 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 23,
                 estado: true,
-                fkPermiso: { idPermiso: 23},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 23 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 24,
                 estado: true,
-                fkPermiso: { idPermiso: 24},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 24 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 25,
                 estado: true,
-                fkPermiso: { idPermiso: 25},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 25 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 26,
                 estado: true,
-                fkPermiso: { idPermiso: 26},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 26 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 27,
                 estado: true,
-                fkPermiso: { idPermiso: 27},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 27 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 28,
                 estado: true,
-                fkPermiso: { idPermiso: 28},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 28 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 29,
                 estado: true,
-                fkPermiso: { idPermiso: 29},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 29 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 30,
                 estado: true,
-                fkPermiso: { idPermiso: 30},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 30 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 31,
                 estado: true,
-                fkPermiso: { idPermiso: 31},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 31 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 32,
                 estado: true,
-                fkPermiso: { idPermiso: 32},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 32 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 33,
                 estado: true,
-                fkPermiso: { idPermiso: 33},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 33 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 34,
                 estado: true,
-                fkPermiso: { idPermiso: 34},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 34 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 35,
                 estado: true,
-                fkPermiso: { idPermiso: 35},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 35 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 36,
                 estado: true,
-                fkPermiso: { idPermiso: 36},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 36 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 37,
                 estado: true,
-                fkPermiso: { idPermiso: 37},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 37 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 38,
                 estado: true,
-                fkPermiso: { idPermiso: 38},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 38 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 39,
                 estado: true,
-                fkPermiso: { idPermiso: 39},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 39 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 40,
                 estado: true,
-                fkPermiso: { idPermiso: 40},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 40 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 41,
                 estado: true,
-                fkPermiso: { idPermiso: 41},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 41 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 42,
                 estado: true,
-                fkPermiso: { idPermiso: 42},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 42 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 43,
                 estado: true,
-                fkPermiso: { idPermiso: 43},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 43 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 44,
                 estado: true,
-                fkPermiso: { idPermiso: 44},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 44 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 45,
                 estado: true,
-                fkPermiso: { idPermiso: 45},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 45 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 46,
                 estado: true,
-                fkPermiso: { idPermiso: 46},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 46 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 47,
                 estado: true,
-                fkPermiso: { idPermiso: 47},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 47 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 48,
                 estado: true,
-                fkPermiso: { idPermiso: 48},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 48 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 49,
                 estado: true,
-                fkPermiso: { idPermiso: 49},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 49 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 50,
                 estado: true,
-                fkPermiso: { idPermiso: 50},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 50 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 51,
                 estado: true,
-                fkPermiso: { idPermiso: 51},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 51 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 52,
                 estado: true,
-                fkPermiso: { idPermiso: 52},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 52 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 53,
                 estado: true,
-                fkPermiso: { idPermiso: 53},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 53 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 54,
                 estado: true,
-                fkPermiso: { idPermiso: 54},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 54 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 55,
                 estado: true,
-                fkPermiso: { idPermiso: 55},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 55 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 56,
                 estado: true,
-                fkPermiso: { idPermiso: 56},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 56 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 57,
                 estado: true,
-                fkPermiso: { idPermiso: 57},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 57 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 58,
                 estado: true,
-                fkPermiso: { idPermiso: 58},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 58 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 59,
                 estado: true,
-                fkPermiso: { idPermiso: 59},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 59 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 60,
                 estado: true,
-                fkPermiso: { idPermiso: 60},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 60 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 61,
                 estado: true,
-                fkPermiso: { idPermiso: 61},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 61 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 62,
                 estado: true,
-                fkPermiso: { idPermiso: 62},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 62 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 63,
                 estado: true,
-                fkPermiso: { idPermiso: 63},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 63 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 64,
                 estado: true,
-                fkPermiso: { idPermiso: 64},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 64 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 65,
                 estado: true,
-                fkPermiso: { idPermiso: 65},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 65 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 66,
                 estado: true,
-                fkPermiso: { idPermiso: 66},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 66 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 67,
                 estado: true,
-                fkPermiso: { idPermiso: 67},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 67 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 68,
                 estado: true,
-                fkPermiso: { idPermiso: 68},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 68 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 69,
                 estado: true,
-                fkPermiso: { idPermiso: 69},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 69 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 70,
                 estado: true,
-                fkPermiso: { idPermiso: 70},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 70 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 71,
                 estado: true,
-                fkPermiso: { idPermiso: 71},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 71 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 72,
                 estado: true,
-                fkPermiso: { idPermiso: 72},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 72 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 73,
                 estado: true,
-                fkPermiso: { idPermiso: 73},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 73 },
+                fkRol: { idRol: 1 }
             },
             {
                 idRolPermiso: 74,
                 estado: true,
-                fkPermiso: { idPermiso: 74},
-                fkRol: { idRol: 1}
+                fkPermiso: { idPermiso: 74 },
+                fkRol: { idRol: 1 }
             }
 
 
 
         ]
 
-        
+
         for (const role of roles) {
             const exists = await this.rolesRepository.findOneBy({ idRol: role.idRol });
-            if (!exists) await this.rolesRepository.query(`INSERT INTO roles(id_rol, nombre, estado) VALUES ($1,$2,$3)`,[role.idRol, role.nombre, role.estado]);
+            if (!exists) await this.rolesRepository.query(`INSERT INTO roles(id_rol, nombre, estado) VALUES ($1,$2,$3)`, [role.idRol, role.nombre, role.estado]);
+
+            await this.usuariosRepository.query(
+                `SELECT setval(pg_get_serial_sequence('roles', 'id_rol'), (SELECT MAX(id_rol) FROM roles))`
+            );
         }
 
         for (const module of modules) {
             const exists = await this.modulosRepository.findOneBy({ idModulo: module.idModulo })
-            if (!exists) await this.modulosRepository.query(`INSERT INTO modulos(id_modulo, nombre, icono, estado) VALUES ($1,$2,$3,$4)`,[module.idModulo, module.nombre, module.icono, module.estado]);
+            if (!exists) await this.modulosRepository.query(`INSERT INTO modulos(id_modulo, nombre, icono, estado) VALUES ($1,$2,$3,$4)`, [module.idModulo, module.nombre, module.icono, module.estado]);
+
+            await this.usuariosRepository.query(
+                `SELECT setval(pg_get_serial_sequence('modulos', 'id_modulo'), (SELECT MAX(id_modulo) FROM modulos))`
+            );
+
         }
 
         for (const user of users) {
             const exists = await this.usuariosRepository.findOneBy({ idUsuario: user.idUsuario });
 
-            if(!exists) {
+            if (!exists) {
                 const saltOrRounds = 10;
                 const hashedPassword = await bcrypt.hash(user.password, saltOrRounds);
-                await this.usuariosRepository.query(`INSERT INTO usuarios(id_usuario, documento, nombre, estado, password, fk_rol) VALUES ($1,$2,$3,$4,$5,$6)`,[user.idUsuario,user.documento,user.nombre,user.estado,hashedPassword,user.fkRol.idRol]);
+                await this.usuariosRepository.query(`INSERT INTO usuarios(id_usuario, documento, nombre, estado, password, fk_rol) VALUES ($1,$2,$3,$4,$5,$6)`, [user.idUsuario, user.documento, user.nombre, user.estado, hashedPassword, user.fkRol.idRol]);
+
+                await this.usuariosRepository.query(
+                    `SELECT setval(pg_get_serial_sequence('usuarios', 'id_usuario'), (SELECT MAX(id_usuario) FROM usuarios))`
+                );
             }
         }
 
         for (const ruta of rutas) {
             const exists = await this.rutasRepository.findOneBy({ idRuta: ruta.idRuta });
-            if (!exists) await this.rutasRepository.query(`INSERT INTO rutas(id_ruta, nombre, href, fk_modulo, icono, listed, estado) VALUES ($1,$2,$3,$4,$5,$6,$7)`,[ruta.idRuta,ruta.nombre,ruta.href,ruta.fkModulo.idModulo,ruta.icono,ruta.listed,ruta.estado]);
+            if (!exists) await this.rutasRepository.query(`INSERT INTO rutas(id_ruta, nombre, href, fk_modulo, icono, listed, estado) VALUES ($1,$2,$3,$4,$5,$6,$7)`, [ruta.idRuta, ruta.nombre, ruta.href, ruta.fkModulo.idModulo, ruta.icono, ruta.listed, ruta.estado]);
+
+            await this.usuariosRepository.query(
+                `SELECT setval(pg_get_serial_sequence('rutas', 'id_ruta'), (SELECT MAX(id_ruta) FROM rutas))`
+            );
         }
 
         for (const permiso of permisos) {
             const exists = await this.permisosRepository.findOneBy({ idPermiso: permiso.idPermiso });
-            if (!exists) await this.permisosRepository.query(`INSERT INTO permisos(id_permiso, permiso, fk_ruta) VALUES ($1,$2,$3)`,[permiso.idPermiso,permiso.permiso,permiso.fkRuta.idRuta]);
+            if (!exists) await this.permisosRepository.query(`INSERT INTO permisos(id_permiso, permiso, fk_ruta) VALUES ($1,$2,$3)`, [permiso.idPermiso, permiso.permiso, permiso.fkRuta.idRuta]);
+
+            await this.usuariosRepository.query(
+                `SELECT setval(pg_get_serial_sequence('permisos', 'id_permiso'), (SELECT MAX(id_permiso) FROM permisos))`
+            );
         }
 
         for (const rolPermiso of rol_permiso) {
             const exists = await this.rolPermisoRepository.findOneBy({ idRolPermiso: rolPermiso.idRolPermiso })
-            if (!exists) await this.rolPermisoRepository.query(`INSERT INTO rol_permiso(id_rol_permiso, estado, fk_permiso, fk_rol) VALUES ($1,$2,$3,$4)`,[rolPermiso.idRolPermiso,rolPermiso.estado,rolPermiso.fkPermiso.idPermiso,rolPermiso.fkRol.idRol]);
+            if (!exists) await this.rolPermisoRepository.query(`INSERT INTO rol_permiso(id_rol_permiso, estado, fk_permiso, fk_rol) VALUES ($1,$2,$3,$4)`, [rolPermiso.idRolPermiso, rolPermiso.estado, rolPermiso.fkPermiso.idPermiso, rolPermiso.fkRol.idRol]);
+
+            await this.usuariosRepository.query(
+                `SELECT setval(pg_get_serial_sequence('rol_permiso', 'id_rol_permiso'), (SELECT MAX(id_rol_permiso) FROM rol_permiso))`
+            );
         }
 
         console.log("Seeding completado!");

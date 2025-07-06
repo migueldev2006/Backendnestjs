@@ -20,31 +20,30 @@ export class FichasController {
   constructor(private readonly fichasService: FichasService) {}
 
   @Post()
-  @Permiso(8)
+  @Permiso(6)
   create(@Body() createFichaDto: CreateFichaDto) {
     return this.fichasService.create(createFichaDto);
   }
 
   @Get()
-  @Permiso(9)
+  @Permiso(7)
   findAll() {
     return this.fichasService.findAll();
   }
 
   @Get(':idFicha')
-  @Permiso(10)
   findOne(@Param('idFicha') idFicha: string) {
     return this.fichasService.findOne(+idFicha);
   }
 
   @Patch(':idFicha')
-  @Permiso(11)
+  @Permiso(8)
   update(@Param('idFicha') idFicha: string, @Body() updateFichaDto: UpdateFichaDto) {
     return this.fichasService.update(+idFicha, updateFichaDto);
   }
 
   @Patch('state/:idFicha')
-  @Permiso(12)
+  @Permiso(9)
   status(@Param('idFicha') idFicha: string) {
     return this.fichasService.changeStatus(+idFicha);
   }
