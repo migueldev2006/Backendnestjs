@@ -24,8 +24,6 @@ export class CreateElementoDto {
   @IsString()
   fechaUso:string
 
-  @IsString()
-  imagenElemento: string;
 
   @IsNumber()
   fkCategoria:number

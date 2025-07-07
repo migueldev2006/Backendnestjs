@@ -6,7 +6,7 @@ import { Movimientos } from 'src/movimientos/entities/movimiento.entity';
 import { CodigoInventario } from 'src/codigo-inventario/entities/codigo-inventario.entity';
 import { Usuarios } from 'src/usuarios/entities/usuario.entity';
 import { Sitios } from 'src/sitios/entities/sitio.entity';
-import { Elementos } from 'src/elementos/entities';
+import { Elementos } from 'src/elementos/entities/elemento.entity';
 
 @Injectable()
 export class ReportesService {

@@ -10,13 +10,14 @@ import {
   UploadedFile,
 } from '@nestjs/common';
 import { ElementosService } from './elementos.service';
-import { CreateElementoDto, UpdateElementoDto } from './dto';
+import { CreateElementoDto, } from './dto/create-elemento.dto';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { PermisoGuard } from 'src/auth/guards/permiso.guard';
 import { Permiso } from 'src/auth/decorators/permiso.decorator';
+import { UpdateElementoDto } from './dto/update-elemento.dto';
 @UseGuards(JwtGuard, PermisoGuard)
 @Controller('elementos')
 export class ElementosController {
@@ -31,7 +32,8 @@ export class ElementosController {
         filename: (req, file, cb) => {
           const unique = Date.now() + '-' + Math.round(Math.random() * 1e9);
           const ext = extname(file.originalname);
-          cb(null, `elemento-${unique}${ext}`);
+          const filename = `elemento-${unique}${ext}`
+          cb(null, filename);
         },
       }),
     }),
@@ -40,10 +42,8 @@ export class ElementosController {
     @UploadedFile() file: Express.Multer.File,
     @Body() createElementoDto: CreateElementoDto,
   ) {
-    if (file) {
-      createElementoDto.imagenElemento = `/img/elementos/${file.filename}`;
-    }
-    return this.elementosService.create(createElementoDto);
+    console.log(file)
+    return this.elementosService.create(createElementoDto,file?.filename);
   }
 
   @Get()
@@ -60,7 +60,7 @@ export class ElementosController {
   @Patch(':idElemento')
   @Permiso(20)
   @UseInterceptors(
-    FileInterceptor('imagenElemento', {
+    FileInterceptor('imagen', {
       storage: diskStorage({
         destination: './public/img/elementos',
         filename: (req, file, cb) => {
@@ -77,7 +77,7 @@ export class ElementosController {
     @Body() updateElementoDto: UpdateElementoDto,
   ) {
     if (file) {
-      updateElementoDto.imagenElemento = `/img/elementos/${file.filename}`;
+      updateElementoDto.imagen = file.filename;
     }
     return this.elementosService.update(+idElemento, updateElementoDto);
   }

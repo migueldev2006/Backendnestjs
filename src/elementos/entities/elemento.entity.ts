@@ -13,7 +13,7 @@ import { Caracteristicas } from '../../caracteristicas/entities/caracteristica.e
 import { Categorias } from '../../categorias/entities/categoria.entity';
 import { UnidadesMedida } from '../../unidades-medida/entities/unidades-medida.entity';
 import { Inventarios } from '../../inventarios/entities/inventario.entity';
-import { ElementImage } from './elemento-image.entity';
+// import { ElementImage } from './elemento-image.entity';
 
 @Entity('elementos', { schema: 'public' })
 export class Elementos {
@@ -45,9 +45,9 @@ export class Elementos {
   @Column('date', { name: 'fecha_uso', nullable: true })
   fechaUso: string | null;
 
-  @Column({type:'boolean', name:'baja', default:false})
-  baja:boolean
-  
+  @Column({ type: 'boolean', name: 'baja', default: false })
+  baja: boolean
+
   @Column('timestamp without time zone', {
     name: 'created_at',
     default: () => 'now()',
@@ -56,17 +56,15 @@ export class Elementos {
 
   @UpdateDateColumn({
     name: "updated_at",
-    type:'timestamp',
+    type: 'timestamp',
     default: () => "now()",
   })
   updatedAt: Date;
 
-  @OneToMany(() => ElementImage, (ElementImage) => ElementImage.Elemento, {
-    cascade: true,
-  })
-  imagenElemento?: ElementImage[];
+  @Column('character varying', { name: 'imagen', nullable: true, length: 255 })
+  imagen: string;
 
-  @ManyToOne(() => Caracteristicas, (caracteristicas) => caracteristicas.elementos, {nullable:true})
+  @ManyToOne(() => Caracteristicas, (caracteristicas) => caracteristicas.elementos, { nullable: true })
   @JoinColumn([{ name: 'fk_caracteristica', referencedColumnName: 'idCaracteristica' }])
   fkCaracteristica?: Caracteristicas;
 
