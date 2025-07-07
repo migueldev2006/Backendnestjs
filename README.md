@@ -1,8 +1,3 @@
-
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
 ## Clonacion del proyecto
 
 Abre la carpeta donde desea clonar el proyecto y ejecuta este comando en un cmd
@@ -14,13 +9,13 @@ luego de clonarlo le aparecera una carpeta "Backendnestjs" abrala con un click o
 
 ## Crear contenedor Docker
 
-Una vez clonado el proyecto asegurese de tener Docker instalador y de crear un contenedor de Docker mediante el comando en una consola powershell
+Como siguiente punto es necesario llenar las variables de entorno las cuales seran utilizadas en el proyecto, tales como las credenciales de la base de datos, nota viene un .env.example de ejemplo pero debe crear su propio .env
+
+Una vez clonado el proyecto asegurese de tener Docker Desktop instalado y corriendo para luego, crear un contenedor de Docker mediante el comando en una consola powershell
 
 ```bash
 $ docker compose up --build -d
 ```
-
-Luego de que haya creado el contenedor es necesario llenar las variables de entorno las cuales seran utilizadas en el proyecto, tales como las credenciales de la base de datos 
 
 ## Instalacion de dependencias 
 
@@ -36,14 +31,8 @@ Despues pasamos a poblar la base de datos por medio de un seeder con el siguient
 $ npx nestjs-command seed:database
 ```
 
-## Compile and run the proyecto
+## Compile y corra el proyecto
 
 ```bash
 $ npm run start:dev
 ```
-
-
-
-
-
-
