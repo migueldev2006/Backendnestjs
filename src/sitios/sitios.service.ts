@@ -3,8 +3,8 @@ import { CreateSitioDto, UpdateSitioDto } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Sitios } from './entities/sitio.entity';
 import { Repository } from 'typeorm';
-import { Elementos } from 'src/elementos/entities';
 import { Inventarios } from 'src/inventarios/entities/inventario.entity';
+import { Elementos } from 'src/elementos/entities/elemento.entity';
 
 @Injectable()
 export class SitiosService {

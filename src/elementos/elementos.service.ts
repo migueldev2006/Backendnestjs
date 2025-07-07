@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { CreateElementoDto, UpdateElementoDto } from './dto';
-import {  Repository } from 'typeorm';
-import { ElementImage, Elementos } from './entities';
+import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Inventarios } from 'src/inventarios/entities/inventario.entity';
 import { Sitios } from 'src/sitios/entities/sitio.entity';
+import { CreateElementoDto } from './dto/create-elemento.dto';
+import { UpdateElementoDto } from './dto/update-elemento.dto';
+import { Elementos } from './entities/elemento.entity';
 
 @Injectable()
 export class ElementosService {
@@ -15,24 +16,22 @@ export class ElementosService {
     private readonly inventarioRepository: Repository<Inventarios>,
     @InjectRepository(Sitios)
     private readonly sitioRepository: Repository<Sitios>,
-  ) {}
+  ) { }
 
-  async create(createElementoDto: CreateElementoDto): Promise<Elementos> {
+  async create(createElementoDto: CreateElementoDto, filename?: string): Promise<Elementos> {
     const elemento = this.elementoRepository.create({
       ...createElementoDto,
+      imagen: filename ?? "defaultPerfil.png",
       fkCategoria: { idCategoria: createElementoDto.fkCategoria },
       fkUnidadMedida: { idUnidad: createElementoDto.fkUnidadMedida },
       fkCaracteristica: createElementoDto.fkCaracteristica
-      ? { idCaracteristica: createElementoDto.fkCaracteristica }
-      : undefined,
-          imagenElemento: [
-      {
-        url: createElementoDto.imagenElemento,
-      },
-    ],
+        ? { idCaracteristica: createElementoDto.fkCaracteristica }
+        : undefined,
+
     });
 
     const nuevoElemento = await this.elementoRepository.save(elemento);
+    console.log(filename)
 
     const sitio = await this.sitioRepository.find();
 
@@ -52,7 +51,6 @@ export class ElementosService {
 
   async findAll(): Promise<Elementos[]> {
     return await this.elementoRepository.find(
-      {relations: ['imagenElemento'],}
     );
   }
 
@@ -70,31 +68,20 @@ export class ElementosService {
     return getElementoById;
   }
 
-  async update(
-    idElemento: number,
-    updateElementoDto: UpdateElementoDto,
-  ): Promise<Elementos> {
-const getElementoById = await this.elementoRepository.findOne({
-    where: { idElemento },
-    relations: ['imagenElemento'],
-  });
+  async update(idElemento: number, updateElementoDto: UpdateElementoDto){
 
-  if (!getElementoById) {
-    throw new Error(`No se encontró el elemento, el id ${idElemento} no existe`);
-  }
-
-
-  getElementoById.nombre = updateElementoDto.nombre ?? getElementoById.nombre;
-  getElementoById.descripcion = updateElementoDto.descripcion ?? getElementoById.descripcion;
-
-if (updateElementoDto.imagenElemento) {
-    const nuevaImagen = Object.assign(new ElementImage(), {
-      url: updateElementoDto.imagenElemento,
+    const getElementoById = await this.elementoRepository.findOne({
+      where: { idElemento }
     });
-    getElementoById.imagenElemento = [nuevaImagen];
-  }
 
-  return await this.elementoRepository.save(getElementoById);
+    if (!getElementoById) {
+      throw new Error(`No se encontró el elemento, el id ${idElemento} no existe`);
+    }
+
+    await this.elementoRepository.update(idElemento, updateElementoDto);
+
+    return { status: 200, message: "Datoactualizados con exito", };
+
   }
 
   async changeStatus(idElemento: number) {

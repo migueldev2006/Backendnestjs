@@ -3,8 +3,8 @@ import { SitiosService } from './sitios.service';
 import { SitiosController } from './sitios.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Sitios } from './entities/sitio.entity';
-import { Elementos } from 'src/elementos/entities';
 import { Inventarios } from 'src/inventarios/entities/inventario.entity';
+import { Elementos } from 'src/elementos/entities/elemento.entity';
 
 
 @Module({
