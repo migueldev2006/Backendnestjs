@@ -14,7 +14,7 @@ import {
 export class CreateUsuarioDto {
   @IsInt()
   @IsPositive()
-  @Min(8)
+  @Min(6)
   documento: number;
 
   @IsString({ message: 'El nombre debe ser un string' })

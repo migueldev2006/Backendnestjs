@@ -63,15 +63,22 @@ export class InventariosService {
 
     await this.inventarioRepository.save(agregateStockInventario);
 
-    await this.notificacionesService.notificarStockBajo(agregateStockInventario);
+    await this.notificacionesService.notificarStockBajo(
+      agregateStockInventario,
+    );
 
     return { message: 'Stock actualizado correctamente' };
   }
 
   async findAll(): Promise<Inventarios[]> {
     return await this.inventarioRepository.find({
-      relations: ['fkSitio', 'fkElemento', 'fkElemento.fkCaracteristica', 'codigos'],
-    })
+      relations: [
+        'fkSitio',
+        'fkElemento',
+        'fkElemento.fkCaracteristica',
+        'codigos',
+      ],
+    });
   }
 
   async findOne(idInventario: number): Promise<Inventarios | null> {
@@ -117,6 +124,9 @@ export class InventariosService {
 
     const updatedInventario =
       await this.inventarioRepository.save(getInventarioById);
+      
+    await this.notificacionesService.notificarStockBajo(updatedInventario);
+
     return updatedInventario;
   }
 

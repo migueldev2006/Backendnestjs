@@ -154,15 +154,17 @@ export class MovimientosService {
       lugarDestino: createMovimientoDto.lugarDestino,
     });
 
+    const move = await this.movimientoRepository.save(movimiento);
+
     await this.notificacionesService.notificarMovimientoPendiente({
-      idMovimiento: movimiento.idMovimiento,
+      idMovimiento: move.idMovimiento,
       tipo: tipoMovimiento,
       usuario: { fkUsuario: { idUsuario: fkUsuario } },
       sitio: { id: fkSitio, nombre: inventario.fkSitio?.nombre || 'Sitio' },
     });
 
     await this.notificacionesService.notificarIngreso({
-      id: movimiento.idMovimiento,
+      id: move.idMovimiento,
       tipo: tipoMovimiento,
       cantidad: movimiento.cantidad,
       elemento: inventario.fkElemento,

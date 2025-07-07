@@ -21,7 +21,6 @@ export class UpdatePerfilDto  {
     @MinLength(10)
     correo: string;
 
-
     @IsString()
     @IsOptional()
     password:string

@@ -43,7 +43,9 @@ export class WebsocketGateway
   emitirNotificacion(idUsuario: number, notificacion: any) {
     const socketId = this.usuariosConectados.get(idUsuario);
     if (socketId) {
-      this.server.to(socketId).emit('notificacion', notificacion);
-    }
+      this.server.to(socketId).emit('nuevaNotificacion', notificacion);
+    }else {
+    console.warn(`⚠️ Usuario ${idUsuario} no conectado, no se pudo enviar notificación.`);
+  }
   }
 }
