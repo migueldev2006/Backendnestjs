@@ -26,7 +26,7 @@ export class ElementosController {
   @Post()
   @Permiso(18)
   @UseInterceptors(
-    FileInterceptor('imagenElemento', {
+    FileInterceptor('imagen', {
       storage: diskStorage({
         destination: './public/img/elementos',
         filename: (req, file, cb) => {

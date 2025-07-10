@@ -47,46 +47,44 @@ export class ReportesService {
     }));
   }
 
-async usuarioConMasMovimientos(): Promise<any[]> {
-  const resultados = await this.movimientosRepo
-    .createQueryBuilder('mov')
-    .leftJoin('mov.fkUsuario', 'usuario')
-    .leftJoin('usuario.fkRol', 'rol')
-    .leftJoin('mov.fkInventario', 'inv')
-    .leftJoin('inv.fkElemento', 'elemento')
-    .leftJoin('inv.fkSitio', 'sitio')
-    .leftJoin('sitio.fkArea', 'area')
-    .leftJoin('inv.codigos', 'codigo') // Características/códigos
-    .select([
-      'usuario.nombre AS usuario',
-      'rol.nombre AS rol',
-      'sitio.nombre AS sitio',
-      'sitio.personaEncargada AS encargado',
-      'elemento.nombre AS elemento',
-      'inv.stock AS stock',
-      'COUNT(DISTINCT mov.idMovimiento) AS total_movimientos',
-      "STRING_AGG(codigo.codigo, ', ') AS codigos"
-    ])
-    .groupBy(
-      'usuario.idUsuario, rol.nombre, sitio.nombre, sitio.personaEncargada, elemento.nombre, inv.stock'
-    )
-    .orderBy('total_movimientos', 'DESC')
-    .limit(5)
-    .getRawMany();
+  async usuarioConMasMovimientos(): Promise<any[]> {
+    const resultados = await this.movimientosRepo
+      .createQueryBuilder('mov')
+      .leftJoin('mov.fkUsuario', 'usuario')
+      .leftJoin('usuario.fkRol', 'rol')
+      .leftJoin('mov.fkInventario', 'inv')
+      .leftJoin('inv.fkElemento', 'elemento')
+      .leftJoin('inv.fkSitio', 'sitio')
+      .leftJoin('sitio.fkArea', 'area')
+      .leftJoin('inv.codigos', 'codigo') // Características/códigos
+      .select([
+        'usuario.nombre AS usuario',
+        'rol.nombre AS rol',
+        'sitio.nombre AS sitio',
+        'sitio.personaEncargada AS encargado',
+        'elemento.nombre AS elemento',
+        'inv.stock AS stock',
+        'COUNT(DISTINCT mov.idMovimiento) AS total_movimientos',
+        "STRING_AGG(codigo.codigo, ', ') AS codigos",
+      ])
+      .groupBy(
+        'usuario.idUsuario, rol.nombre, sitio.nombre, sitio.personaEncargada, elemento.nombre, inv.stock',
+      )
+      .orderBy('total_movimientos', 'DESC')
+      .limit(5)
+      .getRawMany();
 
-  return resultados.map((r) => ({
-    usuario: r.usuario,
-    rol: r.rol,
-    sitio: r.sitio,
-    encargado: r.encargado,
-    elemento: r.elemento,
-    total_movimientos: Number(r.total_movimientos),
-    cantidad: r.codigos ? undefined : Number(r.stock),
-    codigos: r.codigos ? r.codigos.split(', ') : [],
-  }));
-}
-
-
+    return resultados.map((r) => ({
+      usuario: r.usuario,
+      rol: r.rol,
+      sitio: r.sitio,
+      encargado: r.encargado,
+      elemento: r.elemento,
+      total_movimientos: Number(r.total_movimientos),
+      cantidad: r.codigos ? undefined : Number(r.stock),
+      codigos: r.codigos ? r.codigos.split(', ') : [],
+    }));
+  }
 
   async elementosPorCaducar(): Promise<any[]> {
     const hoy = new Date();
@@ -121,7 +119,7 @@ async usuarioConMasMovimientos(): Promise<any[]> {
       nombre: r.nombre,
       vencimiento: r.vencimiento,
       creado: r.creado,
-      registrado_por: r.registrado_por,
+      registrado_por: r.registrado_por ?? 'No registrado',
       sitio: r.sitio,
       area: r.area,
       dias_restantes: Number(r.dias_restantes),
