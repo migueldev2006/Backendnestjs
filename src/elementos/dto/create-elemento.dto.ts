@@ -22,9 +22,6 @@ export class CreateElementoDto {
   fechaVencimiento?:string
 
   @IsString()
-  fechaUso:string
-
-  @IsString()
   imagen:string
 
   @IsNumber()
