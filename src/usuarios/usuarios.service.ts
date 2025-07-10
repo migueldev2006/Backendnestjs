@@ -82,16 +82,20 @@ export class UsuariosService {
     let newUsersList: Usuarios[] = [];
 
     for (const row of jsonData) {
+      console.log(row);
       const usuario = row as CreateUsuarioDto;
       const userPass = usuario.nombre.slice(0, 1) + usuario.apellido.slice(0, 1) + usuario.documento;
       const passwordHash = await bcrypt.hash(userPass, 12);
+      console.log("userRow:",usuario,"password hash:", passwordHash)
       const createdUser = await this.usuariosRepository.save({
         ...usuario,
         password: passwordHash,
-        fkRol: { idRol: usuario.fkRol }
+        fkRol: { idRol: 2 }
       })
+      console.log("created:",createdUser);
       newUsersList.push(createdUser);
     }
+
     return { msg: "Users registered successfully", newUsers: newUsersList }
   }
 

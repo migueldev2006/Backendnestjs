@@ -33,6 +33,11 @@ export class SeedsService {
                 idRol: 1,
                 nombre: "Administrador",
                 estado: true
+            },
+            {
+                idRol: 2,
+                nombre: "Aprendiz",
+                estado:true
             }
         ]
 
