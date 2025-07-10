@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, ParseIntPipe } from '@nestjs/common';
 import { RolPermisoService } from './rol-permiso.service';
 import { CreateRolPermisoDto, UpdateRolPermisoDto } from './dto';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
@@ -22,13 +22,19 @@ export class RolPermisoController {
     return this.rolPermisoService.findOne(+idRolPermiso);
   }
 
+  @Patch('asign-permiso/:idPermiso/:idRol')
+  async changeStatus(@Param('idPermiso', ParseIntPipe) idPermiso: number, @Param('idRol', ParseIntPipe) idRol: number){
+    return this.rolPermisoService.changeStatus(idPermiso, idRol);
+  }
+
   @Patch(':idRolPermiso')
   update(@Param('idRolPermiso') idRolPermiso: number, @Body() updateRolPermisoDto: UpdateRolPermisoDto) {
     return this.rolPermisoService.update(+idRolPermiso, updateRolPermisoDto);
   }
 
-  @Patch('state/:idRolPermiso')
-  status(@Param('idRolPermiso') idRolPermiso: number) {
-    return this.rolPermisoService.changeStatus(+idRolPermiso);
+  @Get('rol/:idrol/permisos')
+  async findpermisos(@Param('idrol') idrol: number){
+    return this.rolPermisoService.getpermisosrol(idrol)
   }
+
 }
