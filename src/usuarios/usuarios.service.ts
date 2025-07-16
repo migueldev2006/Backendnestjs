@@ -82,25 +82,30 @@ export class UsuariosService {
     let newUsersList: Usuarios[] = [];
 
     for (const row of jsonData) {
-      console.log(row);
       const usuario = row as CreateUsuarioDto;
       const userPass = usuario.nombre.slice(0, 1) + usuario.apellido.slice(0, 1) + usuario.documento;
       const passwordHash = await bcrypt.hash(userPass, 12);
-      console.log("userRow:",usuario,"password hash:", passwordHash)
       const createdUser = await this.usuariosRepository.save({
         ...usuario,
         password: passwordHash,
         fkRol: { idRol: 2 }
       })
-      console.log("created:",createdUser);
       newUsersList.push(createdUser);
     }
 
     return { msg: "Users registered successfully", newUsers: newUsersList }
   }
 
-  findAll() {
-    return this.usuariosRepository.find();
+  async findAll() {
+    const rawUsers = await this.usuariosRepository.find({
+      relations: {
+        fkRol: true
+      }
+    });
+    const mappedUsers = rawUsers.map(user=> {
+      return {...user, fkRol: user.fkRol.idRol};
+    })
+    return mappedUsers
   }
 
   async findOne(nombre: string) {
@@ -109,19 +114,30 @@ export class UsuariosService {
     return usuario;
   }
 
+
+
   async update(id: number, updateUsuario: UpdateUsuarioDto) {
-    const update = await this.usuariosRepository.update(id, updateUsuario);
+
+    const usuarioToUpdate = {
+      ...updateUsuario,
+      fkRol: updateUsuario.fkRol ? { idRol: updateUsuario.fkRol } : undefined,
+    };
+
+    const update = await this.usuariosRepository.update(id, usuarioToUpdate);
     const user = this.usuariosRepository.findOne({
       where: {
         idUsuario: id
-      }
+      },
+      relations: ["fkRol"]
     })
     return user;
   }
 
+
+
   async updatePerfil(userId: number, updatePerfil: UpdatePerfilDto) {
-    if(updatePerfil.password) updatePerfil.password = await bcrypt.hash(updatePerfil.password,10);
-     await this.usuariosRepository.update(userId, updatePerfil)
+    if (updatePerfil.password) updatePerfil.password = await bcrypt.hash(updatePerfil.password, 10);
+    await this.usuariosRepository.update(userId, updatePerfil)
     await this.usuariosRepository.findOne({
       where: { idUsuario: userId },
     });

@@ -27,7 +27,7 @@ export class UpdateUsuarioDto extends PartialType(OmitType(CreateUsuarioDto, ['f
     @MinLength(3)
     cargo: string;
 
-    // @IsString()
-    // @MinLength(20)
-    // perfil: string;
+   @IsNumber()
+   fkRol: number;
+
 }
