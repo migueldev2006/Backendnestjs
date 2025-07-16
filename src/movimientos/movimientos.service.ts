@@ -12,6 +12,7 @@ import { CodigoInventario } from 'src/codigo-inventario/entities/codigo-inventar
 import { TipoMovimientos } from 'src/tipos-movimiento/entities/tipos-movimiento.entity';
 import { Notificaciones } from 'src/notificaciones/entities/notificacione.entity';
 import { NotificacionesService } from 'src/notificaciones/notificaciones.service';
+import { Usuarios } from 'src/usuarios/entities/usuario.entity';
 
 @Injectable()
 export class MovimientosService {
@@ -28,10 +29,16 @@ export class MovimientosService {
     @InjectRepository(TipoMovimientos)
     private readonly tipoRepository: Repository<TipoMovimientos>,
 
+    @InjectRepository(Usuarios)
+    private readonly usuarioRepository: Repository<Usuarios>,
+
     private readonly notificacionesService: NotificacionesService,
   ) {}
 
-  async create(createMovimientoDto: CreateMovimientoDto): Promise<Movimientos> {
+  async create(
+    createMovimientoDto: CreateMovimientoDto,
+    idUsuario: number,
+  ): Promise<Movimientos> {
     const {
       fkInventario,
       fkTipoMovimiento,
@@ -47,7 +54,6 @@ export class MovimientosService {
       relations: ['fkElemento', 'fkElemento.fkCaracteristica'],
     });
     if (!inventario) throw new NotFoundException('Inventario no encontrado');
-
 
     const tieneCaracteristicas = !!inventario.fkElemento?.fkCaracteristica;
     const tipoMovimiento = await this.tipoRepository.findOneBy({
@@ -67,7 +73,10 @@ export class MovimientosService {
         }
 
         const codigosDisponibles = await this.codigoRepository.find({
-          where: { fkInventario: {idInventario:inventario.idInventario}, uso: false },
+          where: {
+            fkInventario: { idInventario: inventario.idInventario },
+            uso: false,
+          },
         });
 
         const disponibles = codigosDisponibles.map((c) => c.codigo);
@@ -94,7 +103,10 @@ export class MovimientosService {
         }
 
         await this.codigoRepository.update(
-          { codigo: In(codigos), fkInventario: {idInventario:inventario.idInventario} },
+          {
+            codigo: In(codigos),
+            fkInventario: { idInventario: inventario.idInventario },
+          },
           { uso: true },
         );
 
@@ -141,7 +153,7 @@ export class MovimientosService {
       fkTipoMovimiento: tipoMovimiento,
       cantidad: cantidad || (codigos?.length ?? 0),
       descripcion,
-      fkUsuario: { idUsuario: fkUsuario },
+      fkUsuario: { idUsuario },
       fkSitio: { idSitio: fkSitio },
       enProceso: true,
       aceptado: false,
@@ -156,36 +168,45 @@ export class MovimientosService {
 
     const move = await this.movimientoRepository.save(movimiento);
 
+    const usuario = await this.usuarioRepository.findOne({
+      where: { idUsuario },
+    });
+
     await this.notificacionesService.notificarMovimientoPendiente({
       idMovimiento: move.idMovimiento,
       tipo: tipoMovimiento,
-      usuario: { fkUsuario: { idUsuario: fkUsuario } },
+      usuario, // usuario completo con nombre
       sitio: { id: fkSitio, nombre: inventario.fkSitio?.nombre || 'Sitio' },
     });
 
     await this.notificacionesService.notificarIngreso({
       id: move.idMovimiento,
       tipo: tipoMovimiento,
-      cantidad: movimiento.cantidad,
+      cantidad: move.cantidad,
       elemento: inventario.fkElemento,
-      usuario: { fkUsuario: { idUsuario: fkUsuario } },
+      usuario,
       sitio: { id: fkSitio, nombre: inventario.fkSitio?.nombre || 'Sitio' },
     });
+
+      await this.notificacionesService.notificarStockBajo(
+      inventario
+      
+    );
 
     return await this.movimientoRepository.save(movimiento);
   }
 
-async findAll(): Promise<Movimientos[]> {
-  return await this.movimientoRepository.find({
-    relations: [
-      "fkInventario",
-      "fkInventario.fkElemento",
-      "fkSitio",
-      "fkTipoMovimiento",
-      "fkUsuario",
-    ],
-  });
-}
+  async findAll(): Promise<Movimientos[]> {
+    return await this.movimientoRepository.find({
+      relations: [
+        'fkInventario',
+        'fkInventario.fkElemento',
+        'fkSitio',
+        'fkTipoMovimiento',
+        'fkUsuario',
+      ],
+    });
+  }
 
   async findOne(idMovimiento: number): Promise<Movimientos | null> {
     const getMovimientoById = await this.movimientoRepository.findOneBy({

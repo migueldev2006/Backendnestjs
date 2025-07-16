@@ -6,22 +6,27 @@ import {
   Patch,
   Param,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { MovimientosService } from './movimientos.service';
 import { CreateMovimientoDto, UpdateMovimientoDto } from './dto';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { PermisoGuard } from 'src/auth/guards/permiso.guard';
 import { Permiso } from 'src/auth/decorators/permiso.decorator';
+import { RequestWithUser } from 'src/common/interfaces/request-with-user';
 @UseGuards(JwtGuard, PermisoGuard)
 @Controller('movimientos')
 export class MovimientosController {
   constructor(private readonly movimientosService: MovimientosService) {}
 
-  @Post()
-  @Permiso(22)
-  create(@Body() createMovimientoDto: CreateMovimientoDto) {
-    return this.movimientosService.create(createMovimientoDto);
-  }
+
+
+@Post()
+@Permiso(22)
+create(@Req() req: RequestWithUser , @Body() createMovimientoDto: CreateMovimientoDto) {
+  const idUsuario = req.user?.id; 
+  return this.movimientosService.create(createMovimientoDto, idUsuario);
+}
 
   @Get()
   @Permiso(23)
