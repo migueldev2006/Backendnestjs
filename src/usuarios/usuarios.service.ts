@@ -88,7 +88,8 @@ export class UsuariosService {
       const createdUser = await this.usuariosRepository.save({
         ...usuario,
         password: passwordHash,
-        fkRol: { idRol: 2 }
+        fkRol: { idRol: 2 },
+        estado: true
       })
       newUsersList.push(createdUser);
     }
