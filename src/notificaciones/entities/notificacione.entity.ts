@@ -26,10 +26,10 @@ export class Notificaciones {
   requiereAccion: boolean;
 
   @Column({ type: 'varchar', length: 50, nullable: true })
-  estado?: 'aceptado' | 'rechazado' | 'pendiente'| null; 
+  estado?: 'aceptado' | 'cancelado' | 'enProceso'| null; 
 
   @Column({ type: 'jsonb', nullable: true })
-  data: any; // datos relacionados: idElemento, motivo, etc.
+  data: any; 
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

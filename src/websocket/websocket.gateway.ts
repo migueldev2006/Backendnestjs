@@ -1,4 +1,3 @@
-
 import {
   WebSocketGateway,
   OnGatewayConnection,
@@ -19,30 +18,27 @@ export class WebsocketGateway implements OnGatewayConnection, OnGatewayDisconnec
   @WebSocketServer()
   server: Server;
 
-  private usuariosConectados: Map<number, string> = new Map();
-
   handleConnection(client: Socket) {
     const idUsuario = Number(client.handshake.query.idUsuario);
     if (idUsuario) {
-      this.usuariosConectados.set(idUsuario, client.id);
       console.log(`📡 Usuario ${idUsuario} conectado: ${client.id}`);
     }
   }
 
   handleDisconnect(client: Socket) {
-    for (const [idUsuario, socketId] of this.usuariosConectados.entries()) {
-      if (socketId === client.id) {
-        this.usuariosConectados.delete(idUsuario);
-        console.log(`🔌 Usuario ${idUsuario} desconectado`);
-        break;
-      }
-    }
+    console.log(`🔌 Cliente desconectado: ${client.id}`);
+  }
+
+  @SubscribeMessage('join')
+  handleJoinRoom(@ConnectedSocket() client: Socket, @MessageBody() room: string) {
+    client.join(room);
+    console.log(`📥 Cliente ${client.id} unido a sala ${room}`);
   }
 
   emitirNotificacion(idUsuario: number, notificacion: any) {
-    const socketId = this.usuariosConectados.get(idUsuario);
-    if (socketId) {
-      this.server.to(socketId).emit('notificacion', notificacion);
-    }
+    const room = `usuario_${idUsuario}`;
+    this.server.to(room).emit('nuevaNotificacion', notificacion);
+    console.log(`📤 Notificación enviada a sala ${room}`);
   }
 }
+

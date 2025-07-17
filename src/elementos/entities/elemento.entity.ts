@@ -40,10 +40,7 @@ export class Elementos {
   estado: boolean | null;
 
   @Column('date', { name: 'fecha_vencimiento', nullable: true })
-  fechaVencimiento: string | null;
-
-  @Column('date', { name: 'fecha_uso', nullable: true })
-  fechaUso: string | null;
+  fechaVencimiento: string | Date;
 
   @Column({ type: 'boolean', name: 'baja', default: false })
   baja: boolean

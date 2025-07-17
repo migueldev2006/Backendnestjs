@@ -21,9 +21,6 @@ export class CreateElementoDto {
   @IsOptional()
   fechaVencimiento?:string
 
-  @IsString()
-  fechaUso:string
-
 
   @IsNumber()
   fkCategoria:number

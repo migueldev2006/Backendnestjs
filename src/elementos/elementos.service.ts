@@ -3,7 +3,6 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Inventarios } from 'src/inventarios/entities/inventario.entity';
 import { Sitios } from 'src/sitios/entities/sitio.entity';
-import { FileEnumerator } from 'eslint/use-at-your-own-risk';
 import { CreateElementoDto } from './dto/create-elemento.dto';
 import { UpdateElementoDto } from './dto/update-elemento.dto';
 import { Elementos } from './entities/elemento.entity';

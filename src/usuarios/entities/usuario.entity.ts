@@ -11,7 +11,6 @@ import { Movimientos } from '../../movimientos/entities/movimiento.entity';
 import { UsuarioFicha } from '../../usuario-ficha/entities/usuario-ficha.entity';
 import { Roles } from '../../roles/entities/role.entity';
 import { Notificaciones } from 'src/notificaciones/entities/notificacione.entity';
-import { Sitios } from 'src/sitios/entities/sitio.entity';
 
 @Entity('usuarios', { schema: 'public' })
 export class Usuarios {
@@ -75,19 +74,6 @@ export class Usuarios {
 
   @OneToMany(() => Notificaciones, (notificaciones) => notificaciones.fkUsuario)
   notificaciones: Notificaciones[];
-
-  @Column('integer', { name: 'fk_sitio', nullable: true })
-  fkSitio: number;
-
-  // // Relación con Sitio
-  // @ManyToOne(() => Sitios, (sitio) => sitio.usuarios)
-  // @JoinColumn({ name: 'fk_sitio' })
-  // sitio: Sitios;
-
-  // // Relación con Área
-  // @ManyToOne(() => Areas)
-  // @JoinColumn({ name: 'fk_area' })
-  // area: Areas;
-
+  static nombre: string;
   
 }

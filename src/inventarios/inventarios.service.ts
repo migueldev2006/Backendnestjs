@@ -60,18 +60,34 @@ export class InventariosService {
 
       agregateStockInventario.stock += agregateStock.codigos.length;
     }
-
     await this.inventarioRepository.save(agregateStockInventario);
 
-    await this.notificacionesService.notificarStockBajo(agregateStockInventario);
+    await this.notificacionesService.notificarStockBajo(
+      agregateStockInventario,
+    );
+
+    if (
+      agregateStockInventario.fkElemento?.perecedero &&
+      agregateStockInventario.fkElemento?.fechaVencimiento
+    ) {
+      await this.notificacionesService.notificarProximaCaducidad({
+        elemento: agregateStockInventario.fkElemento,
+        fecha_caducidad: agregateStockInventario.fkElemento.fechaVencimiento,
+      });
+    }
 
     return { message: 'Stock actualizado correctamente' };
   }
 
   async findAll(): Promise<Inventarios[]> {
     return await this.inventarioRepository.find({
-      relations: ['fkSitio', 'fkElemento', 'fkElemento.fkCaracteristica', 'codigos'],
-    })
+      relations: [
+        'fkSitio',
+        'fkElemento',
+        'fkElemento.fkCaracteristica',
+        'codigos',
+      ],
+    });
   }
 
   async findOne(idInventario: number): Promise<Inventarios | null> {
@@ -117,6 +133,18 @@ export class InventariosService {
 
     const updatedInventario =
       await this.inventarioRepository.save(getInventarioById);
+
+    await this.notificacionesService.notificarStockBajo(updatedInventario);
+
+    const { fkElemento } = updatedInventario;
+
+    if (fkElemento?.perecedero && fkElemento?.fechaVencimiento) {
+      await this.notificacionesService.notificarProximaCaducidad({
+        elemento: fkElemento,
+        fecha_caducidad: fkElemento.fechaVencimiento,
+      });
+    }
+
     return updatedInventario;
   }
 
