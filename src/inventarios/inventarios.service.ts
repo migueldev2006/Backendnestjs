@@ -60,6 +60,7 @@ export class InventariosService {
 
       agregateStockInventario.stock += agregateStock.codigos.length;
     }
+    await this.inventarioRepository.save(agregateStockInventario);
 
     await this.notificacionesService.notificarStockBajo(
       agregateStockInventario,
@@ -134,7 +135,7 @@ export class InventariosService {
       await this.inventarioRepository.save(getInventarioById);
 
     await this.notificacionesService.notificarStockBajo(updatedInventario);
-    
+
     const { fkElemento } = updatedInventario;
 
     if (fkElemento?.perecedero && fkElemento?.fechaVencimiento) {

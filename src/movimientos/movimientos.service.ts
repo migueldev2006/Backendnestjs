@@ -62,10 +62,10 @@ export class MovimientosService {
     if (!tipoMovimiento)
       throw new NotFoundException('Tipo de movimiento inválido');
 
-    const nombreTipo = tipoMovimiento.nombre.toLowerCase();
+    const nombreTipo = tipoMovimiento.nombre ;
 
     if (tieneCaracteristicas) {
-      if (['salida', 'baja', 'prestamo'].includes(nombreTipo)) {
+      if (['salida', 'baja', 'prestamo'].includes(nombreTipo.toLowerCase())) {
         if (!codigos || codigos.length === 0) {
           throw new BadRequestException(
             'Debe especificar códigos para este movimiento',
@@ -83,18 +83,6 @@ export class MovimientosService {
 
         const faltanes = codigos.filter((c) => !disponibles.includes(c));
 
-        console.log(codigosDisponibles);
-        console.log('Códigos recibidos:', codigos);
-        console.log(
-          'Códigos disponibles en DB:',
-          codigosDisponibles.map((c) => c.codigo),
-        );
-
-        const codigosEnInventario = await this.codigoRepository.find({
-          where: { fkInventario: inventario },
-        });
-
-        console.log('Códigos en inventario seleccionado:', codigosEnInventario);
 
         if (faltanes.length > 0) {
           throw new BadRequestException(
@@ -111,7 +99,7 @@ export class MovimientosService {
         );
 
         inventario.stock -= codigos.length;
-      } else if (nombreTipo === 'ingreso') {
+      } else if (nombreTipo.toLowerCase() === 'ingreso') {
         if (!codigos || codigos.length === 0) {
           throw new BadRequestException(
             'Debe especificar códigos para este movimiento',
@@ -128,7 +116,7 @@ export class MovimientosService {
         inventario.stock += codigos?.length ?? 0;
       }
     } else {
-      if (['salida', 'baja', 'prestamo'].includes(nombreTipo)) {
+      if (['salida', 'baja', 'prestamo'].includes(nombreTipo.toLowerCase())) {
         if (!cantidad || cantidad <= 0) {
           throw new BadRequestException('Debe indicar cantidad válida');
         }
@@ -137,7 +125,7 @@ export class MovimientosService {
         }
 
         inventario.stock -= cantidad;
-      } else if (['ingreso', 'devolucion'].includes(nombreTipo)) {
+      } else if (['ingreso', 'devolucion'].includes(nombreTipo.toLowerCase())) {
         if (!cantidad || cantidad <= 0) {
           throw new BadRequestException('Debe indicar cantidad válida');
         }
@@ -175,7 +163,7 @@ export class MovimientosService {
     await this.notificacionesService.notificarMovimientoPendiente({
       idMovimiento: move.idMovimiento,
       tipo: tipoMovimiento,
-      usuario, // usuario completo con nombre
+      usuario, 
       sitio: { id: fkSitio, nombre: inventario.fkSitio?.nombre || 'Sitio' },
     });
 
@@ -193,7 +181,7 @@ export class MovimientosService {
       
     );
 
-    return await this.movimientoRepository.save(movimiento);
+    return move;
   }
 
   async findAll(): Promise<Movimientos[]> {

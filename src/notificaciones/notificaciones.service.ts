@@ -144,13 +144,18 @@ async getNotificacionesPorUsuario(idUsuario: number) {
       leido: false,
       fkUsuario: usuario,
     });
-
     const guardada = await this.notificacionRepository.save(notificacion);
+
+      console.log('📣 Emisión WS:', {
+    usuario: usuario.idUsuario,
+    notificacion: guardada,
+  });
+
     this.websocketGateway.emitirNotificacion(usuario.idUsuario, guardada);
   }
 
   async notificarMovimientoPendiente(movimiento: any) {
-    if (['Salida', 'Prestamo'].includes(movimiento.tipo.nombre)) {
+    if (['salida', 'prestamo'].includes(movimiento.tipo.nombre.toLowerCase())) {
       const receptores = await this.usuarioRepository.find({
         where: [
           { fkRol: { nombre: 'Administrador' } },
@@ -181,7 +186,7 @@ async getNotificacionesPorUsuario(idUsuario: number) {
   }
 
   async notificarIngreso(movimiento: any) {
-    if (movimiento.tipo.nombre === 'Ingreso') {
+    if (movimiento.tipo.nombre.toLowerCase() === 'ingreso') {
       const admins = await this.usuarioRepository.find({
         where: {
           fkRol: {
@@ -226,7 +231,7 @@ async getNotificacionesPorUsuario(idUsuario: number) {
 
   async notificarStockBajo(inventario: any) {
     if (inventario.estado !== true) return;
-    if (inventario.stock <= 10) {
+    if (inventario.stock <= 15) {
       const admins = await this.usuarioRepository.find({
         where: { fkRol: { nombre: 'Administrador' } },
       });
@@ -250,7 +255,7 @@ async getNotificacionesPorUsuario(idUsuario: number) {
   async notificarProximaCaducidad(inventario: any) {
     if (inventario.estado !== true) return;
     const hoy = new Date();
-    const fechaCaducidad = new Date(inventario.fechaVencimiento);
+    const fechaCaducidad = new Date(inventario.fkElemento.fechaVencimiento);
     const diasRestantes = Math.ceil(
       (fechaCaducidad.getTime() - hoy.getTime()) / (1000 * 60 * 60 * 24),
     );

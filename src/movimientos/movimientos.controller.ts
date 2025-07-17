@@ -24,7 +24,8 @@ export class MovimientosController {
 @Post()
 @Permiso(22)
 create(@Req() req: RequestWithUser , @Body() createMovimientoDto: CreateMovimientoDto) {
-  const idUsuario = req.user?.id; 
+const idUsuario = req.user?.idUsuario; 
+  console.log('Se recibió una solicitud para crear un movimiento:', createMovimientoDto, 'Usuario:', idUsuario);
   return this.movimientosService.create(createMovimientoDto, idUsuario);
 }
 

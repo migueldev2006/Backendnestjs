@@ -70,7 +70,8 @@ export class SeedsService {
             {
                 idModulo: 3,
                 nombre: "Reportes",
-                icono: "DocumentChartBarIcon",
+                href:"reportes",
+                icono: "EnvelopeIcon",
                 estado: true
             }
         ];
