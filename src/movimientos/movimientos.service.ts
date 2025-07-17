@@ -32,6 +32,9 @@ export class MovimientosService {
     @InjectRepository(Usuarios)
     private readonly usuarioRepository: Repository<Usuarios>,
 
+    @InjectRepository(Notificaciones)
+    private readonly notificacionRepository: Repository<Notificaciones>,
+
     private readonly notificacionesService: NotificacionesService,
   ) {}
 
@@ -158,6 +161,7 @@ export class MovimientosService {
 
     const usuario = await this.usuarioRepository.findOne({
       where: { idUsuario },
+      relations: ['fkRol']
     });
 
     await this.notificacionesService.notificarMovimientoPendiente({
@@ -250,8 +254,15 @@ export class MovimientosService {
     movimiento.aceptado = true;
     movimiento.enProceso = false;
     movimiento.cancelado = false;
+    
+    await this.notificacionRepository.update(
+  { data: { idMovimiento: movimiento.idMovimiento } },
+  { estado: 'aceptado' }
+);
 
     return this.movimientoRepository.save(movimiento);
+
+    
   }
   async cancel(idMovimiento: number): Promise<Movimientos> {
     const movimiento = await this.movimientoRepository.findOneBy({
@@ -270,6 +281,11 @@ export class MovimientosService {
     movimiento.aceptado = false;
     movimiento.enProceso = false;
     movimiento.cancelado = true;
+
+    await this.notificacionRepository.update(
+  { data: { idMovimiento: movimiento.idMovimiento } },
+  { estado: 'cancelado' }
+);
 
     return this.movimientoRepository.save(movimiento);
   }

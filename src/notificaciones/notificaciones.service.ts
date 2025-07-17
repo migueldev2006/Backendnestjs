@@ -154,36 +154,67 @@ async getNotificacionesPorUsuario(idUsuario: number) {
     this.websocketGateway.emitirNotificacion(usuario.idUsuario, guardada);
   }
 
-  async notificarMovimientoPendiente(movimiento: any) {
-    if (['salida', 'prestamo'].includes(movimiento.tipo.nombre.toLowerCase())) {
-      const receptores = await this.usuarioRepository.find({
-        where: [
-          { fkRol: { nombre: 'Administrador' } },
-          { fkRol: { nombre: 'Lider' } },
-        ],
-        relations: ['fkRol'],
-      });
+async notificarMovimientoPendiente(movimiento: any) {
+  console.log('📥 Iniciando notificación de movimiento pendiente');
+  console.log('👉 Tipo de movimiento recibido:', movimiento.tipo?.nombre);
+  console.log('👉 Usuario que creó el movimiento:', movimiento.usuario?.nombre, `(ID: ${movimiento.usuario?.idUsuario})`);
 
-      // Si no hay nadie con esos roles, no hacemos nada
-      if (!receptores || receptores.length === 0) return;
+  const tipoNombre = movimiento.tipo?.nombre?.toLowerCase?.();
+  console.log('🔍 tipoNombre (normalizado):', tipoNombre);
 
-      const mensaje = `Movimiento de tipo ${movimiento.tipo.nombre} por ${movimiento.usuario.nombre}. Requiere revisión.`;
-
-      for (const user of receptores) {
-        // Omitimos al que hizo el movimiento
-        if (user.idUsuario === movimiento.usuario.idUsuario) continue;
-
-        await this.enviarYGuardarNotificacion(
-          'Movimiento pendiente',
-          mensaje,
-          true,
-          user,
-          { idMovimiento: movimiento.idMovimiento },
-          'enProceso',
-        );
-      }
-    }
+  if (!tipoNombre) {
+    console.log('⚠️ No se pudo determinar el tipo de movimiento. Cancelando notificación.');
+    return;
   }
+
+  if (!['salida', 'prestamo'].includes(tipoNombre)) {
+    console.log(`⚠️ Tipo de movimiento "${tipoNombre}" no requiere notificación pendiente.`);
+    return;
+  }
+
+  console.log(`✅ Tipo "${tipoNombre}" requiere notificación. Buscando receptores...`);
+
+  const receptores = await this.usuarioRepository.find({
+    where: [
+      { fkRol: { nombre: 'Administrador' } },
+      { fkRol: { nombre: 'Lider' } },
+    ],
+    relations: ['fkRol'],
+  });
+
+  console.log('👥 Receptores encontrados:', receptores.map(r => `${r.nombre} (${r.fkRol?.nombre})`));
+
+  if (!receptores || receptores.length === 0) {
+    console.log('⚠️ No se encontraron receptores para notificación.');
+    return;
+  }
+
+  const mensaje = `Movimiento de tipo ${movimiento.tipo.nombre} por ${movimiento.usuario.nombre}. Requiere revisión.`;
+
+  for (const user of receptores) {
+    // if (user.idUsuario === movimiento.usuario.idUsuario) {
+    //   console.log(`⏭️ Omitiendo usuario ${user.nombre} (es el mismo que creó el movimiento)`);
+    //   continue;
+    // }
+
+    console.log(`📤 Enviando notificación a: ${user.nombre} (ID: ${user.idUsuario})`);
+
+    await this.enviarYGuardarNotificacion(
+      'Movimiento pendiente',
+      mensaje,
+      true,
+      user,
+      { idMovimiento: movimiento.idMovimiento },
+      'enProceso',
+    );
+
+    console.log(`✅ Notificación enviada a ${user.nombre}`);
+  }
+
+  console.log('🎉 Notificación de movimiento pendiente finalizada.');
+}
+
+
 
   async notificarIngreso(movimiento: any) {
     if (movimiento.tipo.nombre.toLowerCase() === 'ingreso') {
