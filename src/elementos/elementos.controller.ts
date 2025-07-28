@@ -17,7 +17,7 @@ import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { PermisoGuard } from 'src/auth/guards/permiso.guard';
 import { Permiso } from 'src/auth/decorators/permiso.decorator';
-@UseGuards(JwtGuard, PermisoGuard)
+// @UseGuards(JwtGuard, PermisoGuard)
 @Controller('elementos')
 export class ElementosController {
   constructor(private readonly elementosService: ElementosService) {}

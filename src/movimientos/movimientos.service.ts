@@ -118,13 +118,13 @@ export class MovimientosService {
 
     const movimiento = this.movimientoRepository.create({
       fkInventario: inventario,
-      fkTipoMovimiento:tipoMovimiento,
+      fkTipoMovimiento: tipoMovimiento,
       cantidad: cantidad || (codigos?.length ?? 0),
       descripcion,
       fkUsuario: { idUsuario: fkUsuario },
       fkSitio: { idSitio: fkSitio },
-      enProceso: true,
-      aceptado: false,
+      enProceso: false,
+      aceptado: true,
       cancelado: false,
     });
 
@@ -167,9 +167,9 @@ export class MovimientosService {
       fechaDevolucion: updateMovimientoDto.fechaDevolucion,
     });
 
-
-  const updatedMovimiento = await this.movimientoRepository.save(getMovimientoById);
-  return updatedMovimiento;
+    const updatedMovimiento =
+      await this.movimientoRepository.save(getMovimientoById);
+    return updatedMovimiento;
   }
 
   async accept(idMovimiento: number): Promise<Movimientos> {

@@ -1,11 +1,24 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
 import { InventariosService } from './inventarios.service';
-import { AgregarStockDto, CreateInventarioDto, UpdateInventarioDto } from './dto';
+import {
+  AgregarStockDto,
+  CreateInventarioDto,
+  UpdateInventarioDto,
+} from './dto';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { PermisoGuard } from 'src/auth/guards/permiso.guard';
 import { Permiso } from 'src/auth/decorators/permiso.decorator';
 
-@UseGuards(JwtGuard, PermisoGuard)
+// @UseGuards(JwtGuard, PermisoGuard)
 @Controller('inventarios')
 export class InventariosController {
   constructor(private readonly inventariosService: InventariosService) {}
@@ -36,7 +49,10 @@ export class InventariosController {
 
   @Patch(':idInventario')
   @Permiso(38)
-  update(@Param('idInventario') idInventario: number, @Body() updateInventarioDto: UpdateInventarioDto) {
+  update(
+    @Param('idInventario') idInventario: number,
+    @Body() updateInventarioDto: UpdateInventarioDto,
+  ) {
     return this.inventariosService.update(+idInventario, updateInventarioDto);
   }
 
@@ -45,5 +61,4 @@ export class InventariosController {
   stastus(@Param('idInventario') idInventario: number) {
     return this.inventariosService.changeStatus(+idInventario);
   }
-
 }

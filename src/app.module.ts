@@ -49,6 +49,7 @@ import { WebsocketModule } from './websocket/websocket.module';
       entities: [__dirname + '//*.entity{.ts,.js}'],
       autoLoadEntities: true,
       synchronize: true,
+     
     }),
     RolesModule,
     UsuariosModule,
