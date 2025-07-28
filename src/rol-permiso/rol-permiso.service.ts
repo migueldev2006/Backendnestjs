@@ -58,35 +58,80 @@ export class RolPermisoService {
     return this.rolPermisoRepository.save(getlPermiso);
   }
 
-  async getpermisosrol(idrol: number) {
-    const permisos = await this.permisoRepository.find()
 
-    const rolpermisos = await this.rolPermisoRepository.find({
-      where:{
-        fkRol:{idRol: idrol},
-        estado: true
-      },
-      relations :['fkPermiso']
-    })
 
-      const permisosAsignados = rolpermisos.map(rp => rp.fkPermiso.idPermiso);
 
-      return{
-        permisos,
-        permisosAsignados
-      }
+ async getpermisosrol(idrol: number) {
+
+  const permisos = await this.permisoRepository.find({
+    relations: ['fkRuta', 'fkRuta.fkModulo'],
+  });
+
+  
+  const rolpermisos = await this.rolPermisoRepository.find({
+    where: {
+      fkRol: { idRol: idrol },
+      estado: true
+    },
+    relations: ['fkPermiso']
+  });
+
+  const permisosAsignados = rolpermisos.map(rp => rp.fkPermiso.idPermiso);
+
+  
+  const modulosMap = new Map<number, any>();
+
+  for (const permiso of permisos) {
+    const modulo = permiso.fkRuta.fkModulo;
+    const ruta = permiso.fkRuta;
+
+    if (!modulosMap.has(modulo.idModulo)) {
+      modulosMap.set(modulo.idModulo, {
+        idModulo: modulo.idModulo,
+        nombreModulo: modulo.nombre,
+        rutas: new Map<number, any>()
+      });
+    }
+
+    const moduloData = modulosMap.get(modulo.idModulo);
+
+    if (!moduloData.rutas.has(ruta.idRuta)) {
+      moduloData.rutas.set(ruta.idRuta, {
+        idRuta: ruta.idRuta,
+        nombreRuta: ruta.nombre,
+        permisos: []
+      });
+    }
+
+    moduloData.rutas.get(ruta.idRuta).permisos.push({
+      idPermiso: permiso.idPermiso,
+      permiso: permiso.permiso
+    });
   }
+
+ 
+  const permisosAgrupados = Array.from(modulosMap.values()).map(modulo => ({
+    ...modulo,
+    rutas: Array.from(modulo.rutas.values())
+  }));
+
+  return {
+    permisosAsignados,
+    permisosAgrupados
+  };
+}
+
 
   async changeStatus(idPermiso: number, idRol: number): Promise<RolPermiso> {
 
     const getrolPermiso = await this.rolPermisoRepository.findOne({
       where: {
-        fkPermiso: {idPermiso},
-        fkRol: {idRol}
+        fkPermiso: { idPermiso },
+        fkRol: { idRol }
       }
     });
 
-    if (!getrolPermiso) return await this.rolPermisoRepository.save({fkPermiso: {idPermiso}, fkRol: {idRol}, estado: true});
+    if (!getrolPermiso) return await this.rolPermisoRepository.save({ fkPermiso: { idPermiso }, fkRol: { idRol }, estado: true });
 
     getrolPermiso.estado = !getrolPermiso?.estado;
 
