@@ -174,6 +174,8 @@ export class AuthService {
     );
     return { status: 200, message: "Permisos obtenidos correctamente", modules: grouped }
     }
+
+    
     async forgotPassword(correo: string) {
         const user = await this.usuarioRepository.findOneBy({ correo })
 
