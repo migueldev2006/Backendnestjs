@@ -46,12 +46,24 @@ export class InventariosService {
     if (!agregateStockInventario) {
       throw new NotFoundException('Inventario no encontrado');
     }
+    if (!agregateStockInventario.estado) {
+      throw new BadRequestException(
+        'El inventario está inactivo. Actívelo para agregar stock.',
+      );
+    }
     if (agregateStockInventario.fkElemento.fkCaracteristica) {
       if (!agregateStock.codigos || agregateStock.codigos.length === 0) {
         throw new Error('Este elemento requiere códigos para agregar stock');
       }
 
       for (const codigo of agregateStock.codigos) {
+        const existe = await this.codigosRepository.findOneBy({ codigo });
+        if (existe) {
+          throw new BadRequestException(
+            `El código '${codigo}' ya está registrado`,
+          );
+        }
+
         await this.codigosRepository.save({
           codigo,
           fkInventario: agregateStockInventario,
@@ -116,6 +128,12 @@ export class InventariosService {
     if (!getInventarioById) {
       throw new Error(
         `No hay elementos registrados en el inventario con este id`,
+      );
+    }
+
+    if (!getInventarioById.estado) {
+      throw new BadRequestException(
+        'Este elemento está inactivo. Actívelo antes de agregar stock.',
       );
     }
 

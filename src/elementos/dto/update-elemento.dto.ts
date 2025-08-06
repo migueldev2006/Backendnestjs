@@ -1,7 +1,4 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateElementoDto } from './create-elemento.dto';
-// import { ElementImage } from '../entities';
-import { IsArray, IsOptional, IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export class UpdateElementoDto {
   @IsString()

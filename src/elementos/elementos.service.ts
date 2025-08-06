@@ -19,6 +19,10 @@ export class ElementosService {
   ) { }
 
   async create(createElementoDto: CreateElementoDto, filename?: string): Promise<Elementos> {
+      console.log('Datos recibidos en el backend:', {
+    ...createElementoDto,
+    imagen: filename ?? "defaultPerfil.png",
+  });
     const elemento = this.elementoRepository.create({
       ...createElementoDto,
       imagen: filename ?? "defaultPerfil.png",
