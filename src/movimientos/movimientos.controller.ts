@@ -7,6 +7,7 @@ import {
   Param,
   UseGuards,
   Req,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { MovimientosService } from './movimientos.service';
 import { CreateMovimientoDto, UpdateMovimientoDto } from './dto';
@@ -19,20 +20,31 @@ import { RequestWithUser } from 'src/common/interfaces/request-with-user';
 export class MovimientosController {
   constructor(private readonly movimientosService: MovimientosService) {}
 
-
-
-@Post()
-@Permiso(22)
-create(@Req() req: RequestWithUser , @Body() createMovimientoDto: CreateMovimientoDto) {
-const idUsuario = req.user?.idUsuario; 
-  console.log('Se recibió una solicitud para crear un movimiento:', createMovimientoDto, 'Usuario:', idUsuario);
-  return this.movimientosService.create(createMovimientoDto, idUsuario);
-}
+  @Post()
+  @Permiso(22)
+  create(
+    @Req() req: RequestWithUser,
+    @Body() createMovimientoDto: CreateMovimientoDto,
+  ) {
+    const idUsuario = req.user?.idUsuario;
+    console.log(
+      'Se recibió una solicitud para crear un movimiento:',
+      createMovimientoDto,
+      'Usuario:',
+      idUsuario,
+    );
+    return this.movimientosService.create(createMovimientoDto, idUsuario);
+  }
 
   @Get()
   @Permiso(23)
   findAll() {
     return this.movimientosService.findAll();
+  }
+
+  @Get('inventario/:id/codigos-devolucion')
+  async codigosParaDevolucion(@Param('id') id: number) {
+    return this.movimientosService.getCodigosParaDevolucion(+id);
   }
 
   @Get(':idMovimiento')

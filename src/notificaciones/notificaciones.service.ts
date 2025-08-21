@@ -43,39 +43,41 @@ export class NotificacionesService {
     });
   }
 
-async getNotificacionesPorUsuario(idUsuario: number) {
-  const notificaciones = await this.notificacionRepository.find({
-    where: { fkUsuario: { idUsuario } },
-    order: { createdAt: 'DESC' },
-  });
+  async getNotificacionesPorUsuario(idUsuario: number) {
+    const notificaciones = await this.notificacionRepository.find({
+      where: { fkUsuario: { idUsuario } },
+      order: { createdAt: 'DESC' },
+    });
 
-  // Obtener los ID de elementos de las notificaciones
-  const idsElementos = notificaciones
-    .map((n) => n.data?.idElemento)
-    .filter((id) => !!id); // solo los que tengan idElemento
+    // Obtener los ID de elementos de las notificaciones
+    const idsElementos = notificaciones
+      .map((n) => n.data?.idElemento)
+      .filter((id) => !!id); // solo los que tengan idElemento
 
-  // Consultar estado de esos elementos en inventarios
-  const inventarios = await this.inventarioRepository.find({
-    where: idsElementos.length > 0 ? { fkElemento: { idElemento: In(idsElementos) } } : {},
-    relations: ['fkElemento'],
-  });
+    // Consultar estado de esos elementos en inventarios
+    const inventarios = await this.inventarioRepository.find({
+      where:
+        idsElementos.length > 0
+          ? { fkElemento: { idElemento: In(idsElementos) } }
+          : {},
+      relations: ['fkElemento'],
+    });
 
-  // Crear un mapa de idElemento => estado
-  const estadoPorElemento: Record<number, boolean> = {};
-  for (const inv of inventarios) {
-    const idEl = inv.fkElemento?.idElemento;
-    if (idEl && inv.estado === true) {
-      estadoPorElemento[idEl] = true;
+    // Crear un mapa de idElemento => estado
+    const estadoPorElemento: Record<number, boolean> = {};
+    for (const inv of inventarios) {
+      const idEl = inv.fkElemento?.idElemento;
+      if (idEl && inv.estado === true) {
+        estadoPorElemento[idEl] = true;
+      }
     }
+
+    // Filtrar las notificaciones con idElemento cuyo inventario esté activo, o que no tengan idElemento
+    return notificaciones.filter((n) => {
+      const idEl = n.data?.idElemento;
+      return !idEl || estadoPorElemento[idEl] === true;
+    });
   }
-
-  // Filtrar las notificaciones con idElemento cuyo inventario esté activo, o que no tengan idElemento
-  return notificaciones.filter((n) => {
-    const idEl = n.data?.idElemento;
-    return !idEl || estadoPorElemento[idEl] === true;
-  });
-}
-
 
   async findOne(id: number) {
     const notificacion = await this.notificacionRepository.findOne({
@@ -146,75 +148,88 @@ async getNotificacionesPorUsuario(idUsuario: number) {
     });
     const guardada = await this.notificacionRepository.save(notificacion);
 
-      console.log('📣 Emisión WS:', {
-    usuario: usuario.idUsuario,
-    notificacion: guardada,
-  });
+    console.log('📣 Emisión WS:', {
+      usuario: usuario.idUsuario,
+      notificacion: guardada,
+    });
 
     this.websocketGateway.emitirNotificacion(usuario.idUsuario, guardada);
   }
 
-async notificarMovimientoPendiente(movimiento: any) {
-  console.log('📥 Iniciando notificación de movimiento pendiente');
-  console.log('👉 Tipo de movimiento recibido:', movimiento.tipo?.nombre);
-  console.log('👉 Usuario que creó el movimiento:', movimiento.usuario?.nombre, `(ID: ${movimiento.usuario?.idUsuario})`);
-
-  const tipoNombre = movimiento.tipo?.nombre?.toLowerCase?.();
-  console.log('🔍 tipoNombre (normalizado):', tipoNombre);
-
-  if (!tipoNombre) {
-    console.log('⚠️ No se pudo determinar el tipo de movimiento. Cancelando notificación.');
-    return;
-  }
-
-  if (!['salida', 'prestamo'].includes(tipoNombre)) {
-    console.log(`⚠️ Tipo de movimiento "${tipoNombre}" no requiere notificación pendiente.`);
-    return;
-  }
-
-  console.log(`✅ Tipo "${tipoNombre}" requiere notificación. Buscando receptores...`);
-
-  const receptores = await this.usuarioRepository.find({
-    where: [
-      { fkRol: { nombre: 'Administrador' } },
-      { fkRol: { nombre: 'Lider' } },
-    ],
-    relations: ['fkRol'],
-  });
-
-  console.log('👥 Receptores encontrados:', receptores.map(r => `${r.nombre} (${r.fkRol?.nombre})`));
-
-  if (!receptores || receptores.length === 0) {
-    console.log('⚠️ No se encontraron receptores para notificación.');
-    return;
-  }
-
-  const mensaje = `Movimiento de tipo ${movimiento.tipo.nombre} por ${movimiento.usuario.nombre}. Requiere revisión.`;
-
-  for (const user of receptores) {
-    // if (user.idUsuario === movimiento.usuario.idUsuario) {
-    //   console.log(`⏭️ Omitiendo usuario ${user.nombre} (es el mismo que creó el movimiento)`);
-    //   continue;
-    // }
-
-    console.log(`📤 Enviando notificación a: ${user.nombre} (ID: ${user.idUsuario})`);
-
-    await this.enviarYGuardarNotificacion(
-      'Movimiento pendiente',
-      mensaje,
-      true,
-      user,
-      { idMovimiento: movimiento.idMovimiento },
-      'enProceso',
+  async notificarMovimientoPendiente(movimiento: any) {
+    console.log('📥 Iniciando notificación de movimiento pendiente');
+    console.log('👉 Tipo de movimiento recibido:', movimiento.tipo?.nombre);
+    console.log(
+      '👉 Usuario que creó el movimiento:',
+      movimiento.usuario?.nombre,
+      `(ID: ${movimiento.usuario?.idUsuario})`,
     );
 
-    console.log(`✅ Notificación enviada a ${user.nombre}`);
+    const tipoNombre = movimiento.tipo?.nombre?.toLowerCase?.();
+    console.log('🔍 tipoNombre (normalizado):', tipoNombre);
+
+    if (!tipoNombre) {
+      console.log(
+        '⚠️ No se pudo determinar el tipo de movimiento. Cancelando notificación.',
+      );
+      return;
+    }
+
+    if (!['salida', 'prestamo'].includes(tipoNombre)) {
+      console.log(
+        `⚠️ Tipo de movimiento "${tipoNombre}" no requiere notificación pendiente.`,
+      );
+      return;
+    }
+
+    console.log(
+      `✅ Tipo "${tipoNombre}" requiere notificación. Buscando receptores...`,
+    );
+
+    const receptores = await this.usuarioRepository.find({
+      where: [
+        { fkRol: { nombre: 'Administrador' } },
+        { fkRol: { nombre: 'Lider' } },
+      ],
+      relations: ['fkRol'],
+    });
+
+    console.log(
+      '👥 Receptores encontrados:',
+      receptores.map((r) => `${r.nombre} (${r.fkRol?.nombre})`),
+    );
+
+    if (!receptores || receptores.length === 0) {
+      console.log('⚠️ No se encontraron receptores para notificación.');
+      return;
+    }
+
+    const mensaje = `Movimiento de tipo ${movimiento.tipo.nombre} realizado por el usuario ${movimiento.usuario.nombre}. Requiere revisión.`;
+
+    for (const user of receptores) {
+      // if (user.idUsuario === movimiento.usuario.idUsuario) {
+      //   console.log(`⏭️ Omitiendo usuario ${user.nombre} (es el mismo que creó el movimiento)`);
+      //   continue;
+      // }
+
+      console.log(
+        `📤 Enviando notificación a: ${user.nombre} (ID: ${user.idUsuario})`,
+      );
+
+      await this.enviarYGuardarNotificacion(
+        'Movimiento pendiente',
+        mensaje,
+        true,
+        user,
+        { idMovimiento: movimiento.idMovimiento },
+        'enProceso',
+      );
+
+      console.log(`✅ Notificación enviada a ${user.nombre}`);
+    }
+
+    console.log('🎉 Notificación de movimiento pendiente finalizada.');
   }
-
-  console.log('🎉 Notificación de movimiento pendiente finalizada.');
-}
-
-
 
   async notificarIngreso(movimiento: any) {
     if (movimiento.tipo.nombre.toLowerCase() === 'ingreso') {
@@ -232,7 +247,7 @@ async notificarMovimientoPendiente(movimiento: any) {
         },
       });
 
-      const mensaje = `Ingreso de ${movimiento.cantidad} "${movimiento.elemento.nombre}" por ${movimiento.usuario.nombre} al sitio ${movimiento.sitio.nombre}.`;
+      const mensaje = `Se realizo el Ingreso de ${movimiento.cantidad} elemento de nombre "${movimiento.elemento.nombre}" realizado por el usuario ${movimiento.usuario.nombre} al sitio ${movimiento.sitio.nombre}.`;
 
       for (const admin of admins) {
         await this.enviarYGuardarNotificacion(
@@ -266,7 +281,7 @@ async notificarMovimientoPendiente(movimiento: any) {
       const admins = await this.usuarioRepository.find({
         where: { fkRol: { nombre: 'Administrador' } },
       });
-      const mensaje = `Stock bajo de ese elemento "${inventario.fkElemento.nombre}"`;
+      const mensaje = `Elemento con Stock Bajo "${inventario.fkElemento.nombre}"`;
 
       for (const admin of admins) {
         console.log('👉 Enviando notificación a:', admin.idUsuario);
@@ -285,13 +300,18 @@ async notificarMovimientoPendiente(movimiento: any) {
 
   async notificarProximaCaducidad(inventario: any) {
     if (inventario.estado !== true) return;
+
+    if (!inventario.fkElemento.fechaVencimiento) {
+      return;
+    }
+
     const hoy = new Date();
     const fechaCaducidad = new Date(inventario.fkElemento.fechaVencimiento);
     const diasRestantes = Math.ceil(
       (fechaCaducidad.getTime() - hoy.getTime()) / (1000 * 60 * 60 * 24),
     );
 
-    if (diasRestantes <= 7) {
+    if (diasRestantes <= 7 && diasRestantes >= 0) {
       const admins = await this.usuarioRepository.find({
         where: { fkRol: { nombre: 'Administrador' } },
       });
@@ -310,6 +330,45 @@ async notificarMovimientoPendiente(movimiento: any) {
         );
       }
     }
+  }
+
+  async notificarMovimientoAceptado(movimiento: any) {
+    if (!movimiento?.usuario) return;
+
+    const mensaje = `Tu movimiento de tipo "${movimiento.tipo.nombre}" ha sido aceptado.`;
+
+    await this.enviarYGuardarNotificacion(
+      'Movimiento aceptado',
+      mensaje,
+      false,
+      movimiento.usuario,
+      { idMovimiento: movimiento.idMovimiento },
+    );
+  }
+
+  async notificarPrestamoConDevolucion(movimiento: any) {
+    if (
+      !movimiento?.usuario ||
+      movimiento?.tipo?.nombre?.toLowerCase() !== 'prestamo'
+    )
+      return;
+
+    const fecha = movimiento.fechaDevolucion
+      ? new Date(movimiento.fechaDevolucion).toLocaleDateString('es-ES')
+      : 'sin fecha definida';
+
+    const mensaje = `Recuerda devolver el elemento "${movimiento.elemento.nombre}" antes del ${fecha}.`;
+
+    await this.enviarYGuardarNotificacion(
+      'Préstamo registrado',
+      mensaje,
+      false,
+      movimiento.usuario,
+      {
+        idMovimiento: movimiento.idMovimiento,
+        fechaDevolucion: movimiento.fechaDevolucion,
+      },
+    );
   }
 
   async verificarInventariosYNotificar() {

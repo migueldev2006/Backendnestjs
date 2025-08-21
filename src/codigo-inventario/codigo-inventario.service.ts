@@ -24,7 +24,7 @@ export class CodigoInventarioService {
 
   async findAll(): Promise<CodigoInventario[]> {
     return await this.codigoRepository.find({
-      relations: ['fkInventario'],
+      relations: ['fkInventario', 'fkMovimiento'],
     });
   }
 

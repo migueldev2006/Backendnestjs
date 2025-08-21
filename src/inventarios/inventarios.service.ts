@@ -103,9 +103,17 @@ export class InventariosService {
   }
 
   async findOne(idInventario: number): Promise<Inventarios | null> {
-    const getInventarioById = await this.inventarioRepository.findOneBy({
-      idInventario,
-    });
+    const getInventarioById = await this.inventarioRepository.findOne({
+    where: { idInventario },
+    relations: [
+      'fkSitio',
+      'fkElemento',
+      'fkElemento.fkCaracteristica',
+      'codigos',
+      'codigos.fkMovimiento',
+      'codigos.fkMovimiento.fkTipoMovimiento',
+    ],
+  });
 
     if (!getInventarioById) {
       throw new Error(
@@ -115,6 +123,27 @@ export class InventariosService {
 
     return getInventarioById;
   }
+  // movimientos.service.ts
+async getCodigosParaDevolucion(idInventario: number): Promise<CodigoInventario[]> {
+  const inventario = await this.inventarioRepository.findOne({
+    where: { idInventario },
+    relations: [
+      'codigos',
+      'codigos.fkMovimiento',
+      'codigos.fkMovimiento.fkTipoMovimiento',
+    ],
+  });
+
+  if (!inventario) throw new NotFoundException('Inventario no encontrado');
+
+  // Filtrar solo códigos que están en uso y cuyo movimiento sea tipo "préstamo"
+  return inventario.codigos.filter(
+    c =>
+      c.uso === true &&
+      c.fkMovimiento?.fkTipoMovimiento?.nombre?.toLowerCase().includes('prestamo')
+  );
+}
+
 
   async update(
     idInventario: number,
