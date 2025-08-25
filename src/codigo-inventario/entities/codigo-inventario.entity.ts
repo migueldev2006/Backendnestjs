@@ -1,4 +1,5 @@
 import { Inventarios } from "src/inventarios/entities/inventario.entity";
+import { Movimientos } from "src/movimientos/entities/movimiento.entity";
 import {
   Column,
   Entity,
@@ -39,5 +40,12 @@ export class CodigoInventario {
   @JoinColumn([{ name: "fk_inventario", referencedColumnName: "idInventario" }])
   fkInventario: Inventarios;
 
+    @ManyToOne(() => Movimientos, (movimiento) => movimiento.codigos, {
+    nullable: true,
+    eager: false,
+  })
+  @JoinColumn({ name: 'fk_movimiento' })
+  fkMovimiento: Movimientos;
 }
+
 

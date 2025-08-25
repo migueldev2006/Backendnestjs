@@ -70,7 +70,7 @@ export class SeedsService {
             {
                 idModulo: 3,
                 nombre: "Reportes",
-                href:"reportes",
+                href:"/reportes",
                 icono: "EnvelopeIcon",
                 estado: true
             }

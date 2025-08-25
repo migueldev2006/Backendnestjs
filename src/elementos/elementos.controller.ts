@@ -8,9 +8,11 @@ import {
   UseGuards,
   UseInterceptors,
   UploadedFile,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { ElementosService } from './elementos.service';
-import { CreateElementoDto, } from './dto/create-elemento.dto';
+import { CreateElementoDto } from './dto/create-elemento.dto';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -23,28 +25,52 @@ import { UpdateElementoDto } from './dto/update-elemento.dto';
 export class ElementosController {
   constructor(private readonly elementosService: ElementosService) {}
 
-  @Post()
-  @Permiso(18)
-  @UseInterceptors(
-    FileInterceptor('imagen', {
-      storage: diskStorage({
-        destination: './public/img/elementos',
-        filename: (req, file, cb) => {
-          const unique = Date.now() + '-' + Math.round(Math.random() * 1e9);
-          const ext = extname(file.originalname);
-          const filename = `elemento-${unique}${ext}`
-          cb(null, filename);
-        },
-      }),
+@Post()
+@Permiso(18)
+@UseInterceptors(
+  FileInterceptor('imagen', {
+    storage: diskStorage({
+      destination: './public/img/elementos',
+      filename: (req, file, cb) => {
+        const unique = Date.now() + '-' + Math.round(Math.random() * 1e9);
+        const ext = extname(file.originalname);
+        const filename = `elemento-${unique}${ext}`;
+        cb(null, filename);
+      },
     }),
-  )
-  create(
-    @UploadedFile() file: Express.Multer.File,
-    @Body() createElementoDto: CreateElementoDto,
-  ) {
-    console.log(file)
-    return this.elementosService.create(createElementoDto,file?.filename);
-  }
+  }),
+)
+create(
+  @UploadedFile() file: Express.Multer.File,
+  @Body() body: any, 
+) {
+  const {
+    nombre,
+    descripcion,
+    perecedero,
+    noPerecedero,
+    estado,
+    fechaVencimiento,
+    fkCategoria,
+    fkUnidadMedida,
+    fkCaracteristica,
+  } = body;
+
+  const parsedDto: CreateElementoDto = {
+    nombre,
+    descripcion,
+    perecedero: perecedero === 'true' || perecedero === true,
+    noPerecedero: noPerecedero === 'true' || noPerecedero === true,
+    estado: estado === 'true' || estado === true,
+    fechaVencimiento,
+    fkCategoria: Number(fkCategoria),
+    fkUnidadMedida: Number(fkUnidadMedida),
+    fkCaracteristica: fkCaracteristica ? Number(fkCaracteristica) : undefined,
+  };
+
+  return this.elementosService.create(parsedDto, file?.filename);
+}
+
 
   @Get()
   @Permiso(19)

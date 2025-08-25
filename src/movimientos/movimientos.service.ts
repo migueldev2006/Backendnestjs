@@ -1,12 +1,14 @@
 import {
   BadRequestException,
+  HttpException,
+  HttpStatus,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { CreateMovimientoDto, UpdateMovimientoDto } from './dto';
 import { Movimientos } from './entities/movimiento.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { ILike, In, Repository } from 'typeorm';
 import { Inventarios } from 'src/inventarios/entities/inventario.entity';
 import { CodigoInventario } from 'src/codigo-inventario/entities/codigo-inventario.entity';
 import { TipoMovimientos } from 'src/tipos-movimiento/entities/tipos-movimiento.entity';
@@ -65,7 +67,7 @@ export class MovimientosService {
     if (!tipoMovimiento)
       throw new NotFoundException('Tipo de movimiento inválido');
 
-    const nombreTipo = tipoMovimiento.nombre ;
+    const nombreTipo = tipoMovimiento.nombre;
 
     if (tieneCaracteristicas) {
       if (['salida', 'baja', 'prestamo'].includes(nombreTipo.toLowerCase())) {
@@ -78,14 +80,12 @@ export class MovimientosService {
         const codigosDisponibles = await this.codigoRepository.find({
           where: {
             fkInventario: { idInventario: inventario.idInventario },
-            uso: false,
           },
         });
 
         const disponibles = codigosDisponibles.map((c) => c.codigo);
 
         const faltanes = codigos.filter((c) => !disponibles.includes(c));
-
 
         if (faltanes.length > 0) {
           throw new BadRequestException(
@@ -108,6 +108,20 @@ export class MovimientosService {
             'Debe especificar códigos para este movimiento',
           );
         }
+
+        const codigosExistentes = await this.codigoRepository.find({
+          where: { codigo: In(codigos) },
+          select: ['codigo'],
+        });
+
+        if (codigosExistentes.length > 0) {
+          const repetidos = codigosExistentes.map((c) => c.codigo).join(', ');
+          throw new BadRequestException({
+            campo: 'codigos',
+            message: `Los siguientes códigos ya existen: ${repetidos}`,
+          });
+        }
+
         for (const codigo of codigos) {
           await this.codigoRepository.save({
             codigo,
@@ -117,6 +131,51 @@ export class MovimientosService {
         }
 
         inventario.stock += codigos?.length ?? 0;
+      } else if (nombreTipo.toLowerCase() === 'devolucion') {
+        const codigosEnUsoPrestamo = await this.codigoRepository.find({
+          where: {
+            fkInventario: { idInventario: inventario.idInventario },
+            uso: true,
+            fkMovimiento: {
+              fkTipoMovimiento: { nombre: ILike('%prestamo%') },
+            },
+          },
+          relations: ['fkMovimiento', 'fkMovimiento.fkTipoMovimiento'],
+        });
+
+        const disponiblesParaDevolver = codigosEnUsoPrestamo.map(
+          (c) => c.codigo,
+        );
+
+        if (!codigos || codigos.length === 0) {
+          throw new BadRequestException({
+            message: 'Debe especificar códigos para devolver',
+            disponibles: disponiblesParaDevolver,
+          });
+        }
+
+        // 4. Validar que todos los códigos enviados estén en préstamo
+        const noPrestados = codigos.filter(
+          (c) => !disponiblesParaDevolver.includes(c),
+        );
+
+        if (noPrestados.length > 0) {
+          throw new BadRequestException(
+            `Estos códigos no están en préstamo: ${noPrestados.join(', ')}`,
+          );
+        }
+
+        // 5. Marcar como disponibles
+        await this.codigoRepository.update(
+          {
+            codigo: In(codigos),
+            fkInventario: { idInventario: inventario.idInventario },
+          },
+          { uso: false },
+        );
+
+        // 6. Actualizar stock
+        inventario.stock += codigos.length;
       }
     } else {
       if (['salida', 'baja', 'prestamo'].includes(nombreTipo.toLowerCase())) {
@@ -139,6 +198,10 @@ export class MovimientosService {
 
     await this.inventarioRepository.save(inventario);
 
+    const esIngreso = nombreTipo.toLowerCase() === 'ingreso';
+
+    console.log(esIngreso);
+
     const movimiento = this.movimientoRepository.create({
       fkInventario: inventario,
       fkTipoMovimiento: tipoMovimiento,
@@ -146,8 +209,8 @@ export class MovimientosService {
       descripcion,
       fkUsuario: { idUsuario },
       fkSitio: { idSitio: fkSitio },
-      enProceso: false,
-      aceptado: true,
+      enProceso: esIngreso ? false : true,
+      aceptado: esIngreso ? true : false,
       cancelado: false,
       horaIngreso: createMovimientoDto.horaIngreso,
       horaSalida: createMovimientoDto.horaSalida,
@@ -159,15 +222,25 @@ export class MovimientosService {
 
     const move = await this.movimientoRepository.save(movimiento);
 
+    if (tipoMovimiento.nombre.toLowerCase() === 'prestamo' && codigos?.length) {
+      await this.codigoRepository.update(
+        {
+          codigo: In(codigos),
+          fkInventario: { idInventario: inventario.idInventario },
+        },
+        { uso: true, fkMovimiento: move }, // <- AQUÍ ASIGNAMOS EL MOVIMIENTO
+      );
+    }
+
     const usuario = await this.usuarioRepository.findOne({
       where: { idUsuario },
-      relations: ['fkRol']
+      relations: ['fkRol'],
     });
 
     await this.notificacionesService.notificarMovimientoPendiente({
       idMovimiento: move.idMovimiento,
       tipo: tipoMovimiento,
-      usuario, 
+      usuario,
       sitio: { id: fkSitio, nombre: inventario.fkSitio?.nombre || 'Sitio' },
     });
 
@@ -180,11 +253,13 @@ export class MovimientosService {
       sitio: { id: fkSitio, nombre: inventario.fkSitio?.nombre || 'Sitio' },
     });
 
-      await this.notificacionesService.notificarStockBajo(
-      inventario
-      
-    );
-
+    if (tipoMovimiento.nombre.toLowerCase() === 'prestamo') {
+      await this.notificacionesService.notificarPrestamoConDevolucion({
+        ...move,
+        usuario,
+        elemento: inventario.fkElemento,
+      });
+    }
     return move;
   }
 
@@ -200,6 +275,31 @@ export class MovimientosService {
     });
   }
 
+  // movimientos.service.ts
+  async getCodigosParaDevolucion(
+    idInventario: number,
+  ): Promise<CodigoInventario[]> {
+    const inventario = await this.inventarioRepository.findOne({
+      where: { idInventario },
+      relations: [
+        'codigos',
+        'codigos.fkMovimiento',
+        'codigos.fkMovimiento.fkTipoMovimiento',
+      ],
+    });
+
+    if (!inventario) throw new NotFoundException('Inventario no encontrado');
+
+    // Filtrar solo códigos que están en uso y cuyo movimiento sea tipo "préstamo"
+    return inventario.codigos.filter(
+      (c) =>
+        c.uso === true &&
+        c.fkMovimiento?.fkTipoMovimiento?.nombre
+          ?.toLowerCase()
+          .includes('prestamo'),
+    );
+  }
+
   async findOne(idMovimiento: number): Promise<Movimientos | null> {
     const getMovimientoById = await this.movimientoRepository.findOneBy({
       idMovimiento,
@@ -212,29 +312,32 @@ export class MovimientosService {
     return getMovimientoById;
   }
 
-  async update(
-    idMovimiento: number,
-    updateMovimientoDto: UpdateMovimientoDto,
-  ): Promise<Movimientos> {
-    const getMovimientoById = await this.movimientoRepository.findOneBy({
-      idMovimiento,
+  async update(idMovimiento: number, updateMovimientoDto: UpdateMovimientoDto) {
+    // 1. Buscar el movimiento por ID
+    const getMovimientoById = await this.movimientoRepository.findOne({
+      where: { idMovimiento },
     });
 
+    // 2. Validar si existe
     if (!getMovimientoById) {
-      throw new Error(`No existe el movimiento con ese id`);
+      throw new Error(
+        `No se encontró el movimiento, el id ${idMovimiento} no existe`,
+      );
     }
 
+    // 3. Actualizar solo los campos permitidos
     await this.movimientoRepository.update(idMovimiento, {
       horaIngreso: updateMovimientoDto.horaIngreso,
       horaSalida: updateMovimientoDto.horaSalida,
       descripcion: updateMovimientoDto.descripcion,
-      cantidad: updateMovimientoDto.cantidad,
       fechaDevolucion: updateMovimientoDto.fechaDevolucion,
     });
 
-    const updatedMovimiento =
-      await this.movimientoRepository.save(getMovimientoById);
-    return updatedMovimiento;
+    // 4. Retornar respuesta
+    return {
+      status: 200,
+      message: 'Movimiento actualizado con éxito',
+    };
   }
 
   async accept(idMovimiento: number): Promise<Movimientos> {
@@ -254,15 +357,15 @@ export class MovimientosService {
     movimiento.aceptado = true;
     movimiento.enProceso = false;
     movimiento.cancelado = false;
-    
+
     await this.notificacionRepository.update(
-  { data: { idMovimiento: movimiento.idMovimiento } },
-  { estado: 'aceptado' }
-);
+      { data: { idMovimiento: movimiento.idMovimiento } },
+      { estado: 'aceptado' },
+    );
+    await this.movimientoRepository.save(movimiento);
+    await this.notificacionesService.notificarMovimientoAceptado(movimiento);
 
-    return this.movimientoRepository.save(movimiento);
-
-    
+    return movimiento;
   }
   async cancel(idMovimiento: number): Promise<Movimientos> {
     const movimiento = await this.movimientoRepository.findOneBy({
@@ -283,9 +386,9 @@ export class MovimientosService {
     movimiento.cancelado = true;
 
     await this.notificacionRepository.update(
-  { data: { idMovimiento: movimiento.idMovimiento } },
-  { estado: 'cancelado' }
-);
+      { data: { idMovimiento: movimiento.idMovimiento } },
+      { estado: 'cancelado' },
+    );
 
     return this.movimientoRepository.save(movimiento);
   }

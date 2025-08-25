@@ -14,6 +14,7 @@ import { Sitios } from '../../sitios/entities/sitio.entity';
 import { TipoMovimientos } from '../../tipos-movimiento/entities/tipos-movimiento.entity';
 import { Usuarios } from '../../usuarios/entities/usuario.entity';
 import { Notificaciones } from '../../notificaciones/entities/notificacione.entity';
+import { CodigoInventario } from 'src/codigo-inventario/entities/codigo-inventario.entity';
 
 @Entity('movimientos', { schema: 'public' })
 export class Movimientos {
@@ -89,4 +90,6 @@ export class Movimientos {
   @JoinColumn([{ name: 'fk_usuario', referencedColumnName: 'idUsuario' }])
   fkUsuario: Usuarios;
 
+  @OneToMany(() => CodigoInventario, (codigo) => codigo.fkMovimiento)
+  codigos: CodigoInventario[];
 }

@@ -16,22 +16,28 @@ export class ElementosService {
     private readonly inventarioRepository: Repository<Inventarios>,
     @InjectRepository(Sitios)
     private readonly sitioRepository: Repository<Sitios>,
-  ) { }
+  ) {}
 
-  async create(createElementoDto: CreateElementoDto, filename?: string): Promise<Elementos> {
+  async create(
+    createElementoDto: CreateElementoDto,
+    filename?: string,
+  ): Promise<Elementos> {
+    console.log('Datos recibidos en el backend:', {
+      ...createElementoDto,
+      imagen: filename ?? 'defaultPerfil.png',
+    });
     const elemento = this.elementoRepository.create({
       ...createElementoDto,
-      imagen: filename ?? "defaultPerfil.png",
+      imagen: filename ?? 'defaultPerfil.png',
       fkCategoria: { idCategoria: createElementoDto.fkCategoria },
       fkUnidadMedida: { idUnidad: createElementoDto.fkUnidadMedida },
       fkCaracteristica: createElementoDto.fkCaracteristica
         ? { idCaracteristica: createElementoDto.fkCaracteristica }
         : undefined,
-
     });
 
     const nuevoElemento = await this.elementoRepository.save(elemento);
-    console.log(filename)
+    console.log(filename);
 
     const sitio = await this.sitioRepository.find();
 
@@ -50,13 +56,15 @@ export class ElementosService {
   }
 
   async findAll(): Promise<Elementos[]> {
-    return await this.elementoRepository.find(
-    );
+    return await this.elementoRepository.find({
+      relations: ['fkUnidadMedida', 'fkCategoria', 'fkCaracteristica'],
+    });
   }
 
   async findOne(idElemento: number): Promise<Elementos | null> {
-    const getElementoById = await this.elementoRepository.findOneBy({
-      idElemento,
+    const getElementoById = await this.elementoRepository.findOne({
+      where: { idElemento },
+      relations: ['fkUnidadMedida', 'fkCategoria', 'fkCaracteristica'],
     });
 
     if (!getElementoById) {
@@ -68,20 +76,27 @@ export class ElementosService {
     return getElementoById;
   }
 
-  async update(idElemento: number, updateElementoDto: UpdateElementoDto){
-
+  async update(idElemento: number, updateElementoDto: UpdateElementoDto) {
     const getElementoById = await this.elementoRepository.findOne({
-      where: { idElemento }
+      where: { idElemento },
     });
 
     if (!getElementoById) {
-      throw new Error(`No se encontró el elemento, el id ${idElemento} no existe`);
+      throw new Error(
+        `No se encontró el elemento, el id ${idElemento} no existe`,
+      );
     }
 
-    await this.elementoRepository.update(idElemento, updateElementoDto);
+    await this.elementoRepository.update(idElemento, {
+      ...updateElementoDto,
+      fkCategoria: { idCategoria: updateElementoDto.fkCategoria },
+      fkUnidadMedida: { idUnidad: updateElementoDto.fkUnidadMedida },
+      fkCaracteristica: updateElementoDto.fkCaracteristica
+        ? { idCaracteristica: updateElementoDto.fkCaracteristica }
+        : undefined,
+    });
 
-    return { status: 200, message: "Datoactualizados con exito", };
-
+    return { status: 200, message: 'Datoactualizados con exito' };
   }
 
   async changeStatus(idElemento: number) {

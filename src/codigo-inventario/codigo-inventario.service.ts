@@ -24,7 +24,7 @@ export class CodigoInventarioService {
 
   async findAll(): Promise<CodigoInventario[]> {
     return await this.codigoRepository.find({
-      relations: ['fkInventario'],
+      relations: ['fkInventario', 'fkMovimiento'],
     });
   }
 
@@ -54,10 +54,9 @@ export class CodigoInventarioService {
       throw new Error(`No se encontro el codigo correspondiente a este id`);
     }
 
-    await this.codigoRepository.update(idCodigoInventario, {
-      codigo: updateCodigoInventarioDto.codigo,
-    });
-    const updatedCodigo = await this.codigoRepository.save(getCodigoById);
-    return updatedCodigo;
+  Object.assign(getCodigoById, updateCodigoInventarioDto);
+
+  const updatedCodigo = await this.codigoRepository.save(getCodigoById);
+  return updatedCodigo;
   }
 }
