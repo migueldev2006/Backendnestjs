@@ -275,27 +275,30 @@ export class MovimientosService {
     });
   }
 
-// movimientos.service.ts
-async getCodigosParaDevolucion(idInventario: number): Promise<CodigoInventario[]> {
-  const inventario = await this.inventarioRepository.findOne({
-    where: { idInventario },
-    relations: [
-      'codigos',
-      'codigos.fkMovimiento',
-      'codigos.fkMovimiento.fkTipoMovimiento',
-    ],
-  });
+  // movimientos.service.ts
+  async getCodigosParaDevolucion(
+    idInventario: number,
+  ): Promise<CodigoInventario[]> {
+    const inventario = await this.inventarioRepository.findOne({
+      where: { idInventario },
+      relations: [
+        'codigos',
+        'codigos.fkMovimiento',
+        'codigos.fkMovimiento.fkTipoMovimiento',
+      ],
+    });
 
-  if (!inventario) throw new NotFoundException('Inventario no encontrado');
+    if (!inventario) throw new NotFoundException('Inventario no encontrado');
 
-  // Filtrar solo códigos que están en uso y cuyo movimiento sea tipo "préstamo"
-  return inventario.codigos.filter(
-    c =>
-      c.uso === true &&
-      c.fkMovimiento?.fkTipoMovimiento?.nombre?.toLowerCase().includes('prestamo')
-  );
-}
-
+    // Filtrar solo códigos que están en uso y cuyo movimiento sea tipo "préstamo"
+    return inventario.codigos.filter(
+      (c) =>
+        c.uso === true &&
+        c.fkMovimiento?.fkTipoMovimiento?.nombre
+          ?.toLowerCase()
+          .includes('prestamo'),
+    );
+  }
 
   async findOne(idMovimiento: number): Promise<Movimientos | null> {
     const getMovimientoById = await this.movimientoRepository.findOneBy({
@@ -309,29 +312,32 @@ async getCodigosParaDevolucion(idInventario: number): Promise<CodigoInventario[]
     return getMovimientoById;
   }
 
-  async update(
-    idMovimiento: number,
-    updateMovimientoDto: UpdateMovimientoDto,
-  ): Promise<Movimientos> {
-    const getMovimientoById = await this.movimientoRepository.findOneBy({
-      idMovimiento,
+  async update(idMovimiento: number, updateMovimientoDto: UpdateMovimientoDto) {
+    // 1. Buscar el movimiento por ID
+    const getMovimientoById = await this.movimientoRepository.findOne({
+      where: { idMovimiento },
     });
 
+    // 2. Validar si existe
     if (!getMovimientoById) {
-      throw new Error(`No existe el movimiento con ese id`);
+      throw new Error(
+        `No se encontró el movimiento, el id ${idMovimiento} no existe`,
+      );
     }
 
+    // 3. Actualizar solo los campos permitidos
     await this.movimientoRepository.update(idMovimiento, {
       horaIngreso: updateMovimientoDto.horaIngreso,
       horaSalida: updateMovimientoDto.horaSalida,
       descripcion: updateMovimientoDto.descripcion,
-      cantidad: updateMovimientoDto.cantidad,
       fechaDevolucion: updateMovimientoDto.fechaDevolucion,
     });
 
-    const updatedMovimiento =
-      await this.movimientoRepository.save(getMovimientoById);
-    return updatedMovimiento;
+    // 4. Retornar respuesta
+    return {
+      status: 200,
+      message: 'Movimiento actualizado con éxito',
+    };
   }
 
   async accept(idMovimiento: number): Promise<Movimientos> {
