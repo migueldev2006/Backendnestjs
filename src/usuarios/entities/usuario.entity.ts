@@ -10,7 +10,7 @@ import { Areas } from '../../areas/entities/area.entity';
 import { Movimientos } from '../../movimientos/entities/movimiento.entity';
 import { UsuarioFicha } from '../../usuario-ficha/entities/usuario-ficha.entity';
 import { Roles } from '../../roles/entities/role.entity';
-import { Notificaciones } from 'src/notificaciones/entities/notificacione.entity';
+import { Notificaciones } from '../../notificaciones/entities/notificacione.entity';
 
 @Entity('usuarios', { schema: 'public' })
 export class Usuarios {

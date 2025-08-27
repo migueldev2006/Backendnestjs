@@ -13,7 +13,7 @@ import {
 import { Elementos } from '../../elementos/entities/elemento.entity';
 import { Sitios } from '../../sitios/entities/sitio.entity';
 import { Movimientos } from '../../movimientos/entities/movimiento.entity';
-import { CodigoInventario } from 'src/codigo-inventario/entities/codigo-inventario.entity';
+import { CodigoInventario } from '../../codigo-inventario/entities/codigo-inventario.entity';
 
 @Entity('inventarios', { schema: 'public' })
 export class Inventarios {

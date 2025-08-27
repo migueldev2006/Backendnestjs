@@ -1,5 +1,5 @@
-import { Inventarios } from "src/inventarios/entities/inventario.entity";
-import { Movimientos } from "src/movimientos/entities/movimiento.entity";
+import { Inventarios } from "../../inventarios/entities/inventario.entity";
+import { Movimientos } from "../../movimientos/entities/movimiento.entity";
 import {
   Column,
   Entity,

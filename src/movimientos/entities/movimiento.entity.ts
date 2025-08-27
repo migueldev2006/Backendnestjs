@@ -14,7 +14,7 @@ import { Sitios } from '../../sitios/entities/sitio.entity';
 import { TipoMovimientos } from '../../tipos-movimiento/entities/tipos-movimiento.entity';
 import { Usuarios } from '../../usuarios/entities/usuario.entity';
 import { Notificaciones } from '../../notificaciones/entities/notificacione.entity';
-import { CodigoInventario } from 'src/codigo-inventario/entities/codigo-inventario.entity';
+import { CodigoInventario } from '../../codigo-inventario/entities/codigo-inventario.entity';
 
 @Entity('movimientos', { schema: 'public' })
 export class Movimientos {

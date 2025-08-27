@@ -87,11 +87,6 @@ export class NotificacionesController {
       throw new NotFoundException('Usuario no encontrado');
     }
 
-
-    if (!['Administrador', 'Lider'].includes(usuario.fkRol.nombre)) {
-      throw new NotFoundException('No autorizado para esta operación');
-    }
-
     await this.notificacionesService.verificarInventariosYNotificar();
 
     return { mensaje: 'Revisión de inventarios ejecutada' };

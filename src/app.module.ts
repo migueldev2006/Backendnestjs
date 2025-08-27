@@ -35,14 +35,13 @@ import { SeedsService } from './database/seeds/seeds.service';
 import { SeedsModule } from './database/seeds/seeds.module';
 import { CommandModule } from 'nestjs-command';
 import { ReportesModule } from './reportes/reportes.module';
-
-
-
+import { ZapatoModule } from './zapato/zapato.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({
-    isGlobal: true
-  }),
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,
@@ -50,10 +49,9 @@ import { ReportesModule } from './reportes/reportes.module';
       database: process.env.DB_NAME,
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
-      entities: [__dirname + '//*.entity{.ts,.js}'],
+      entities: [__dirname + '/**/*.entity.{ts,js}'],
       autoLoadEntities: true,
-      synchronize: true,
-      // dropSchema:true
+      migrationsRun: true,
     }),
     RolesModule,
     UsuariosModule,
@@ -85,6 +83,7 @@ import { ReportesModule } from './reportes/reportes.module';
     CommandModule,
     SeedsModule,
     ReportesModule,
+    ZapatoModule,
   ],
   controllers: [AppController],
   providers: [
