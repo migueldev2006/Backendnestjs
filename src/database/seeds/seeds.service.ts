@@ -57,6 +57,7 @@ export class SeedsService {
             {
                 idModulo: 1,
                 nombre: "Admin",
+                href:" ",
                 icono: "UserIcon",
                 estado: true
             },
@@ -64,6 +65,7 @@ export class SeedsService {
             {
                 idModulo: 2,
                 nombre: "Bodega",
+                href:" ",
                 icono: "ArchiveBoxIcon",
                 estado: true
             },
@@ -1134,7 +1136,7 @@ export class SeedsService {
 
         for (const module of modules) {
             const exists = await this.modulosRepository.findOneBy({ idModulo: module.idModulo })
-            if (!exists) await this.modulosRepository.query(`INSERT INTO modulos(id_modulo, nombre, icono, estado) VALUES ($1,$2,$3,$4)`, [module.idModulo, module.nombre, module.icono, module.estado]);
+            if (!exists) await this.modulosRepository.query(`INSERT INTO modulos(id_modulo, nombre, href, icono, estado) VALUES ($1,$2,$3,$4,$5)`, [module.idModulo, module.nombre,module.href, module.icono, module.estado]);
 
             await this.usuariosRepository.query(
                 `SELECT setval(pg_get_serial_sequence('modulos', 'id_modulo'), (SELECT MAX(id_modulo) FROM modulos))`
