@@ -56,7 +56,7 @@ export class ReportesService {
       .leftJoin('inv.fkElemento', 'elemento')
       .leftJoin('inv.fkSitio', 'sitio')
       .leftJoin('sitio.fkArea', 'area')
-      .leftJoin('inv.codigos', 'codigo') // Características/códigos
+      .leftJoin('inv.codigos', 'codigo') 
       .select([
         'usuario.nombre AS usuario',
         'rol.nombre AS rol',
