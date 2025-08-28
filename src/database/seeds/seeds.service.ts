@@ -43,10 +43,11 @@ export class SeedsService {
     const users = [
       {
         idUsuario: 1,
-        documento: 1111111111,
+        documento: 123456,
         nombre: 'Admin',
+        apellido: 'Account',
         estado: true,
-        password: 'hola1234',
+        password: 'Admin123456',
         fkRol: { idRol: 1 },
       },
     ];
@@ -1185,11 +1186,12 @@ export class SeedsService {
         const saltOrRounds = 10;
         const hashedPassword = await bcrypt.hash(user.password, saltOrRounds);
         await this.usuariosRepository.query(
-          `INSERT INTO usuarios(id_usuario, documento, nombre, estado, password, fk_rol) VALUES ($1,$2,$3,$4,$5,$6)`,
+          `INSERT INTO usuarios(id_usuario, documento, nombre, apellido, estado, password, fk_rol) VALUES ($1,$2,$3,$4,$5,$6,$7)`,
           [
             user.idUsuario,
             user.documento,
             user.nombre,
+            user.apellido,
             user.estado,
             hashedPassword,
             user.fkRol.idRol,
