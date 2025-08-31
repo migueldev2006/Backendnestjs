@@ -12,4 +12,4 @@
 
     RUN npm run build
 
-    CMD ["sh", "-c", "npm run migration:run && npx nestjs-command seed:database && npm run start:prod"]
+    CMD ["sh", "-c", "npm run migration:generate && npm run migration:run && npx nestjs-command seed:database && npm run start:prod"]

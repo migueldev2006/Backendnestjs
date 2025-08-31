@@ -108,17 +108,49 @@ export class NotificacionesService {
     return this.notificacionRepository.save(notificacion);
   }
 
-  async cambiarEstado(id: number, estado: 'aceptado' | 'cancelado') {
-    const notificacion = await this.findOne(id);
+async cambiarEstado(id: number, estado: 'aceptado' | 'cancelado') {
+  const notificacion = await this.findOne(id);
 
-    if (!notificacion.requiereAccion) {
-      throw new Error('Esta notificación no requiere acción');
-    }
-
-    notificacion.estado = estado;
-    notificacion.leido = true;
-    return this.notificacionRepository.save(notificacion);
+  if (!notificacion.requiereAccion) {
+    throw new Error('Esta notificación no requiere acción');
   }
+
+  // Actualizamos el estado
+  notificacion.estado = estado;
+  notificacion.leido = true;
+
+  // Guardamos la notificación actualizada
+  const notificacionActualizada = await this.notificacionRepository.save(notificacion);
+
+  // Obtenemos el usuario logueado que creó el movimiento desde la notificación original
+  const usuarioCreador = await this.usuarioRepository.findOne({
+    where: { idUsuario: notificacion.data.usuarioCreadorId }, // ← Guardaremos esto en data
+  });
+
+  if (usuarioCreador) {
+    // Creamos la respuesta para el creador del movimiento
+    const respuesta = this.notificacionRepository.create({
+      titulo: estado === 'aceptado' ? 'Movimiento aceptado ✅' : 'Movimiento rechazado ❌',
+      mensaje:
+        estado === 'aceptado'
+          ? `Tu movimiento  fue aceptado.`
+          : `Tu movimiento fue rechazado.`,
+      requiereAccion: false,
+      estado,
+      leido: false,
+      fkUsuario: usuarioCreador,
+      data: notificacion.data,
+    });
+
+    await this.notificacionRepository.save(respuesta);
+
+    // Emitimos la notificación en tiempo real al usuario creador
+    this.websocketGateway.emitirNotificacion(usuarioCreador.idUsuario, respuesta);
+  }
+
+  return notificacionActualizada;
+}
+
 
   async remove(id: number) {
     const existe = await this.notificacionRepository.findOne({

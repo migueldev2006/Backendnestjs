@@ -340,56 +340,90 @@ export class MovimientosService {
     };
   }
 
-  async accept(idMovimiento: number): Promise<Movimientos> {
-    const movimiento = await this.movimientoRepository.findOneBy({
-      idMovimiento,
-    });
-    if (!movimiento) {
-      throw new NotFoundException(
-        `La movimiento con id ${idMovimiento} no existe`,
-      );
-    }
+async accept(idMovimiento: number): Promise<Movimientos> {
+  const movimiento = await this.movimientoRepository.findOne({
+    where: { idMovimiento },
+    relations: ['fkUsuario'], // 👈 Para obtener el usuario que creó el movimiento
+  });
 
-    if (!movimiento.enProceso) {
-      throw new BadRequestException('Este movimiento ya fue gestionado');
-    }
-
-    movimiento.aceptado = true;
-    movimiento.enProceso = false;
-    movimiento.cancelado = false;
-
-    await this.notificacionRepository.update(
-      { data: { idMovimiento: movimiento.idMovimiento } },
-      { estado: 'aceptado' },
+  if (!movimiento) {
+    throw new NotFoundException(
+      `El movimiento con id ${idMovimiento} no existe`,
     );
-    await this.movimientoRepository.save(movimiento);
-    await this.notificacionesService.notificarMovimientoAceptado(movimiento);
-
-    return movimiento;
   }
-  async cancel(idMovimiento: number): Promise<Movimientos> {
-    const movimiento = await this.movimientoRepository.findOneBy({
-      idMovimiento,
-    });
-    if (!movimiento) {
-      throw new NotFoundException(
-        `La movimiento con id ${idMovimiento} no existe`,
-      );
-    }
 
-    if (!movimiento.enProceso) {
-      throw new BadRequestException('Este movimiento ya fue gestionado');
-    }
+  if (!movimiento.enProceso) {
+    throw new BadRequestException('Este movimiento ya fue gestionado');
+  }
 
-    movimiento.aceptado = false;
-    movimiento.enProceso = false;
-    movimiento.cancelado = true;
+  // Actualizamos el estado del movimiento
+  movimiento.aceptado = true;
+  movimiento.enProceso = false;
+  movimiento.cancelado = false;
 
-    await this.notificacionRepository.update(
-      { data: { idMovimiento: movimiento.idMovimiento } },
-      { estado: 'cancelado' },
+  // Actualizamos la notificación original
+  await this.notificacionRepository.update(
+    { data: { idMovimiento: movimiento.idMovimiento } },
+    { estado: 'aceptado', leido: true },
+  );
+
+  await this.movimientoRepository.save(movimiento);
+
+  // 🔔 Notificamos al creador del movimiento
+  await this.notificacionesService.enviarYGuardarNotificacion(
+    'Movimiento aceptado ✅',
+    `Tu movimiento fue aceptado`,
+    false, // No requiere acción
+    movimiento.fkUsuario, // Usuario que creó el movimiento
+    { idMovimiento: movimiento.idMovimiento },
+    'aceptado',
+  );
+
+  // Si tienes lógica adicional de notificación a roles, aquí la dejas
+  await this.notificacionesService.notificarMovimientoAceptado(movimiento);
+
+  return movimiento;
+}
+
+async cancel(idMovimiento: number): Promise<Movimientos> {
+  const movimiento = await this.movimientoRepository.findOne({
+    where: { idMovimiento },
+    relations: ['fkUsuario'], // 👈 Para obtener el usuario que creó el movimiento
+  });
+
+  if (!movimiento) {
+    throw new NotFoundException(
+      `El movimiento con id ${idMovimiento} no existe`,
     );
-
-    return this.movimientoRepository.save(movimiento);
   }
+
+  if (!movimiento.enProceso) {
+    throw new BadRequestException('Este movimiento ya fue gestionado');
+  }
+
+  // Actualizamos el estado del movimiento
+  movimiento.aceptado = false;
+  movimiento.enProceso = false;
+  movimiento.cancelado = true;
+
+  // Actualizamos la notificación original
+  await this.notificacionRepository.update(
+    { data: { idMovimiento: movimiento.idMovimiento } },
+    { estado: 'cancelado', leido: true },
+  );
+
+  await this.movimientoRepository.save(movimiento);
+
+  // 🔔 Notificamos al creador del movimiento
+  await this.notificacionesService.enviarYGuardarNotificacion(
+    'Movimiento rechazado ❌',
+    `Tu movimiento fue rechazado.`,
+    false, // No requiere acción
+    movimiento.fkUsuario, // Usuario que creó el movimiento
+    { idMovimiento: movimiento.idMovimiento },
+    'cancelado',
+  );
+
+  return movimiento;
+}
 }
