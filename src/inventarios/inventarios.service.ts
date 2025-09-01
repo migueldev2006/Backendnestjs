@@ -97,6 +97,7 @@ export class InventariosService {
         'fkSitio',
         'fkElemento',
         'fkElemento.fkCaracteristica',
+        'fkElemento.fkUnidadMedida',
         'codigos',
       ],
     });

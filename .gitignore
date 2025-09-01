@@ -6,6 +6,9 @@
 #container de docker
 postgres/
 
+#images
+elementos/
+
 # Logs
 logs
 *.log
