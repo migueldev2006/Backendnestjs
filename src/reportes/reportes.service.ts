@@ -23,6 +23,15 @@ export class ReportesService {
     private readonly elementoRepo: Repository<Elementos>,
   ) {}
 
+    private formatearFecha(fecha?: string | Date): string {
+    if (!fecha) return '';
+    const d = new Date(fecha);
+    const dia = String(d.getDate()).padStart(2, '0');
+    const mes = String(d.getMonth() + 1).padStart(2, '0'); // Mes 0-11
+    const anio = d.getFullYear();
+    return `${dia}/${mes}/${anio}`;
+  }
+
   async sitiosConMayorStock(
     sitioId?: number,
     areaId?: number,
@@ -129,7 +138,7 @@ async usuarioConMasMovimientos(
       encargado: r.encargado,
       elemento: r.elemento,
       tipo_movimiento: r.tipo_movimiento,
-      ultima_fecha: r.ultima_fecha,
+      ultima_fecha: this.formatearFecha(r.ultima_fecha),
       total_movimientos: Number(r.total_movimientos),
       cantidad: codigos.length > 0 ? null : Number(r.stock || 0),
       codigos,
@@ -181,7 +190,7 @@ async usuarioConMasMovimientos(
     return resultados.map((r) => ({
       nombre: r.nombre,
       vencimiento: r.vencimiento,
-      creado: r.creado,
+      creado: this.formatearFecha(r.creado),
       registrado_por: r.registrado_por ?? 'No registrado',
       sitio: r.sitio,
       area: r.area,
@@ -261,7 +270,7 @@ async usuarioConMasMovimientos(
       sitio: r.sitio,
       area: r.area,
       lugar_destino: r.lugar_destino,
-      fecha: r.fecha,
+      fecha: this.formatearFecha(r.fecha),
       cantidad: Number(r.cantidad),
       codigos: r.codigos ? r.codigos.split(', ') : [],
     }));
